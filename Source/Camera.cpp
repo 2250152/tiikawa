@@ -39,3 +39,4 @@ void Camera::SetPerspectiveFov(float fovY, float aspect, float nearZ, float farZ
 
 		DirectX::XMStoreFloat4x4(&projection, Projection);
 }
+//tst
