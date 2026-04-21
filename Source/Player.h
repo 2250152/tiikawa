@@ -2,7 +2,6 @@
 
 #include"System/ModelRenderer.h"
 #include"Character.h"
-#include"ProjectileManager.h"
 #include"Effect.h"
 #include"System/AudioSource.h"
 
@@ -84,7 +83,7 @@ private:
 	int jumpCount = 0;
 	int jumpLimit = 2;
 
-	ProjectileManager projectileManager;
+	
 
 	Effect*  hitEffect = nullptr;
 

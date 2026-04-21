@@ -1,16 +1,13 @@
 #include "System/Graphics.h"
 #include "SceneGame.h"
 #include"Camera.h"
-#include "EnemyManager.h"
-#include"EnemySlime.h"
 #include"EffectManager.h"
 
 
 // 初期化
 void SceneGame::Initialize()
 {
-	//ステージ初期化
-	stage = new Stage();
+	
 	//プレーヤー初期化
 	/*player = new Player();*/
 	Player::Instance().Initialize();
@@ -33,26 +30,13 @@ void SceneGame::Initialize()
 	
 	cameraController = new CameraController();
 
-	//エネミー初期化
-	EnemyManager& enemyManager = EnemyManager::Instance();
-	for (int i = 0; i < 2; ++i)
-	{
-		EnemySlime* slime = new EnemySlime();
-		slime->SetPosition(DirectX::XMFLOAT3(i * 2.0f, 0, 5));
-		slime->SetTerritory(slime->GetPosition(), 10.0f);
-		enemyManager.Register(slime);
-	}
+
 
 
 	//EnemySlime* slime = new EnemySlime();             敵を増やしたいから消して下のfor文にした。
 	//slime->SetPosition(DirectX::XMFLOAT3(0,0,5));
 	//enemyManager.Register(slime);
-	for (int i = 0;i < 2;++i)
-	{
-		EnemySlime* slime = new EnemySlime();
-		slime->SetPosition(DirectX::XMFLOAT3(i * 2.0f, 0, 5));
-		enemyManager.Register(slime);
-	}
+
 }
 
 // 終了化
@@ -67,13 +51,7 @@ void SceneGame::Finalize()
 
 
 
-	//ステージ終了化
-	if (stage != nullptr)
-	{
-		delete stage;
-		stage = nullptr;
-	}
-
+	
 	//if (player != nullptr)
 	//{
 	//	delete player;       //←本来ならこれだけで全てdeleteされるだと
@@ -81,9 +59,7 @@ void SceneGame::Finalize()
 	//}
 	Player::Instance().Finalize();
 
-	//エネミー終了化
-	EnemyManager::Instance().Clear();
-
+	
 }
 
 // 更新処理
@@ -96,17 +72,14 @@ void SceneGame::Update(float elapsedTime)
 	cameraController->SetTarget(target);
 	cameraController->Update(elapsedTime);
 
-	//ステージ更新処理
-	stage->Update(elapsedTime);
+	
 
 	//プレイヤー更新処理
 	/*player->Update(elapsedTime);*/
 	Player::Instance().Update(elapsedTime);
 
 
-	//エネミー更新処理
-	EnemyManager::Instance().Update(elapsedTime);
-
+	
 	//エフェクト更新処理
 	EffectManager::Instance().Update(elapsedTime);
 }
@@ -163,16 +136,13 @@ void SceneGame::Render()
 
 	// 3Dモデル描画
 	{
-		//ステージ描画
-		stage->Render(rc, modelRenderer);
+		
 
 		//プレーヤー描画
 		/*player->Render(rc, modelRenderer);*/
 		Player::Instance().Render(rc, modelRenderer);
 
-		//エネミーの描画
-		EnemyManager::Instance().Render(rc, modelRenderer);
-
+		
 		//エフェクト描画
 		EffectManager::Instance().Render(rc.view, rc.projection);
 
@@ -184,9 +154,7 @@ void SceneGame::Render()
 		/*player->RenderDebugPrimitive(rc, shapeRenderer);*/ //←プレイヤーの下に黒い線の球体のやつ
 		Player::Instance().RenderDebugPrimitive(rc, shapeRenderer);
 
-		//エネミープリミティブ描画
-		EnemyManager::Instance().RenderDebugPrimitive(rc, shapeRenderer);
-
+	
 	}
 
 	// 2Dスプライト描画

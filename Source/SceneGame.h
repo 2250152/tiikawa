@@ -1,5 +1,5 @@
 #pragma once
-#include "Stage.h"
+
 #include "Player.h"
 #include"CameraController.h"
 
@@ -34,7 +34,7 @@ public:
 	void DrawGUI()override;
 
 private:
-	Stage* stage = nullptr;
+	
 	/*Player* player = nullptr;*/
 	CameraController* cameraController = nullptr;
 };
