@@ -150,6 +150,15 @@
     <ClInclude Include="Source\SceneTitle.h">
       <Filter>Source\ヘッダー</Filter>
     </ClInclude>
+    <ClInclude Include="Source\BlockManager.h">
+      <Filter>Source\ヘッダー</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Block.h">
+      <Filter>Source\ヘッダー</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Group.h">
+      <Filter>Source\ヘッダー</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="External\imgui-docking\imgui.cpp">
@@ -255,6 +264,15 @@
       <Filter>Source\cpp</Filter>
     </ClCompile>
     <ClCompile Include="Source\SceneGame.cpp">
+      <Filter>Source\cpp</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\BlockManager.cpp">
+      <Filter>Source\cpp</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Block.cpp">
+      <Filter>Source\cpp</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Group.cpp">
       <Filter>Source\cpp</Filter>
     </ClCompile>
   </ItemGroup>

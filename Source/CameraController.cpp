@@ -5,15 +5,21 @@
 //更新処理
 void CameraController::Update(float elapsedTime)
 {
-	GamePad& gamePad = Input::Instance().GetGamePad();
-	float ax = gamePad.GetAxisRX();
-	float ay = gamePad.GetAxisRY();
+	//マウス操作にぶち変え
+	Mouse& mouse = Input::Instance().GetMouse();
+	//GamePad& gamePad = Input::Instance().GetGamePad();
+	float ax = mouse.GetMoveY();
+	float ay = mouse.GetMoveX();
 	//カメラの回転速度
-	float speed = rollSpeed * elapsedTime;
+	//float speed = rollSpeed * elapsedTime;
+
+	//マウス感度！設定できるようにするなら変えてね
+	float sensitivity = 0.005f;
+
 
 	//スティックの入力値に合わせてX軸とY軸を回転
-	angle.x += ax * speed;
-	angle.y += ay * speed;
+	angle.x += ax * sensitivity;
+	angle.y += ay * sensitivity;
 
 
 	//X軸のカメラ回転を制限  　//←カメラの位置をplayerの軸の真上か真下にするとぐらついて反転するから手前で止める。”ゲームなら ”この方法でいい

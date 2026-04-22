@@ -58,6 +58,10 @@ public:
 	// スクリーン高さ取得
 	int GetScreenHeight() const { return screenHeight; }
 
+	//移動量取得　(追加したやつやからやばかったら消してね)
+	int GetMoveX() const { return positionX[0] - positionX[1]; }
+	int GetMoveY() const { return positionY[0] - positionY[1]; }
+
 private:
 	MouseButton		buttonState[2] = { 0 };
 	MouseButton		buttonDown = 0;
