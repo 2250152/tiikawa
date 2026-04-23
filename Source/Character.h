@@ -5,8 +5,8 @@
 #include"System/ShapeRenderer.h"
 
 //キャラクター
-class Character    //※classはファイルと同じだと思っていい。なのでUnityなどでclass名とファイル名は完全一致させないとダメ
-{                  //※classは敵とplayerの共通点を書く
+class Character    
+{                  
 public:
 	//位置取得
 	const DirectX::XMFLOAT3& GetPosition() const { return position; }
@@ -74,7 +74,7 @@ protected:
 	void UpdateInvincibleTimer(float elapsedTime);
 
 protected:
-	DirectX::XMFLOAT3     position = { 0,0,0 };  //※敵とplayerの共通点を書く
+	DirectX::XMFLOAT3     position = { 0,0,0 }; 
 	DirectX::XMFLOAT3     angle = { 0,0,0 };
 	DirectX::XMFLOAT3     scale = { 1,1,1 };
 	DirectX::XMFLOAT4X4   transform = {
@@ -98,17 +98,15 @@ protected:
 
 	float friction = 15.0f;
 
-	float acceleration = 50.0f;
+	float acceleration = 50.0f;//加速力
 	float maxMoveSpeed = 5.0f;
 	float moveVecX = 0.0f;
 	float moveVecZ = 0.0f;
-	float airControl = 0.3f;
+	float airControl = 0.3f;//空中での移動制御力。地上の移動制御力を1.0fとしたときの割合
 
 private:
 	//垂直速力更新処理  
 	void UpdateVerticalVelocity(float elapsedTime);
-	//垂直速力とは...
-	//https://chatgpt.com/share/698065fd-e1d8-800b-905f-5bee15ef0a10
 
 	//垂直移動更新処理
 	void UpdateVerticalMove(float elapsedTime);

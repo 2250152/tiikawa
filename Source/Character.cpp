@@ -98,17 +98,14 @@ void Character::Jump(float speed)
 //速力処理更新
 void Character::UpdateVelocity(float elapsedTime) //Velocity...速度
 {
-	//垂直速力更新処理
-	UpdateVerticalVelocity(elapsedTime);
-
-	//水平速力更新処理
-	UpdateHorizonzalVelocity(elapsedTime);
-
-	//垂直移動更新処理
-	UpdateVerticalMove(elapsedTime);
-
-	//水平移動更新処理
-	UpdateHorizontalMove(elapsedTime);
+	////垂直速力更新処理
+	//UpdateVerticalVelocity(elapsedTime);
+	////水平速力更新処理
+	//UpdateHorizonzalVelocity(elapsedTime);
+	////垂直移動更新処理
+	//UpdateVerticalMove(elapsedTime);
+	////水平移動更新処理
+	//UpdateHorizontalMove(elapsedTime);
 }
 
 bool Character::ApplyDamage(int damage,float invincibleTime)
@@ -158,7 +155,6 @@ void Character::UpdateVerticalVelocity(float elapsedTime)
 {
 	//重力処理
 	velocity.y += gravity * elapsedTime;
-	
 }
 
 void Character::UpdateVerticalMove(float elapsedTime)
