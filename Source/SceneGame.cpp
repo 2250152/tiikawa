@@ -169,3 +169,4 @@ void SceneGame::DrawGUI()
 	/*player->DrawDebugGUI();*/
 	Player::Instance().DrawDebugGUI();
 }
+//ergr
