@@ -2,7 +2,10 @@
 #include "SceneGame.h"
 #include"Camera.h"
 #include"EffectManager.h"
-
+#include "Block.h"
+#include "BlockManager.h"
+#include "Group.h"
+#include "Block_Normal.h"
 
 // 初期化
 void SceneGame::Initialize()
@@ -37,6 +40,20 @@ void SceneGame::Initialize()
 	//slime->SetPosition(DirectX::XMFLOAT3(0,0,5));
 	//enemyManager.Register(slime);
 
+	
+
+	// グループ作成
+	std::unique_ptr<Group> group = std::make_unique<Group>();
+
+	// ブロック作成
+	std::unique_ptr<Block> block = std::make_unique<BlockNormal>();
+
+	
+	// グループに追加
+	group->AddBlock(std::move(block));
+
+	// マネージャーに登録
+	BlockManager::Instance().AddGroup(std::move(group));
 }
 
 // 終了化
@@ -82,6 +99,8 @@ void SceneGame::Update(float elapsedTime)
 	
 	//エフェクト更新処理
 	EffectManager::Instance().Update(elapsedTime);
+
+	BlockManager::Instance().Update(elapsedTime);
 }
 
 // 描画処理
@@ -145,7 +164,7 @@ void SceneGame::Render()
 		
 		//エフェクト描画
 		EffectManager::Instance().Render(rc.view, rc.projection);
-
+		BlockManager::Instance().Render(rc, modelRenderer);
 	}
 
 	// 3Dデバッグ描画
@@ -169,4 +188,3 @@ void SceneGame::DrawGUI()
 	/*player->DrawDebugGUI();*/
 	Player::Instance().DrawDebugGUI();
 }
-//ergr

@@ -14,15 +14,20 @@ private:
 public:
 	Group() {}
 	~Group() {}
-	void Update();
+	void Update(float elpsedTime);
 
 	void Render(const RenderContext& rc, ModelRenderer* renderer);
 
-	void Move();
+	void Move(float elapsedTime);
 
 	void Rotate();
 
 	void UpdateMember();
+
+	void AddBlock(std::unique_ptr<Block> block)
+	{
+		blocks.push_back(std::move(block));
+	}
 
 private:
 	std::vector<std::unique_ptr<Block>> blocks;

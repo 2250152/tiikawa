@@ -1,9 +1,9 @@
 #include "Group.h"
 //‚±‚±‚ÅƒOƒ‹[ƒv•ª‚¯‚µ‚½‚â‚Â‚ç‚ð“®‚©‚»‚¤‚Ì‰ï
 
-void Group::Update()
+void Group::Update(float elapsedTime)
 {
-	Move();
+	Move(elapsedTime);
 
 	Rotate();
 
@@ -11,9 +11,12 @@ void Group::Update()
 
 }
 
-void Group::Move()
+void Group::Move(float elapsedTime)
 {
-
+	for (auto& block : blocks)
+	{
+		block->Update(elapsedTime);
+	}
 }
 
 void Group::Rotate()

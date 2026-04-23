@@ -9,7 +9,7 @@ void BlockManager::Update(float elapsedTime)
 {
 	for (auto& group : groups)
 	{
-		group->Update();
+		group->Update(elapsedTime);
 	}
 
 	//ƒOƒ‹[ƒv‚Ô‚¿Á‚µ

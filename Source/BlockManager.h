@@ -21,6 +21,12 @@ public:
 
 	void Remove(Group* group);
 
+	void AddGroup(std::unique_ptr<Group> group)
+	{
+		groups.push_back(std::move(group));
+	}
+
+
 private:
 	//‰ò
 	std::vector<std::unique_ptr<Group>> groups;

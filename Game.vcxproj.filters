@@ -159,6 +159,9 @@
     <ClInclude Include="Source\Group.h">
       <Filter>Source\ヘッダー</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Block_Normal.h">
+      <Filter>Source\ヘッダー</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="External\imgui-docking\imgui.cpp">
@@ -273,6 +276,9 @@
       <Filter>Source\cpp</Filter>
     </ClCompile>
     <ClCompile Include="Source\Group.cpp">
+      <Filter>Source\cpp</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Block_Normal.cpp">
       <Filter>Source\cpp</Filter>
     </ClCompile>
   </ItemGroup>
