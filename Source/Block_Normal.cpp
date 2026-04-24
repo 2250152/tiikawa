@@ -22,3 +22,8 @@ void BlockNormal::Render(const RenderContext& rc, ModelRenderer* renderer)
 {
 	renderer->Render(rc, transform, model, ShaderId::Lambert);
 }
+
+void BlockNormal::Move(float elapsedTime)
+{
+	position.x+=0.01f;
+}
