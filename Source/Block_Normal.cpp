@@ -6,6 +6,7 @@ BlockNormal::BlockNormal()
 	model = new Model("Data/Model/BlockNormal/BlockNormal.mdl");
 	scale.x = scale.y = scale.z = 0.01f;
 	position = { 0,0,0 };
+
 }
 
 BlockNormal::~BlockNormal()
@@ -25,5 +26,6 @@ void BlockNormal::Render(const RenderContext& rc, ModelRenderer* renderer)
 
 void BlockNormal::Move(float elapsedTime)
 {
-	position.x+=0.01f;
+	if (!isMoving) return;
+	position.x+=1 * elapsedTime;
 }

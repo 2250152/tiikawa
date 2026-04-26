@@ -2,6 +2,7 @@
 #include "System/ModelRenderer.h"
 
 class BlockManager;
+class Group;
 
 class Block
 {
@@ -17,6 +18,8 @@ public:
 
 	virtual void Move(float elapsedTime) = 0;
 
+	void GetAABB(DirectX::XMFLOAT3& min, DirectX::XMFLOAT3& max);
+
 	void UpdateTransform()
 	{
 		DirectX::XMMATRIX S = DirectX::XMMatrixScaling(scale.x, scale.y, scale.z);
@@ -25,50 +28,34 @@ public:
 		DirectX::XMMATRIX W = S * R * T;
 		DirectX::XMStoreFloat4x4(&transform, W);
 	}
-	//DirectX::XMFLOAT3 worldMin =
-	//{
-	//	position.x + model->min.x * scale.x,
-	//	position.y + model->min.y * scale.y,
-	//	position.z + model->min.z * scale.z
-	//};
-	//
-	//DirectX::XMFLOAT3 worldMax =
-	//{
-	//	position.x + model->max.x * scale.x,
-	//	position.y + model->max.y * scale.y,
-	//	position.z + model->max.z * scale.z
-	//};
-	//
-	//
-	//void GetAABB(DirectX::XMFLOAT3& outMin, DirectX::XMFLOAT3& outMax)
-	//{
-	//	outMin =
-	//	{
-	//		position.x + model->min.x * scale.x,
-	//		position.y + model->min.y * scale.y,
-	//		position.z + model->min.z * scale.z
-	//	};
-	//
-	//	outMax =
-	//	{
-	//		position.x + model->max.x * scale.x,
-	//		position.y + model->max.y * scale.y,
-	//		position.z + model->max.z * scale.z
-	//	};
-	//}
+	//ñ ÇÃíÜêSÇÃç¿ïWÇéÊÇÎÇ§ÇÃâÔ
+	DirectX::XMFLOAT3 GetTopCenter();
+	DirectX::XMFLOAT3 GetBottomCenter();
+	DirectX::XMFLOAT3 GetFrontCenter();
+	DirectX::XMFLOAT3 GetBackCenter();
+	DirectX::XMFLOAT3 GetRightCenter();
+	DirectX::XMFLOAT3 GetLeftCenter();
 
-
+	bool IsHit(Block* other);
 	
-
-protected:
+	Group* GetGroup() const { return group; }
+	void SetGroup(Group* g) { group = g; }
+	
+	void Stop() { isMoving = false; }
 	DirectX::XMFLOAT3 position = { 0,0,0 };
+protected:
+	
 	DirectX::XMFLOAT3	angle = { 0,0,0 };
 	DirectX::XMFLOAT3 direction = { 0,0,1 };
 	DirectX::XMFLOAT3 scale = { 1,1,1 };
 	DirectX::XMFLOAT4X4 transform = { 1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1 };
 	BlockManager* manager = nullptr;
-	int group;
+	Group* group = nullptr;
 
 	float face;
 	Model* model = nullptr;
+
+	bool isMoving = true;
+
+	
 };

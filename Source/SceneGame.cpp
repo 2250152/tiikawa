@@ -46,17 +46,17 @@ void SceneGame::Initialize()
 	// グループ作成
 	std::unique_ptr<Group> group = std::make_unique<Group>();
 
-	// ブロック作成
-	std::unique_ptr<Block> block = std::make_unique<BlockNormal>();
-	std::unique_ptr<Block> blockstart = std::make_unique<BlockStart>();
 
 	
-	// グループに追加
-	group->AddBlock(std::move(block));
-	group->AddBlock(std::move(blockstart));
+	// ブロック生成兼グループに追加
+	group->CreateBlock<BlockNormal>();
+	group->CreateBlock<BlockStart>();
 
 	// マネージャーに登録
 	BlockManager::Instance().AddGroup(std::move(group));
+
+
+
 }
 
 // 終了化
