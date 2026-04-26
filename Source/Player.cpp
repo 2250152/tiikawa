@@ -15,7 +15,7 @@ void Player::Initialize()
 	hitSE = Audio::Instance().LoadAudioSource("Data/Sound/Hit.wav");
 
 	//モデルが大きいのでスケーリング
-	scale.x = scale.y = scale.z = 0.001f;
+	scale.x = scale.y = scale.z = 0.0005f;
 }
 
 //終了化
