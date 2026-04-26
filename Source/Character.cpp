@@ -45,7 +45,7 @@ void Character::Turn(float elapsedTime, float vx, float vz, float speed)
 {
 	speed *= elapsedTime;
 
-	//進行方向ベクトルがゼロベクトルの場合は処理する必要なし　　　　　←進行ベクトルは長さ
+	//進行方向ベクトルがゼロベクトルの場合は処理する必要なし　
 	float lengh = sqrtf(vx * vx + vz * vz);
 	if (lengh < 0.001f)return;//←本当は if(len==0) とやりたいけどちょっきり0にならない
 
@@ -69,7 +69,7 @@ void Character::Turn(float elapsedTime, float vx, float vz, float speed)
 
 
 	//左右判定を行うために2つの単位ベクトルの外積を計算する
-	float cross = (frontZ * vx) - (frontX * vz);               //←前方向に進行方向をかけるって言ってた
+	float cross = (frontZ * vx) - (frontX * vz);        
 
 
 	//2Dの外積値が正の場合か負の場合によって左右判定が行える
