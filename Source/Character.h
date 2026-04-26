@@ -5,8 +5,8 @@
 #include"System/ShapeRenderer.h"
 
 //キャラクター
-class Character    //※classはファイルと同じだと思っていい。なのでUnityなどでclass名とファイル名は完全一致させないとダメ
-{                  //※classは敵とplayerの共通点を書く
+class Character
+{
 public:
 	//位置取得
 	const DirectX::XMFLOAT3& GetPosition() const { return position; }
@@ -38,8 +38,6 @@ public:
 	//地面に接地しているか
 	bool IsGround()const { return isGround; }
 
-	//ダメージを与える
-	//bool ApplyDamage(int damage);
 	bool ApplyDamage(int damage, float invincibleTime); //invincibleTime は日本語で "無敵時間"
 
 	//衝撃を与える
@@ -107,8 +105,6 @@ protected:
 private:
 	//垂直速力更新処理  
 	void UpdateVerticalVelocity(float elapsedTime);
-	//垂直速力とは...
-	//https://chatgpt.com/share/698065fd-e1d8-800b-905f-5bee15ef0a10
 
 	//垂直移動更新処理
 	void UpdateVerticalMove(float elapsedTime);

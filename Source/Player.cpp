@@ -116,10 +116,10 @@ DirectX::XMFLOAT3 Player::GetMoveVec() const
 	//カメラ右方向ベクトルをXZ単位ベクトルに変換
 	float cameraRightX = cameraRight.x;
 	float cameraRightZ = cameraRight.z;
-	float cameraRightLength = sqrtf(cameraRightX * cameraRightX + cameraRightZ * cameraRightZ);//←ピタゴラスの定理
+	float cameraRightLength = sqrtf(cameraRightX * cameraRightX + cameraRightZ * cameraRightZ);
 	if (cameraRightLength > 0.0f)//長さがあったら
 	{
-		//単位ベクトル化　　　　←pdfに書いています、見ましょう
+		//単位ベクトル化　　　
 		cameraRightX /= cameraRightLength;
 		cameraRightZ /= cameraRightLength;
 	}
