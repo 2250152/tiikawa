@@ -6,6 +6,7 @@
 #include "BlockManager.h"
 #include "Group.h"
 #include "Block_Normal.h"
+#include "Block_Start.h"
 
 // 初期化
 void SceneGame::Initialize()
@@ -47,10 +48,12 @@ void SceneGame::Initialize()
 
 	// ブロック作成
 	std::unique_ptr<Block> block = std::make_unique<BlockNormal>();
+	std::unique_ptr<Block> blockstart = std::make_unique<BlockStart>();
 
 	
 	// グループに追加
 	group->AddBlock(std::move(block));
+	group->AddBlock(std::move(blockstart));
 
 	// マネージャーに登録
 	BlockManager::Instance().AddGroup(std::move(group));

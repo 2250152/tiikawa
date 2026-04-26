@@ -5,7 +5,7 @@ BlockNormal::BlockNormal()
 {
 	model = new Model("Data/Model/BlockNormal/BlockNormal.mdl");
 	scale.x = scale.y = scale.z = 0.01f;
-
+	position = { 0,0,0 };
 }
 
 BlockNormal::~BlockNormal()

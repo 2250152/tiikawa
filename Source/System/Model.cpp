@@ -1,6 +1,9 @@
 #include "Graphics.h"
 #include "Model.h"
 
+#undef min
+#undef max
+
 // コンストラクタ
 Model::Model(const char* filename)
 {
@@ -31,6 +34,8 @@ Model::Model(const char* filename)
 
 	// 行列計算
 	UpdateTransform();
+
+	  CalculateBounds();
 }
 
 // 変換行列計算
@@ -55,6 +60,31 @@ void Model::UpdateTransform()
 		else
 		{
 			DirectX::XMStoreFloat4x4(&node.globalTransform, LocalTransform);
+		}
+	}
+}
+
+void Model::CalculateBounds()
+{
+	min = { FLT_MAX, FLT_MAX, FLT_MAX };
+	max = { -FLT_MAX, -FLT_MAX, -FLT_MAX };
+
+	const ModelResource* resource = GetResource();
+
+	for (const ModelResource::Mesh& mesh : resource->GetMeshes())
+	{
+		//頂点配列
+		const std::vector<ModelResource::Vertex>& vertices = mesh.vertices;
+
+		for (const auto& v : vertices)
+		{
+			min.x = std::min(min.x, v.position.x);
+			min.y = std::min(min.y, v.position.y);
+			min.z = std::min(min.z, v.position.z);
+
+			max.x = std::max(max.x, v.position.x);
+			max.y = std::max(max.y, v.position.y);
+			max.z = std::max(max.z, v.position.z);
 		}
 	}
 }

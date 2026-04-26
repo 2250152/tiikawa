@@ -1,20 +1,22 @@
 #pragma once
+#pragma once
 
 #include "Block.h"
 #include "System/Model.h"
 
 //ふっつーのブロック
-class BlockNormal :public Block
+class BlockStart :public Block
 {
 public:
-	BlockNormal();
-	~BlockNormal();
+	BlockStart();
+	~BlockStart();
 
 	void Update(float elapsedTime) override;
 
 	void Render(const RenderContext& rc, ModelRenderer* renderer) override;
 
 	void Move(float elapsedTime);
+
 
 
 

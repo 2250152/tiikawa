@@ -5,6 +5,9 @@
 #include <DirectXMath.h>
 #include "ModelResource.h"
 
+#include <cfloat>
+#include <algorithm>
+
 // モデル
 class Model
 {
@@ -35,6 +38,11 @@ public:
 	// リソース取得
 	const ModelResource* GetResource() const { return resource.get(); }
 
+	DirectX::XMFLOAT3 min = { FLT_MAX,FLT_MAX,FLT_MAX };
+	DirectX::XMFLOAT3 max = { -FLT_MAX,-FLT_MAX,-FLT_MAX };
+
+	//座標計算祭り
+	void CalculateBounds();
 private:
 	std::shared_ptr<ModelResource>	resource;
 	std::vector<Node>				nodes;

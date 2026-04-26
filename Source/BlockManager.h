@@ -27,6 +27,7 @@ public:
 	}
 
 
+
 private:
 	//‰ò
 	std::vector<std::unique_ptr<Group>> groups;
