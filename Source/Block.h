@@ -15,6 +15,8 @@ public:
 
 	virtual void Update(float elapsedTime) = 0;
 
+	virtual void Move(float elapsedTime) = 0;
+
 	void UpdateTransform()
 	{
 		DirectX::XMMATRIX S = DirectX::XMMatrixScaling(scale.x, scale.y, scale.z);
@@ -30,4 +32,5 @@ protected:
 	DirectX::XMFLOAT3 scale = { 1,1,1 };
 	DirectX::XMFLOAT4X4 transform = { 1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1 };
 	BlockManager* manager = nullptr;
+	int group;
 };

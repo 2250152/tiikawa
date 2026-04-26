@@ -9,13 +9,17 @@ void Group::Update(float elapsedTime)
 
 	UpdateMember();
 
+	for (auto& block : blocks)
+	{
+		block->Update(elapsedTime);
+	}
 }
 
 void Group::Move(float elapsedTime)
 {
 	for (auto& block : blocks)
 	{
-		block->Update(elapsedTime);
+		block->Move(elapsedTime);
 	}
 }
 

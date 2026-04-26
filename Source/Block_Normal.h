@@ -14,6 +14,7 @@ public:
 
 	void Render(const RenderContext& rc, ModelRenderer* renderer) override;
 
+	void Move(float elapsedTime);
 private:
 	Model* model = nullptr;
 
