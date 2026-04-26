@@ -9,7 +9,7 @@
 class SceneGame:public Scene
 {
 public:
-	SceneGame() {};
+	SceneGame(int stage) {};
 	/*~SceneGame() {};*/
 	~SceneGame()override {};
 

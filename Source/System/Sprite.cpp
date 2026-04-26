@@ -211,3 +211,4 @@ void Sprite::Render(const RenderContext& rc,
 {
 	Render(rc, dx, dy, dz, dw, dh, 0, 0, textureWidth, textureHeight, angle, r, g, b, a);
 }
+

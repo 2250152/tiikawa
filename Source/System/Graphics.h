@@ -79,4 +79,5 @@ private:
 	std::unique_ptr<ModelRenderer>					modelRenderer;
 
 	std::mutex mutex;
+
 };
