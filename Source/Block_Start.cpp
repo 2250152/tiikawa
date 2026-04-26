@@ -6,6 +6,7 @@ BlockStart::BlockStart()
 	model = new Model("Data/Model/BlockNormal/BlockNormal.mdl");
 	scale.x = scale.y = scale.z = 0.01f;
 	position = { 10,0,0 };
+	Stop();
 }
 
 BlockStart::~BlockStart()
@@ -25,5 +26,6 @@ void BlockStart::Render(const RenderContext& rc, ModelRenderer* renderer)
 
 void BlockStart::Move(float elapsedTime)
 {
-	//position.x += 0.01f;
+	if (!isMoving) return;
+	position.x += 0.01f * elapsedTime;
 }

@@ -1,4 +1,5 @@
 #include "Group.h"
+#include "Block.h"
 //‚±‚±‚ÅƒOƒ‹[ƒv•ª‚¯‚µ‚½‚â‚Â‚ç‚ð“®‚©‚»‚¤‚Ì‰ï
 
 void Group::Update(float elapsedTime)
@@ -7,7 +8,7 @@ void Group::Update(float elapsedTime)
 
 	Rotate();
 
-	UpdateMember();
+	
 
 	for (auto& block : blocks)
 	{
@@ -28,10 +29,16 @@ void Group::Rotate()
 
 }
 
-void Group::UpdateMember()
+void Group::Merge(Group* other)
 {
-
+	for (auto& block : other->blocks)
+	{
+		block->SetGroup(this);
+		blocks.push_back(std::move(block));
+	}
+	other->blocks.clear();
 }
+
 
 void Group::Render(const RenderContext& rc, ModelRenderer* renderer)
 {
@@ -39,4 +46,10 @@ void Group::Render(const RenderContext& rc, ModelRenderer* renderer)
 	{
 		block->Render(rc, renderer);
 	}
+}
+
+void Group::AddBlock(std::unique_ptr<Block> block)
+{
+	block->SetGroup(this);
+	blocks.push_back(std::move(block));
 }

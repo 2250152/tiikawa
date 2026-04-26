@@ -3,7 +3,6 @@
 #include <vector>
 #include <set>
 #include "System/ModelRenderer.h"
-#include "Block.h"
 
 class Block;
 
@@ -22,12 +21,30 @@ public:
 
 	void Rotate();
 
-	void UpdateMember();
 
-	void AddBlock(std::unique_ptr<Block> block)
+	void AddBlock(std::unique_ptr<Block> block);
+
+	std::vector<std::unique_ptr<Block>>& GetBlocks()
 	{
+		return blocks;
+	}
+
+
+	const std::vector<std::unique_ptr<Block>>& GetBlocks() const
+	{
+		return blocks;
+	}
+
+
+	template<typename T, typename... Args>
+	void CreateBlock(Args&&... args)
+	{
+		auto block = std::make_unique<T>(std::forward<Args>(args)...);
+		block->SetGroup(this);
 		blocks.push_back(std::move(block));
 	}
+
+	void Merge(Group* other);
 
 private:
 	std::vector<std::unique_ptr<Block>> blocks;
