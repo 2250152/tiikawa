@@ -72,6 +72,9 @@ private:
 	//’eŠÛ‚Æ“G‚ÌÕ“Ëˆ—
 	void CollisionProjectilesVsEnemies();
 
+	//d—Íˆ—
+	void ApplyLocalGravity(float elapsedTime);
+
 private:
 	Model* model = nullptr;
 	float moveSpeed = 5.0f;

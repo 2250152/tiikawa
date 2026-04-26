@@ -180,3 +180,22 @@ void Player::InputJump()
 		}
 	}
 }
+
+void Player::ApplyLocalGravity(float elapsedTime)
+{
+	// プレイヤーのローカルupベクトルを計算
+	DirectX::XMVECTOR UP = DirectX::XMVectorSet(0, 1, 0, 0);
+	DirectX::XMMATRIX R = DirectX::XMMatrixRotationRollPitchYaw(angle.x, angle.y, angle.z);
+	DirectX::XMVECTOR localUp = DirectX::XMVector3TransformNormal(UP, R);
+
+	// upベクトルの正反対（down方向）を求める
+	DirectX::XMVECTOR localDown = DirectX::XMVectorNegate(localUp);
+
+	// 重力加速度ベクトルを求める（Character::gravityは負値なので-multしない）
+	DirectX::XMVECTOR gravityVec = DirectX::XMVectorScale(localDown, std::abs(gravity));
+
+	// velocityに加算
+	DirectX::XMVECTOR velocityVec = DirectX::XMLoadFloat3(&velocity);
+	velocityVec = DirectX::XMVectorAdd(velocityVec, DirectX::XMVectorScale(gravityVec, elapsedTime));
+	DirectX::XMStoreFloat3(&velocity, velocityVec);
+}
