@@ -4,27 +4,9 @@
 #include"Camera.h"
 #include"System/Audio.h"
 
-//コンストラクタ ←最初に呼び出される関数のこと
-//Player::Player()
-//{
-//	//model = new Model("Data/Model/Mr.Incredible/Mr.Incredible.mdl");
-//	//モデルが大きいのでスケーリング
-//	//scale.x = scale.y = scale.z = 0.01f;
-//
-//	//ヒットエフェクト読み込み
-//	hitEffect = new Effect("Data/Effect/Hit.efk");
-//}
-//デストラクタ
-//Player::~Player()
-//{
-//	//delete model;
-//
-//	delete hitEffect;
-//}
-
 void Player::Initialize()
 {
-	model = new Model("Data/Model/gal/gal.mdl");//Mr.Incredible
+	model = new Model("Data/Model/player/Astronaut.mdl");
 
 	//ヒットエフェクト読み込み
 	hitEffect = new Effect("Data/Effect/Hit.efk");
@@ -33,7 +15,7 @@ void Player::Initialize()
 	hitSE = Audio::Instance().LoadAudioSource("Data/Sound/Hit.wav");
 
 	//モデルが大きいのでスケーリング
-	scale.x = scale.y = scale.z = 0.01f;
+	scale.x = scale.y = scale.z = 0.001f;
 }
 
 //終了化
@@ -45,26 +27,14 @@ void Player::Finalize()
 }
 
 //更新処理
-void Player::Update(float elapsedTime)   //←elapsedTimeは1フレームかな
+void Player::Update(float elapsedTime)  
 {
-
-	//======================================================
-	////進行ベクトル取得                                   
-	//DirectX::XMFLOAT3 moveVec = GetMoveVec();      　　  
-
-	////移動処理　　　　　　　　　　　　　　　　　　　　　 
-	//float moveSpeed = this->moveSpeed * elapsedTime;
-	//position.x += moveVec.x * moveSpeed;
-	//position.z += moveVec.z * moveSpeed;
-	// 　
-	// 関数化した===========================================
-	// 　↓
 	
 	//移動入力処理
 	InputMove(elapsedTime);
 
 	//速度処理更新
-	UpdateVelocity(elapsedTime);//velocityは日本語で"速度"です。
+	UpdateVelocity(elapsedTime);
 
 	
 	//ジャンプ入力処理
@@ -90,8 +60,6 @@ void Player::Render(const RenderContext& rc, ModelRenderer* renderer)
 	
 }
 
-//==========================================================================================================================================================================================
-
 //デバッグプリミティブ描画
 void Player::RenderDebugPrimitive(const RenderContext& rc, ShapeRenderer* renderer)
 {
@@ -100,7 +68,7 @@ void Player::RenderDebugPrimitive(const RenderContext& rc, ShapeRenderer* render
 
 }
 
-//デバッグ用GUI描画　　←デバッグ表示は最後どうせ消すので分かりやすいように普通は一番上とかに書いとけばいい
+//デバッグ用GUI描画
 void Player::DrawDebugGUI()
 {
 	ImVec2 pos = ImGui::GetMainViewport()->GetWorkPos();
@@ -130,8 +98,6 @@ void Player::DrawDebugGUI()
 	ImGui::End();
 }
 
-
-//#include"Camera.h"をインクルードしたか？
 //スティック入力値から移動ベクトルを取得
 DirectX::XMFLOAT3 Player::GetMoveVec() const
 {
@@ -182,62 +148,6 @@ DirectX::XMFLOAT3 Player::GetMoveVec() const
 
 }
 
-//移動処理
-//void Player::Move(float elapsedTime, float vx, float vz, float speed)
-//{
-//	speed *= elapsedTime;
-//	position.x += vx * speed;
-//	position.z += vz * speed;
-//}
-
-////旋回処理
-//void Player::Turn(float elapsedTime, float vx, float vz, float speed)
-//{
-//	speed *= elapsedTime;
-//
-//	//進行方向ベクトルがゼロベクトルの場合は処理する必要なし　　　　　←進行ベクトルは長さ
-//	float lengh = sqrtf(vx * vx + vz * vz);
-//	if (lengh < 0.001f)return;//←本当は if(len==0) とやりたいけどちょっきり0にならない
-//
-//	//進行ベクトルを単位ベクトル化
-//	vx /= lengh;
-//	vz /= lengh;
-//
-//	//自身の回転値から前方向を求める
-//	float frontX = sinf(angle.y);
-//	float frontZ = cosf(angle.y);
-//
-//
-//	//回転角を求めるため、2つの単位ベクトルのない席を計算する
-//	float dot = (frontX * vx) + (frontZ * vz);
-//
-//	//内積値は-1.0～1.0で表現されており、2つの単位ベクトルの角度
-//	//が小さいほど1.0に近づくという性質を利用して回転速度を調整する
-//	float rot = 1.0f - dot;
-//	if (rot > speed)rot = speed;
-//
-//
-//
-//	//左右判定を行うために2つの単位ベクトルの外積を計算する
-//	float cross = (frontZ * vx) - (frontX * vz);               //←前方向に進行方向をかけるって言ってた
-//
-//
-//	//2Dの外積値が正の場合か負の場合によって左右判定が行える
-//	//左右判定を行うことによって左右回転を選択する
-//	if (cross < 0.0f)
-//	{
-//		/*angle.y -= speed;*/
-//		angle.y -= rot;          //内積値から求められたspeedを使う
-//	}
-//	else
-//	{
-//		/*angle.y += speed;*/
-//		angle.y += rot;
-//	}
-//
-//
-//}
-
 //移動入力処理
 void Player::InputMove(float elapsedTime)
 {
@@ -255,32 +165,6 @@ void Player::OnLanding()
 {
 	jumpCount = 0;
 }
-
-
-////ジャンプ処理
-//void Player::Jump(float speed)
-//{
-//	//上方向の力を設定
-//	velocity.y = speed;
-//}
-
-////速力処理更新
-//void Player::UpdateVelocity(float elapsedTime)
-//{
-//	//重力処理
-//	velocity.y += gravity * elapsedTime;  //重力を強くしていかないとダメ//elapsedTimeはgravityをの値を安定させるためにあるのかな？
-//
-//	//移動処理
-//	position.y += velocity.y * elapsedTime;
-//
-//	//地面判定
-//	if (position.y < 0.0f)//ここ絶体小なりにしないといけないらしい。
-//	{
-//		position.y = 0.0f;
-//		velocity.y = 0.0f;
-//	}
-//
-//}
 
 //ジャンプ入力処理
 void Player::InputJump()
