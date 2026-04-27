@@ -114,22 +114,3 @@ bool Block::IsHit(Block* other)
 }
 
 
-bool Block::WillHit(Block* other, float nextX)
-{
-    float oldX = position.x;
-    position.x = nextX;
-
-    DirectX::XMFLOAT3 minA, maxA;
-    GetAABB(minA, maxA);
-
-    DirectX::XMFLOAT3 minB, maxB;
-    other->GetAABB(minB, maxB);
-
-    position.x = oldX;
-
-    return
-        (minA.x <= maxB.x && maxA.x >= minB.x) &&
-        (minA.y <= maxB.y && maxA.y >= minB.y) &&
-        (minA.z <= maxB.z && maxA.z >= minB.z);
-}
-

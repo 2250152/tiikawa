@@ -25,23 +25,23 @@ void BlockNormal::Render(const RenderContext& rc, ModelRenderer* renderer)
 	renderer->Render(rc, transform, model, ShaderId::Lambert);
 }
 
-void BlockNormal::Move(float elapsedTime, const std::vector<Block*>& allBlocks)
-{
-	if (!isMoving) return;
-    float nextX = position.x + 1 * elapsedTime;
-
-    for (auto other : allBlocks)
-    {
-        if (other == this) continue;
-
-        if (other->GetGroup() == this->GetGroup()) continue;
-   
-        if (WillHit(other, nextX))
-        {
-            Stop();
-            return;
-        }
-    }
-
-    position.x = nextX;
-}
+//void BlockNormal::Move(float elapsedTime, const std::vector<Block*>& allBlocks)
+//{
+//	if (!isMoving) return;
+//    float nextX = position.x + 1 * elapsedTime;
+//
+//    for (auto other : allBlocks)
+//    {
+//        if (other == this) continue;
+//
+//        if (other->GetGroup() == this->GetGroup()) continue;
+//   
+//        if (WillHit(other, nextX))
+//        {
+//            Stop();
+//            return;
+//        }
+//    }
+//
+//    position.x = nextX;
+//}

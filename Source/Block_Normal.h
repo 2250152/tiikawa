@@ -16,7 +16,7 @@ public:
 
 	void Render(const RenderContext& rc, ModelRenderer* renderer) override;
 
-	void Move(float elapsedTime, const std::vector<Block*>& allBlocks)override;
+	//void Move(float elapsedTime, const std::vector<Block*>& allBlocks)override;
 
 
 

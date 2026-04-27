@@ -11,7 +11,9 @@ void BlockManager::Update(float elapsedTime)
 	InputMove();
 
 	std::vector<Block*> allBlocks;
+	std::vector<Group*> allGroups;
 
+	//Á‚µ‚½‚Á‚Ä‚¢‚¢
 	for (auto& group : groups)
 	{
 		for (auto& block : group->GetBlocks())
@@ -20,11 +22,16 @@ void BlockManager::Update(float elapsedTime)
 		}
 	}
 
+	for (auto& group : groups)
+	{
+		allGroups.push_back(group.get());
+	}
+
 	//•’Ê‚ÌXV‚¿‚á‚ñ
 	for (auto& group : groups)
 	{
 		
-		group->Update(elapsedTime,allBlocks);
+		group->Update(elapsedTime,allGroups);
 	}
 
 

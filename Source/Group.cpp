@@ -2,14 +2,14 @@
 #include "Block.h"
 //Ç±Ç±Ç≈ÉOÉãÅ[Évï™ÇØÇµÇΩÇ‚Ç¬ÇÁÇìÆÇ©ÇªÇ§ÇÃâÔ
 
-void Group::Update(float elapsedTime,const std::vector<Block*>& allBlocks)
+void Group::Update(float elapsedTime,const std::vector<Group*>& allGroups)
 {
 	
 
 	Rotate();
 
 	if (type == GroupType::Start)
-	Move(elapsedTime, allBlocks);
+	Move(elapsedTime, allGroups);
 
 	for (auto& block : blocks)
 	{
@@ -17,11 +17,27 @@ void Group::Update(float elapsedTime,const std::vector<Block*>& allBlocks)
 	}
 }
 
-void Group::Move(float elapsedTime, const std::vector<Block*>& allBlocks)
+void Group::Move(float elapsedTime, const std::vector<Group*>& allGroups)
 {
-	for (auto& block : blocks)
+	if (state != Moving) return;
+
+	float dx = 1.0f * elapsedTime;
+
+
+	for (auto& g : allGroups)
 	{
-		block->Move(elapsedTime, allBlocks);
+		if (g == this) continue;
+
+		if (WillHit(g, dx))
+		{
+			Merge(g);
+			return;
+		}
+	}
+
+	for (auto& b : blocks)
+	{
+		b->position.x += dx;
 	}
 }
 
@@ -38,6 +54,7 @@ void Group::Merge(Group* other)
 		blocks.push_back(std::move(block));
 	}
 	other->blocks.clear();
+	state = Idle;
 }
 
 
@@ -57,8 +74,63 @@ void Group::AddBlock(std::unique_ptr<Block> block)
 
 void Group::Go()
 {
-	for (auto& block : blocks)
+	state = Moving;
+}
+
+bool Group::WillHit(Group* otherGroup, float dx)
+{
+	for (auto& a : blocks)
 	{
-		block->Start();
+		DirectX::XMFLOAT3 minA, maxA;
+		a->GetAABB(minA, maxA);
+
+		minA.x += dx;
+		maxA.x += dx;
+
+		for (auto& b : otherGroup->blocks)
+		{
+			DirectX::XMFLOAT3 minB, maxB;
+			b->GetAABB(minB, maxB);
+
+			if ((minA.x <= maxB.x && maxA.x >= minB.x) &&
+				(minA.y <= maxB.y && maxA.y >= minB.y) &&
+				(minA.z <= maxB.z && maxA.z >= minB.z))
+			{
+				return true;
+			}
+		}
 	}
+	return false;
+}
+
+bool Group::WillHitAnyGroup(float dx, const std::vector<Group*>& allGroups)
+{
+	for (auto& otherGroup : allGroups)
+	{
+		if (otherGroup == this) continue;
+
+		for (auto& a : blocks)
+		{
+			DirectX::XMFLOAT3 minA, maxA;
+			a->GetAABB(minA, maxA);
+
+			minA.x += dx;
+			maxA.x += dx;
+
+			for (auto& b : otherGroup->blocks)
+			{
+				DirectX::XMFLOAT3 minB, maxB;
+				b->GetAABB(minB, maxB);
+
+				if ((minA.x <= maxB.x && maxA.x >= minB.x) &&
+					(minA.y <= maxB.y && maxA.y >= minB.y) &&
+					(minA.z <= maxB.z && maxA.z >= minB.z))
+				{
+					return true;
+				}
+			}
+		}
+	}
+
+	return false;
 }

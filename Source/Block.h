@@ -16,7 +16,7 @@ public:
 
 	virtual void Update(float elapsedTime) = 0;
 
-	virtual void Move(float elapsedTime, const std::vector<Block*>& allBlocks) = 0;
+	//virtual void Move(float elapsedTime, const std::vector<Block*>& allBlocks) = 0;
 
 	void GetAABB(DirectX::XMFLOAT3& min, DirectX::XMFLOAT3& max);
 
@@ -41,11 +41,10 @@ public:
 	Group* GetGroup() const { return group; }
 	void SetGroup(Group* g) { group = g; }
 	
-	void Stop() { isMoving = false; }
-	void Start() { isMoving = true; }
+
 	DirectX::XMFLOAT3 position;
 
-	bool WillHit(Block* other, float nextX);
+//	bool WillHit(Block* other, float nextX);
 protected:
 	
 	DirectX::XMFLOAT3	angle = { 0,0,0 };
@@ -58,7 +57,7 @@ protected:
 	float face;
 	Model* model = nullptr;
 
-	bool isMoving = true;
+
 
 	
 };
