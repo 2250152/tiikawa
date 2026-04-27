@@ -24,8 +24,21 @@ void BlockStart::Render(const RenderContext& rc, ModelRenderer* renderer)
 	renderer->Render(rc, transform, model, ShaderId::Lambert);
 }
 
-void BlockStart::Move(float elapsedTime)
+void BlockStart::Move(float elapsedTime, const std::vector<Block*>& allBlocks)
 {
 	if (!isMoving) return;
-	position.x += 0.01f * elapsedTime;
+    float nextX = position.x + 1 * elapsedTime;
+
+    for (auto other : allBlocks)
+    {
+        if (other == this) continue;
+
+        if (WillHit(other, nextX))
+        {
+            Stop();
+            return;
+        }
+    }
+
+    position.x = nextX;
 }

@@ -13,11 +13,11 @@ private:
 public:
 	Group() {}
 	~Group() {}
-	void Update(float elpsedTime);
+	void Update(float elpsedTime, const std::vector<Block*>& allBlocks);
 
 	void Render(const RenderContext& rc, ModelRenderer* renderer);
 
-	void Move(float elapsedTime);
+	void Move(float elapsedTime, const std::vector<Block*>& allBlocks);
 
 	void Rotate();
 
@@ -45,6 +45,8 @@ public:
 	}
 
 	void Merge(Group* other);
+
+	void Go();
 
 private:
 	std::vector<std::unique_ptr<Block>> blocks;

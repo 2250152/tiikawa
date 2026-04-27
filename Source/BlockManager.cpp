@@ -1,4 +1,5 @@
 #include "BlockManager.h"
+#include"System/Input.h"
 //Ç‘Çøè¡Çµ
 void BlockManager::Remove(Group* group)
 {
@@ -7,14 +8,17 @@ void BlockManager::Remove(Group* group)
 
 void BlockManager::Update(float elapsedTime)
 {
-	
+	InputMove();
+
+	std::vector<Block*> allBlocks;
+
 	//ïÅí ÇÃçXêVÇøÇ·ÇÒ
 	for (auto& group : groups)
 	{
-		group->Update(elapsedTime);
+		group->Update(elapsedTime,allBlocks);
 	}
 
-	std::vector<Block*> allBlocks;
+	
 
 	for (auto& group : groups)
 	{
@@ -80,5 +84,17 @@ void BlockManager::Render(const RenderContext& rc, ModelRenderer* renderer)
 	for (auto& group : groups)
 	{
 		group->Render(rc,renderer);
+	}
+}
+
+void BlockManager::InputMove()
+{
+	GamePad& gamePad = Input::Instance().GetGamePad();
+	if (gamePad.GetButtonDown() & GamePad::BTN_A)
+	{
+		for (auto& group : groups)
+		{
+			group->Go();
+		}
 	}
 }

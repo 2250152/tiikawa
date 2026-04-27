@@ -2,13 +2,13 @@
 #include "Block.h"
 //‚±‚±‚ÅƒOƒ‹[ƒv•ª‚¯‚µ‚½‚â‚Â‚ç‚ğ“®‚©‚»‚¤‚Ì‰ï
 
-void Group::Update(float elapsedTime)
+void Group::Update(float elapsedTime,const std::vector<Block*>& allBlocks)
 {
-	Move(elapsedTime);
+	Move(elapsedTime, allBlocks);
 
 	Rotate();
 
-	
+
 
 	for (auto& block : blocks)
 	{
@@ -16,11 +16,11 @@ void Group::Update(float elapsedTime)
 	}
 }
 
-void Group::Move(float elapsedTime)
+void Group::Move(float elapsedTime, const std::vector<Block*>& allBlocks)
 {
 	for (auto& block : blocks)
 	{
-		block->Move(elapsedTime);
+		block->Move(elapsedTime, allBlocks);
 	}
 }
 
@@ -52,4 +52,12 @@ void Group::AddBlock(std::unique_ptr<Block> block)
 {
 	block->SetGroup(this);
 	blocks.push_back(std::move(block));
+}
+
+void Group::Go()
+{
+	for (auto& block : blocks)
+	{
+		block->Start();
+	}
 }

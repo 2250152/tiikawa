@@ -24,8 +24,21 @@ void BlockNormal::Render(const RenderContext& rc, ModelRenderer* renderer)
 	renderer->Render(rc, transform, model, ShaderId::Lambert);
 }
 
-void BlockNormal::Move(float elapsedTime)
+void BlockNormal::Move(float elapsedTime, const std::vector<Block*>& allBlocks)
 {
 	if (!isMoving) return;
-	position.x+=1 * elapsedTime;
+    float nextX = position.x + 1 * elapsedTime;
+
+    for (auto other : allBlocks)
+    {
+        if (other == this) continue;
+
+        if (WillHit(other, nextX))
+        {
+            Stop();
+            return;
+        }
+    }
+
+    position.x = nextX;
 }
