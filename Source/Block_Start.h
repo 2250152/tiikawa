@@ -10,14 +10,14 @@ enum class GroupType;
 class BlockStart :public Block
 {
 public:
-	BlockStart(GroupType type);
+	BlockStart(GroupType type, DirectX::XMFLOAT3 pos);
 	~BlockStart();
 
 	void Update(float elapsedTime) override;
 
 	void Render(const RenderContext& rc, ModelRenderer* renderer) override;
 
-	void Move(float elapsedTime, const std::vector<Block*>& allBlocks);
+	void Move(float elapsedTime, const std::vector<Block*>& allBlocks)override;
 
 
 

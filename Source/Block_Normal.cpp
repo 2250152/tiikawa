@@ -1,11 +1,12 @@
 #include "Block_Normal.h"
 
 //コンストラクタ
-BlockNormal::BlockNormal(GroupType type)
+BlockNormal::BlockNormal(GroupType type, DirectX::XMFLOAT3 pos)
 {
 	model = new Model("Data/Model/BlockNormal/BlockNormal.mdl");
 	scale.x = scale.y = scale.z = 0.01f;
-	position = { 10,0,0 };
+	
+	position = pos;
 
 }
 
@@ -33,6 +34,8 @@ void BlockNormal::Move(float elapsedTime, const std::vector<Block*>& allBlocks)
     {
         if (other == this) continue;
 
+        if (other->GetGroup() == this->GetGroup()) continue;
+   
         if (WillHit(other, nextX))
         {
             Stop();

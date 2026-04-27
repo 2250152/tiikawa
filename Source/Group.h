@@ -62,5 +62,5 @@ private:
 
 	GroupType type;
 
-
+	DirectX::XMFLOAT3 position;
 };

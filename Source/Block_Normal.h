@@ -9,14 +9,14 @@ enum class GroupType;
 class BlockNormal :public Block
 {
 public:
-	BlockNormal(GroupType type);
+	BlockNormal(GroupType type, DirectX::XMFLOAT3 pos);
 	~BlockNormal();
 
 	void Update(float elapsedTime) override;
 
 	void Render(const RenderContext& rc, ModelRenderer* renderer) override;
 
-	void Move(float elapsedTime, const std::vector<Block*>& allBlocks);
+	void Move(float elapsedTime, const std::vector<Block*>& allBlocks)override;
 
 
 

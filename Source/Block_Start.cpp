@@ -1,11 +1,11 @@
 #include "Block_Start.h"
 
 //コンストラクタ
-BlockStart::BlockStart(GroupType type)
+BlockStart::BlockStart(GroupType type, DirectX::XMFLOAT3 pos)
 {
 	model = new Model("Data/Model/BlockNormal/BlockNormal.mdl");
 	scale.x = scale.y = scale.z = 0.01f;
-	position = { 0,0,0 };
+	position = pos;
 	Stop();
 }
 
@@ -32,6 +32,8 @@ void BlockStart::Move(float elapsedTime, const std::vector<Block*>& allBlocks)
     for (auto other : allBlocks)
     {
         if (other == this) continue;
+   
+        if (other->GetGroup() == this->GetGroup()) continue;
 
         if (WillHit(other, nextX))
         {

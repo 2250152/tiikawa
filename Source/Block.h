@@ -43,7 +43,7 @@ public:
 	
 	void Stop() { isMoving = false; }
 	void Start() { isMoving = true; }
-	DirectX::XMFLOAT3 position = { 0,0,0 };
+	DirectX::XMFLOAT3 position;
 
 	bool WillHit(Block* other, float nextX);
 protected:

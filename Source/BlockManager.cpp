@@ -52,8 +52,8 @@ void BlockManager::Update(float elapsedTime)
 				//‡‘Ìˆ—
 				groupA->Merge(groupB);
 				Remove(groupB);
-				a->Stop();
-				b->Stop();
+				//a->Stop();
+				//b->Stop();
 				break;
 			}
 
