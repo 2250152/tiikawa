@@ -4,11 +4,12 @@
 
 void Group::Update(float elapsedTime,const std::vector<Block*>& allBlocks)
 {
-	Move(elapsedTime, allBlocks);
+	
 
 	Rotate();
 
-
+	if (type == GroupType::Start)
+	Move(elapsedTime, allBlocks);
 
 	for (auto& block : blocks)
 	{

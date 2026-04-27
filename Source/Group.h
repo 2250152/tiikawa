@@ -4,6 +4,12 @@
 #include <set>
 #include "System/ModelRenderer.h"
 
+enum class GroupType
+{
+	Normal,
+	Start
+};
+
 class Block;
 
 class Group
@@ -11,8 +17,11 @@ class Group
 private:
 	
 public:
-	Group() {}
+	Group(GroupType type) : type(type) {}
 	~Group() {}
+
+	GroupType GetType() const { return type; }
+
 	void Update(float elpsedTime, const std::vector<Block*>& allBlocks);
 
 	void Render(const RenderContext& rc, ModelRenderer* renderer);
@@ -50,4 +59,8 @@ public:
 
 private:
 	std::vector<std::unique_ptr<Block>> blocks;
+
+	GroupType type;
+
+
 };

@@ -3,11 +3,13 @@
 #include "Block.h"
 #include "System/Model.h"
 
+enum class GroupType;
+
 //ふっつーのブロック
 class BlockNormal :public Block
 {
 public:
-	BlockNormal();
+	BlockNormal(GroupType type);
 	~BlockNormal();
 
 	void Update(float elapsedTime) override;

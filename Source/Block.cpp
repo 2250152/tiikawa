@@ -132,3 +132,4 @@ bool Block::WillHit(Block* other, float nextX)
         (minA.y <= maxB.y && maxA.y >= minB.y) &&
         (minA.z <= maxB.z && maxA.z >= minB.z);
 }
+

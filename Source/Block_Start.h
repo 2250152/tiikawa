@@ -4,11 +4,13 @@
 #include "Block.h"
 #include "System/Model.h"
 
+enum class GroupType;
+
 //ふっつーのブロック
 class BlockStart :public Block
 {
 public:
-	BlockStart();
+	BlockStart(GroupType type);
 	~BlockStart();
 
 	void Update(float elapsedTime) override;

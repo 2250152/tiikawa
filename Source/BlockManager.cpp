@@ -12,14 +12,6 @@ void BlockManager::Update(float elapsedTime)
 
 	std::vector<Block*> allBlocks;
 
-	//普通の更新ちゃん
-	for (auto& group : groups)
-	{
-		group->Update(elapsedTime,allBlocks);
-	}
-
-	
-
 	for (auto& group : groups)
 	{
 		for (auto& block : group->GetBlocks())
@@ -27,6 +19,17 @@ void BlockManager::Update(float elapsedTime)
 			allBlocks.push_back(block.get());
 		}
 	}
+
+	//普通の更新ちゃん
+	for (auto& group : groups)
+	{
+		
+		group->Update(elapsedTime,allBlocks);
+	}
+
+
+
+	
 
 	//当たり判定
 	for (int i = 0; i < allBlocks.size(); i++)

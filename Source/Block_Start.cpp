@@ -1,11 +1,11 @@
 #include "Block_Start.h"
 
 //コンストラクタ
-BlockStart::BlockStart()
+BlockStart::BlockStart(GroupType type)
 {
 	model = new Model("Data/Model/BlockNormal/BlockNormal.mdl");
 	scale.x = scale.y = scale.z = 0.01f;
-	position = { 10,0,0 };
+	position = { 0,0,0 };
 	Stop();
 }
 

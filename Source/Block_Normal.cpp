@@ -1,11 +1,11 @@
 #include "Block_Normal.h"
 
 //コンストラクタ
-BlockNormal::BlockNormal()
+BlockNormal::BlockNormal(GroupType type)
 {
 	model = new Model("Data/Model/BlockNormal/BlockNormal.mdl");
 	scale.x = scale.y = scale.z = 0.01f;
-	position = { 0,0,0 };
+	position = { 10,0,0 };
 
 }
 
