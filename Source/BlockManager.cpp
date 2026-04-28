@@ -48,7 +48,18 @@ void BlockManager::Update(float elapsedTime)
 
 			if (a->IsHit(b))
 			{
+				if (a->IsHit(b)==1)
 				a->position.x -= 1 * elapsedTime;
+				else if (a->IsHit(b)==2)
+				a->position.x += 1 * elapsedTime;
+				else if (a->IsHit(b)==3)
+				a->position.y -= 1 * elapsedTime;
+				else if (a->IsHit(b)==4)
+				a->position.y += 1 * elapsedTime;
+				else if (a->IsHit(b)==5)
+				a->position.z -= 1 * elapsedTime;
+				else if (a->IsHit(b)==6)
+				a->position.z += 1 * elapsedTime;
 
 				Group* groupA = a->GetGroup();
 				Group* groupB = b->GetGroup();

@@ -36,7 +36,7 @@ public:
 	DirectX::XMFLOAT3 GetRightCenter();
 	DirectX::XMFLOAT3 GetLeftCenter();
 
-	bool IsHit(Block* other);
+	int IsHit(Block* other);
 	
 	Group* GetGroup() const { return group; }
 	void SetGroup(Group* g) { group = g; }

@@ -47,10 +47,10 @@ void Group::Move(float elapsedTime, const std::vector<Group*>& allGroups)
 	{
 		b->position.x += dx;
 	}*/
-	//æ“®‚©‚·
+	//æ“®‚©‚· Œã‚Å•Ï‚¦‚ë‚æ
 	for (auto& b : blocks)
 	{
-		b->position.x += dx;
+		b->position.z += dx;
 	}
 
 	
@@ -60,11 +60,55 @@ void Group::Move(float elapsedTime, const std::vector<Group*>& allGroups)
 
 		if (WillHit(g, 0.0f))
 		{
-			// –ß‚·
-			for (auto& b : blocks)
-			{
-				b->position.x -= dx;
-			}
+			//if (WillHit(g, 0.0f) == 1)
+			//{
+			//	// –ß‚·
+			//	for (auto& b : blocks)
+			//	{
+			//		b->position.x -= 0.01f * elapsedTime;;
+			//	}
+			//}
+			//else if (WillHit(g, 0.0f) == 2)
+			//{
+			//	// –ß‚·
+			//	for (auto& b : blocks)
+			//	{
+			//		b->position.x += 0.01f * elapsedTime;;
+			//	}
+			//}
+			//else if (WillHit(g, 0.0f) == 3)
+			//{
+			//	// –ß‚·
+			//	for (auto& b : blocks)
+			//	{
+			//		b->position.y -= 0.01f * elapsedTime;;
+			//	}
+			//}
+			//else if (WillHit(g, 0.0f) == 4)
+			//{
+			//	// –ß‚·
+			//	for (auto& b : blocks)
+			//	{
+			//		b->position.y += 0.01f * elapsedTime;;
+			//	}
+			//}
+			//else if (WillHit(g, 0.0f) == 5)
+			//{
+			//	// –ß‚·
+			//	for (auto& b : blocks)
+			//	{
+			//		b->position.z -= 0.01f * elapsedTime;;
+			//	}
+			//}
+			//else if (WillHit(g, 0.0f) == 6)
+			//{
+			//	// –ß‚·
+			//	for (auto& b : blocks)
+			//	{
+			//		b->position.z += 0.01f * elapsedTime;;
+			//	}
+			//}
+			
 
 			pendingMerge = g;
 			state = Idle;
@@ -109,7 +153,7 @@ void Group::Go()
 	state = Moving;
 }
 
-bool Group::WillHit(Group* otherGroup, float dx)
+int Group::WillHit(Group* otherGroup, float dx)
 {
 	for (auto& a : blocks)
 	{
@@ -158,7 +202,28 @@ bool Group::WillHitAnyGroup(float dx, const std::vector<Group*>& allGroups)
 					(minA.y <= maxB.y && maxA.y >= minB.y) &&
 					(minA.z <= maxB.z && maxA.z >= minB.z))
 				{
+					if(minA.x == maxB.x)
 					return true;
+				/*	else if (maxA.x == minB.x)
+					{
+						return 2;
+					}
+					else if (minA.y == maxB.y)
+					{
+						return 3;
+					}
+					else if (maxA.y >= minB.y)
+					{
+						return 4;
+					}
+					else if (minA.z <= maxB.z)
+					{
+						return 5;
+					}
+					else if (maxA.z >= minB.z)
+					{
+						return 6;
+					}*/
 				}
 			}
 		}

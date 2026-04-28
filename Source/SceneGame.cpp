@@ -52,7 +52,7 @@ void SceneGame::Initialize()
 	
 	// ブロック生成兼グループに追加
 	groupStart->CreateBlock<BlockStart>(GroupType::Start, DirectX::XMFLOAT3(0, 0, 0));
-	groupNormal->CreateBlock<BlockNormal>(GroupType::Normal, DirectX::XMFLOAT3(5, 0, 0));
+	groupNormal->CreateBlock<BlockNormal>(GroupType::Normal, DirectX::XMFLOAT3(0, 0, 5));
 	groupNormal2->CreateBlock<BlockNormal>(GroupType::Normal, DirectX::XMFLOAT3(10, 0, 0));
 
 	// マネージャーに登録

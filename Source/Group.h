@@ -63,7 +63,7 @@ public:
 
 	void Go();
 
-	bool WillHit(Group* otherGroup, float dx);
+	int WillHit(Group* otherGroup, float dx);
 
 	void Stop() { isMoving = false; }
 	void Start() { isMoving = true; }

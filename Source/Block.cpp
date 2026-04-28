@@ -99,7 +99,7 @@ DirectX::XMFLOAT3 Block::GetLeftCenter()
     };
 }
 
-bool Block::IsHit(Block* other)
+int Block::IsHit(Block* other)
 {
     DirectX::XMFLOAT3 minA, maxA;
     DirectX::XMFLOAT3 minB, maxB;
@@ -107,10 +107,33 @@ bool Block::IsHit(Block* other)
     GetAABB(minA, maxA);
     other->GetAABB(minB, maxB);
 
-    return
-        (minA.x <= maxB.x && maxA.x >= minB.x) &&
+    if ((minA.x <= maxB.x && maxA.x >= minB.x) &&
         (minA.y <= maxB.y && maxA.y >= minB.y) &&
-        (minA.z <= maxB.z && maxA.z >= minB.z);
+        (minA.z <= maxB.z && maxA.z >= minB.z))
+    {
+        if (maxA.x <= minB.x)
+            return 1;
+        	else if (minA.x >= maxB.x)
+            {
+                return 2;
+            }
+            else if (maxA.y <= minB.y)
+            {
+                return 3;
+            }
+            else if (minA.y >= maxB.y)
+            {
+                return 4;
+            }
+            else if (maxA.z <= minB.z)
+            {
+                return 5;
+            }
+            else if (minA.z >= maxB.z)
+            {
+                return 6;
+            }
+    }
 }
 
 
