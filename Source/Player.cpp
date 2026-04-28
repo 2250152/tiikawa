@@ -35,18 +35,47 @@ void Player::Update(float elapsedTime)
 
 	//速度処理更新
 	UpdateVelocity(elapsedTime);
-
 	
 	//ジャンプ入力処理
-	InputJump();
+	//InputJump();
 
+	//重力処理
+	ApplyLocalGravity(elapsedTime);
+
+
+	//GamePad& gamePad = Input::Instance().GetGamePad();
+	//switch (state)
+	//{
+	//case State::IDLE:
+	//	if (gamePad.GetButtonDown() & GamePad::BTN_A && isGround)
+	//	{
+	//		state = State::JumpHipDrop;
+	//		PlayAnimation("Armature|CharacterAnimation", false);
+	//	}
+	//	break;
+	//case State::JumpHipDrop:
+	//	if (!isGround)
+	//	{
+	//		//ジャンプヒップドロップ中の処理
+	//	}
+	//	else
+	//	{
+	//		state = State::IDLE;
+	//		PlayAnimation("Armature|CharacterAnimation", true);
+	//	}
+	//	break;
+	//}
 	
+
+
+
 	//オブジェクト行列を更新
 	UpdateTransform();
 
-	//モデル行列更新
-	model->UpdateTransform();
-
+	// アニメーション更新処理
+	UpdateAnimation(elapsedTime);
+	////モデル行列更新
+	//model->UpdateTransform(); //←UpdateAnimationの中に入っている
 
 
 }
@@ -93,6 +122,8 @@ void Player::DrawDebugGUI()
 			angle.z = DirectX::XMConvertToRadians(a.z);
 			//スケール
 			ImGui::InputFloat3("Scale", &scale.x);
+			//速力
+			ImGui::InputFloat3("Velocity", &velocity.x);
 		}
 	}
 	ImGui::End();
@@ -198,4 +229,116 @@ void Player::ApplyLocalGravity(float elapsedTime)
 	DirectX::XMVECTOR velocityVec = DirectX::XMLoadFloat3(&velocity);
 	velocityVec = DirectX::XMVectorAdd(velocityVec, DirectX::XMVectorScale(gravityVec, elapsedTime));
 	DirectX::XMStoreFloat3(&velocity, velocityVec);
+}
+
+void Player::PlayAnimation(const char* name, bool loop)
+{
+	int index = 0;
+	const std::vector<ModelResource::Animation>& animations = model->GetResource()->GetAnimations();
+	for (const ModelResource::Animation& animation : animations)
+	{
+		if (animation.name == name)
+		{
+			PlayAnimation(index, loop);
+			return;
+		}
+		++index;
+	}
+}
+// アニメーション再生
+void Player::PlayAnimation(int index, bool loop)
+{
+	animationPlaying = true;
+	animationLoop = loop;
+	animationIndex = index;
+	animationSeconds = 0.0f;
+}
+
+// アニメーション更新処理
+void Player::UpdateAnimation(float elapsedTime)
+{
+	if (animationPlaying)
+	{
+		//アニメーション切り替え時のブレンド率を計算
+		float blendRate = 1.0f;
+		if (animationSeconds < animationBlendSecondsLength)
+		{
+			blendRate = animationSeconds / animationBlendSecondsLength;
+		}
+
+		std::vector<Model::Node>& nodes = model->GetNodes();
+
+		//現在のアニメーションデータを取得
+		const std::vector<ModelResource::Animation>& animations = model->GetResource()->GetAnimations();
+		const ModelResource::Animation& animation = animations.at(animationIndex);
+
+		//時間経過
+		animationSeconds += elapsedTime;
+
+		//再生時間が経過時間を超えたら
+		if (animationSeconds >= animation.secondsLength)
+		{
+			if (animationLoop)
+			{
+				//ループ：先頭に戻す（超えた分だけ残す）
+				animationSeconds -= animation.secondsLength;
+			}
+			else
+			{
+				animationPlaying = false;
+
+				//非ループ：最後で止める
+				animationSeconds = animation.secondsLength;
+			}
+		}
+
+		//アニメーションデータからキーフレームデータリストを取得
+		const std::vector<ModelResource::Keyframe>& keyframes = animation.keyframes;
+		int keyCount = static_cast<int>(keyframes.size());
+		for (int keyIndex = 0;keyIndex < keyCount - 1;++keyIndex)
+		{
+			//現在の時間がどのキーフレームの間にいるか判定する
+			const ModelResource::Keyframe& keyframe0 = keyframes.at(keyIndex);
+			const ModelResource::Keyframe& keyframe1 = keyframes.at(keyIndex + 1);
+
+			if (animationSeconds >= keyframe0.seconds && animationSeconds < keyframe1.seconds)
+			{
+				//再生時間とキーフレームの時間から補完率を計算
+				float rate = (animationSeconds - keyframe0.seconds) / (keyframe1.seconds - keyframe0.seconds);
+
+
+				//全てのノードの姿勢を計算する
+				int nodeCount = static_cast<int>(nodes.size());
+				for (int nodeIndex = 0;nodeIndex < nodeCount;++nodeIndex)
+				{
+					//キーフレームデータ取得
+					const ModelResource::NodeKeyData& key0 = keyframe0.nodeKeys.at(nodeIndex);
+					const ModelResource::NodeKeyData& key1 = keyframe1.nodeKeys.at(nodeIndex);
+
+					//ノード取得
+					Model::Node& node = nodes[nodeIndex];
+
+					//前のキーフレームと次のキーフレームの姿勢を補完
+					DirectX::XMVECTOR S0 = DirectX::XMLoadFloat3(&key0.scale);
+					DirectX::XMVECTOR S1 = DirectX::XMLoadFloat3(&key1.scale);
+					DirectX::XMVECTOR R0 = DirectX::XMLoadFloat4(&key0.rotate);//rotateがXMLoadFloat4なのはクウォータニオンだから
+					DirectX::XMVECTOR R1 = DirectX::XMLoadFloat4(&key1.rotate);
+					DirectX::XMVECTOR T0 = DirectX::XMLoadFloat3(&key0.translate); //translate...平行移動
+					DirectX::XMVECTOR T1 = DirectX::XMLoadFloat3(&key1.translate);
+
+					DirectX::XMVECTOR S = DirectX::XMVectorLerp(DirectX::XMLoadFloat3(&node.scale), DirectX::XMVectorLerp(S0, S1, rate), blendRate);
+					DirectX::XMVECTOR R = DirectX::XMQuaternionSlerp(DirectX::XMLoadFloat4(&node.rotate), DirectX::XMQuaternionSlerp(R0, R1, rate), blendRate);
+					DirectX::XMVECTOR T = DirectX::XMVectorLerp(DirectX::XMLoadFloat3(&node.translate), DirectX::XMVectorLerp(T0, T1, rate), blendRate);
+
+					//計算結果をボーンに格納
+					DirectX::XMStoreFloat3(&node.scale, S);
+					DirectX::XMStoreFloat4(&node.rotate, R);
+					DirectX::XMStoreFloat3(&node.translate, T);
+				}
+				break;
+			}
+		}
+	}
+	//モデル行列更新
+	model->UpdateTransform();
 }

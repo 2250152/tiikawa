@@ -4,20 +4,35 @@
 #include <set>
 #include "System/ModelRenderer.h"
 
+enum class GroupType
+{
+	Normal,
+	Start
+};
+
 class Block;
+
+enum State
+{
+	Idle,   // Ž~‚Ü‚Á‚Ä‚é
+	Moving, // “®‚¢‚Ä‚é
+};
 
 class Group
 {
 private:
 	
 public:
-	Group() {}
+	Group(GroupType type) : type(type) {}
 	~Group() {}
-	void Update(float elpsedTime);
+
+	GroupType GetType() const { return type; }
+
+	void Update(float elpsedTime, const std::vector<Group*>& allGroups);
 
 	void Render(const RenderContext& rc, ModelRenderer* renderer);
 
-	void Move(float elapsedTime);
+	void Move(float elapsedTime, const std::vector<Group*>& allGroups);
 
 	void Rotate();
 
@@ -46,6 +61,27 @@ public:
 
 	void Merge(Group* other);
 
+	void Go();
+
+	int WillHit(Group* otherGroup, float dx);
+
+	void Stop() { isMoving = false; }
+	void Start() { isMoving = true; }
+
+	bool WillHitAnyGroup(float dx, const std::vector<Group*>& allGroups);
+
 private:
 	std::vector<std::unique_ptr<Block>> blocks;
+
+	GroupType type;
+
+	DirectX::XMFLOAT3 position;
+
+	bool isMoving = false;
+	bool isBlocked = false;
+	State state = Idle;
+
+	Group* pendingMerge = nullptr;
+
+	
 };

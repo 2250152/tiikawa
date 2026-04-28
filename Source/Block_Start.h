@@ -4,18 +4,20 @@
 #include "Block.h"
 #include "System/Model.h"
 
+enum class GroupType;
+
 //ふっつーのブロック
 class BlockStart :public Block
 {
 public:
-	BlockStart();
+	BlockStart(GroupType type, DirectX::XMFLOAT3 pos);
 	~BlockStart();
 
 	void Update(float elapsedTime) override;
 
 	void Render(const RenderContext& rc, ModelRenderer* renderer) override;
 
-	void Move(float elapsedTime);
+//	void Move(float elapsedTime, const std::vector<Block*>& allBlocks)override;
 
 
 

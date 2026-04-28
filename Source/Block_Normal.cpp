@@ -1,11 +1,12 @@
 #include "Block_Normal.h"
 
 //コンストラクタ
-BlockNormal::BlockNormal()
+BlockNormal::BlockNormal(GroupType type, DirectX::XMFLOAT3 pos)
 {
 	model = new Model("Data/Model/BlockNormal/BlockNormal.mdl");
 	scale.x = scale.y = scale.z = 0.01f;
-	position = { 0,0,0 };
+	
+	position = pos;
 
 }
 
@@ -24,8 +25,23 @@ void BlockNormal::Render(const RenderContext& rc, ModelRenderer* renderer)
 	renderer->Render(rc, transform, model, ShaderId::Lambert);
 }
 
-void BlockNormal::Move(float elapsedTime)
-{
-	if (!isMoving) return;
-	position.x+=1 * elapsedTime;
-}
+//void BlockNormal::Move(float elapsedTime, const std::vector<Block*>& allBlocks)
+//{
+//	if (!isMoving) return;
+//    float nextX = position.x + 1 * elapsedTime;
+//
+//    for (auto other : allBlocks)
+//    {
+//        if (other == this) continue;
+//
+//        if (other->GetGroup() == this->GetGroup()) continue;
+//   
+//        if (WillHit(other, nextX))
+//        {
+//            Stop();
+//            return;
+//        }
+//    }
+//
+//    position.x = nextX;
+//}

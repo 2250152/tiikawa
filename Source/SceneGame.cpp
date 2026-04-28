@@ -7,6 +7,7 @@
 #include "Group.h"
 #include "Block_Normal.h"
 #include "Block_Start.h"
+#include"SkyBox.h"
 
 // 初期化
 void SceneGame::Initialize()
@@ -34,6 +35,9 @@ void SceneGame::Initialize()
 	CameraController::Instance().Initialize();
 
 
+	//背景
+	SkyBox::Instance().Initialize();
+
 
 
 	//EnemySlime* slime = new EnemySlime();             敵を増やしたいから消して下のfor文にした。
@@ -43,16 +47,21 @@ void SceneGame::Initialize()
 	
 
 	// グループ作成
-	std::unique_ptr<Group> group = std::make_unique<Group>();
+	std::unique_ptr<Group> groupStart = std::make_unique<Group>(GroupType::Start);
+	std::unique_ptr<Group> groupNormal = std::make_unique<Group>(GroupType::Normal);
+	std::unique_ptr<Group> groupNormal2 = std::make_unique<Group>(GroupType::Normal);
 
 
 	
 	// ブロック生成兼グループに追加
-	group->CreateBlock<BlockNormal>();
-	group->CreateBlock<BlockStart>();
+	groupStart->CreateBlock<BlockStart>(GroupType::Start, DirectX::XMFLOAT3(0, 0, 0));
+	groupNormal->CreateBlock<BlockNormal>(GroupType::Normal, DirectX::XMFLOAT3(0, 0, 5));
+	groupNormal2->CreateBlock<BlockNormal>(GroupType::Normal, DirectX::XMFLOAT3(10, 0, 0));
 
 	// マネージャーに登録
-	BlockManager::Instance().AddGroup(std::move(group));
+	BlockManager::Instance().AddGroup(std::move(groupStart));
+	BlockManager::Instance().AddGroup(std::move(groupNormal));
+	BlockManager::Instance().AddGroup(std::move(groupNormal2));
 
 
 
@@ -78,6 +87,8 @@ void SceneGame::Finalize()
 	//}
 	Player::Instance().Finalize();
 
+	//背景
+	SkyBox::Instance().Finalize();
 	
 }
 
@@ -97,6 +108,8 @@ void SceneGame::Update(float elapsedTime)
 	/*player->Update(elapsedTime);*/
 	Player::Instance().Update(elapsedTime);
 
+	//背景
+	SkyBox::Instance().Update(elapsedTime);
 
 	
 	//エフェクト更新処理
@@ -163,6 +176,8 @@ void SceneGame::Render()
 		/*player->Render(rc, modelRenderer);*/
 		Player::Instance().Render(rc, modelRenderer);
 
+		//背景
+		SkyBox::Instance().Render(rc, modelRenderer);
 		
 		//エフェクト描画
 		EffectManager::Instance().Render(rc.view, rc.projection);

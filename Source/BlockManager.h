@@ -26,6 +26,8 @@ public:
 		groups.push_back(std::move(group));
 	}
 
+	void InputMove();
+
 
 
 private:
