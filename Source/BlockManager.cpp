@@ -54,11 +54,11 @@ void BlockManager::Update(float elapsedTime)
 				Group* groupB = b->GetGroup();
 
 				//“¯‚¶ƒOƒ‹[ƒv‚È‚ç–³Ž‹
-				if (groupA == groupB) continue;
-
-				//‡‘Ìˆ—
-				groupA->Merge(groupB);
-				Remove(groupB);
+				//if (groupA == groupB) continue;
+				//
+				////‡‘Ìˆ—
+				//groupA->Merge(groupB);
+				//Remove(groupB);
 				//a->Stop();
 				//b->Stop();
 				break;

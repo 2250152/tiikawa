@@ -2,6 +2,8 @@
 #include "Block.h"
 //ここでグループ分けしたやつらを動かそうの会
 
+//試行錯誤で進めとるからまとまってきたらいらんの消すね
+
 void Group::Update(float elapsedTime,const std::vector<Group*>& allGroups)
 {
 	
@@ -10,6 +12,12 @@ void Group::Update(float elapsedTime,const std::vector<Group*>& allGroups)
 
 	if (type == GroupType::Start)
 	Move(elapsedTime, allGroups);
+
+	if (pendingMerge)
+	{
+		Merge(pendingMerge);
+		pendingMerge = nullptr;
+	}
 
 	for (auto& block : blocks)
 	{
@@ -23,14 +31,14 @@ void Group::Move(float elapsedTime, const std::vector<Group*>& allGroups)
 
 	float dx = 1.0f * elapsedTime;
 
-
-	for (auto& g : allGroups)
+	/*for (auto& g : allGroups)
 	{
 		if (g == this) continue;
 
 		if (WillHit(g, dx))
 		{
-			Merge(g);
+			pendingMerge = g;
+			state = Idle;
 			return;
 		}
 	}
@@ -38,6 +46,30 @@ void Group::Move(float elapsedTime, const std::vector<Group*>& allGroups)
 	for (auto& b : blocks)
 	{
 		b->position.x += dx;
+	}*/
+	//先動かす
+	for (auto& b : blocks)
+	{
+		b->position.x += dx;
+	}
+
+	
+	for (auto& g : allGroups)
+	{
+		if (g == this) continue;
+
+		if (WillHit(g, 0.0f))
+		{
+			// 戻す
+			for (auto& b : blocks)
+			{
+				b->position.x -= dx;
+			}
+
+			pendingMerge = g;
+			state = Idle;
+			return;
+		}
 	}
 }
 
@@ -54,7 +86,7 @@ void Group::Merge(Group* other)
 		blocks.push_back(std::move(block));
 	}
 	other->blocks.clear();
-	state = Idle;
+	
 }
 
 

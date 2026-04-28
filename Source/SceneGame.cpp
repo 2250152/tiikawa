@@ -50,17 +50,19 @@ void SceneGame::Initialize()
 	// グループ作成
 	std::unique_ptr<Group> groupStart = std::make_unique<Group>(GroupType::Start);
 	std::unique_ptr<Group> groupNormal = std::make_unique<Group>(GroupType::Normal);
+	std::unique_ptr<Group> groupNormal2 = std::make_unique<Group>(GroupType::Normal);
 
 
 	
 	// ブロック生成兼グループに追加
 	groupStart->CreateBlock<BlockStart>(GroupType::Start, DirectX::XMFLOAT3(0, 0, 0));
-	groupNormal->CreateBlock<BlockNormal>(GroupType::Normal, DirectX::XMFLOAT3(10, 0, 0));
-	groupNormal->CreateBlock<BlockNormal>(GroupType::Normal, DirectX::XMFLOAT3(20, 0, 0));
+	groupNormal->CreateBlock<BlockNormal>(GroupType::Normal, DirectX::XMFLOAT3(5, 0, 0));
+	groupNormal2->CreateBlock<BlockNormal>(GroupType::Normal, DirectX::XMFLOAT3(10, 0, 0));
 
 	// マネージャーに登録
 	BlockManager::Instance().AddGroup(std::move(groupStart));
 	BlockManager::Instance().AddGroup(std::move(groupNormal));
+	BlockManager::Instance().AddGroup(std::move(groupNormal2));
 
 
 
