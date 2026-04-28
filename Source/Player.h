@@ -54,6 +54,25 @@ private:
 	//重力処理
 	void ApplyLocalGravity(float elapsedTime);
 
+	//アニメーション=================================================
+	enum class State
+	{
+		IDLE, //通常
+		JumpHipDrop, //ジャンプヒップドロップ
+	};
+	State state = State::IDLE;
+	int animationIndex = -1;
+	float animationSeconds = 0.0f;
+	bool animationLoop = false;
+	bool animationPlaying = false;
+	float animationBlendSecondsLength = 0.2f;// 0.2秒で切り替える
+	void PlayAnimation(const char* name, bool loop);
+	// アニメーション再生
+	void PlayAnimation(int index, bool loop);
+	// アニメーション更新処理
+	void UpdateAnimation(float elapsedTime);
+	//===============================================================
+
 private:
 	Model* model = nullptr;
 	float moveSpeed = 5.0f;
