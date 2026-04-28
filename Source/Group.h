@@ -81,5 +81,7 @@ private:
 	bool isBlocked = false;
 	State state = Idle;
 
+	Group* pendingMerge = nullptr;
+
 	
 };
