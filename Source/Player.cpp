@@ -6,7 +6,11 @@
 
 void Player::Initialize()
 {
+<<<<<<< Updated upstream
 	model = new Model("Data/Model/player/Astronaut.mdl");
+=======
+	model = new Model("Data/Model/Mr.Incredible/Mr.Incredible.mdl");//Mr.Incredible
+>>>>>>> Stashed changes
 
 	//ヒットエフェクト読み込み
 	hitEffect = new Effect("Data/Effect/Hit.efk");

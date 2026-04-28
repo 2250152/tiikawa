@@ -1,7 +1,7 @@
 #include "System/Graphics.h"
 #include "SceneGame.h"
-#include"Camera.h"
-#include"EffectManager.h"
+#include "Camera.h"
+#include "EffectManager.h"
 #include "Block.h"
 #include "BlockManager.h"
 #include "Group.h"
@@ -31,9 +31,13 @@ void SceneGame::Initialize()
 		1000.0f  //クリップ距離(遠)
 	);
 
+<<<<<<< Updated upstream
 	
 	cameraController = new CameraController();
 
+=======
+	CameraController::Instance().Initialize();
+>>>>>>> Stashed changes
 
 
 
@@ -63,11 +67,11 @@ void SceneGame::Initialize()
 void SceneGame::Finalize()
 {
 	//カメラコントローラー終了化
-	if (cameraController != nullptr)
+	/*if (cameraController != nullptr)
 	{
 		delete cameraController;
 		cameraController = nullptr;
-	}
+	}*/
 
 
 
@@ -89,8 +93,8 @@ void SceneGame::Update(float elapsedTime)
 	/*DirectX::XMFLOAT3 target = player->GetPosition();*/
 	DirectX::XMFLOAT3 target = Player::Instance().GetPosition();
 	target.y += 0.5f;
-	cameraController->SetTarget(target);
-	cameraController->Update(elapsedTime);
+	CameraController::Instance().SetTarget(target);
+	CameraController::Instance().Update(elapsedTime);
 
 	
 
@@ -190,4 +194,5 @@ void SceneGame::DrawGUI()
 {
 	/*player->DrawDebugGUI();*/
 	Player::Instance().DrawDebugGUI();
+	CameraController::Instance().DrawDebugGUI();
 }

@@ -42,14 +42,14 @@ public:
 		
 
 	private:
-		DirectX::XMFLOAT4X4    view;  //←行列を表す半数の型
-		DirectX::XMFLOAT4X4    projection;//日本語の意味：投影
+		DirectX::XMFLOAT4X4    view = {};  //←行列を表す半数の型
+		DirectX::XMFLOAT4X4    projection = {};//日本語の意味：投影
 
-		DirectX::XMFLOAT3      eye;
-		DirectX::XMFLOAT3      focus;
+		DirectX::XMFLOAT3      eye = {};
+		DirectX::XMFLOAT3      focus = {};
 
-		DirectX::XMFLOAT3      up;
-		DirectX::XMFLOAT3      front;
-		DirectX::XMFLOAT3      right;
+		DirectX::XMFLOAT3      up = {};
+		DirectX::XMFLOAT3      front = {};
+		DirectX::XMFLOAT3      right = {};
 
 };
