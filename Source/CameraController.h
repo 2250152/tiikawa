@@ -26,6 +26,8 @@ public:
 	void SetTarget(const DirectX::XMFLOAT3& target) { this->target = target; }
 
 private:
+	const float PIDIV180 = 0.017452f;	// PAI/180
+
 	DirectX::XMFLOAT3 target = { 0,0,0 }; //注視点
 	DirectX::XMFLOAT3 eye = { 0, 0, 0 }; //視点
 	DirectX::XMFLOAT3 front = {0, 0, 0}; //前方向ベクトル
@@ -39,7 +41,6 @@ private:
 
 	////---------------------------------------------------------------------------------------------------
 	///*極座標制御*/
-	//DirectX::XMFLOAT4X4 transform = {};
 	DirectX::XMFLOAT3 angle = { 0, 0, 0 }; //回転角度(X, Y)
 	DirectX::XMFLOAT3 position = { 0, 0, 0 }; //カメラ位置(デバッグGUI用)
 	////-------- クォータニオン ----------------------------------------------------------------

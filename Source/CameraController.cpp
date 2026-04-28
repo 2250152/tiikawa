@@ -123,8 +123,8 @@ void CameraController::Update(float elapsedTime)
 	//クォータニオンを回転行列に変換
 	DirectX::XMMATRIX Q = DirectX::XMMatrixRotationQuaternion(orientationVec);
 
-	//カメラ回転値を回転行列に変換
-	DirectX::XMMATRIX Transform = DirectX::XMMatrixRotationRollPitchYaw(angle.x, angle.y, angle.z);
+	// orientationVecからorientationを更新
+	DirectX::XMStoreFloat4(&orientation, orientationVec);
 
 	//回転行列から前方向ベクトルを取り出す
 	DirectX::XMStoreFloat3(&front, Q.r[2]);
