@@ -4,8 +4,6 @@
 #include<imgui.h>
 #define DEBUG
 
-<<<<<<< Updated upstream
-=======
 
 inline float normalizeAngle(float radian) //radianの範囲を変更
 {
@@ -34,7 +32,6 @@ void CameraController::Initialize()
 	};
 }
 
->>>>>>> Stashed changes
 //更新処理
 void CameraController::Update(float elapsedTime)
 {
@@ -69,40 +66,6 @@ void CameraController::Update(float elapsedTime)
 	DirectX::XMStoreFloat3(&up, upDir);
 	DirectX::XMStoreFloat3(&right, rightDir);
 
-<<<<<<< Updated upstream
-	//スティックの入力値に合わせてX軸とY軸を回転
-	angle.x += ax * sensitivity;
-	angle.y += ay * sensitivity;
-
-
-	//X軸のカメラ回転を制限  　//←カメラの位置をplayerの軸の真上か真下にするとぐらついて反転するから手前で止める。”ゲームなら ”この方法でいい
-	if (angle.x < minAngleX) {    
-		angle.x = minAngleX;
-	}
-	if (angle.x > maxAngleX) {
-		angle.x = maxAngleX;
-	}
-
-	//Y軸の回転値を-3.14～3.14に収まるようにする
-	if (angle.y < -DirectX::XM_PI)
-	{
-		angle.y += DirectX::XM_2PI;
-	}
-	if (angle.y > DirectX::XM_PI)
-	{
-		angle.y -= DirectX::XM_2PI;
-	}
-
-	//カメラ回転値を回転行列に変換
-	DirectX::XMMATRIX Transform = DirectX::XMMatrixRotationRollPitchYaw(angle.x, angle.y, angle.z);
-
-	//回転行列から前方向ベクトルを取り出す
-	DirectX::XMVECTOR Front = Transform.r[2];
-	DirectX::XMFLOAT3 front;
-	DirectX::XMStoreFloat3(&front, Front);
-
-
-=======
 	//-----------------------------------------------------------
 	//クォータニオンでカメラ制御
 	// XMVECTORクラスへ変換
@@ -160,13 +123,12 @@ void CameraController::Update(float elapsedTime)
 	//クォータニオンを回転行列に変換
 	DirectX::XMMATRIX Q = DirectX::XMMatrixRotationQuaternion(orientationVec);
 
-	// orientationVecからorientationを更新
-	DirectX::XMStoreFloat4(&orientation, orientationVec);
+	//カメラ回転値を回転行列に変換
+	DirectX::XMMATRIX Transform = DirectX::XMMatrixRotationRollPitchYaw(angle.x, angle.y, angle.z);
 
 	//回転行列から前方向ベクトルを取り出す
 	DirectX::XMStoreFloat3(&front, Q.r[2]);
 	DirectX::XMVECTOR positionVec = DirectX::XMLoadFloat3(&position);
->>>>>>> Stashed changes
 
 	//注視点から後ろベクトル方向に一定距離離れたカメラ視点を求める
 	eye.x = target.x - front.x * range;
@@ -175,10 +137,6 @@ void CameraController::Update(float elapsedTime)
 
 	//-------------------------------------------------------------------------------------------------------
 	//カメラの視点と注視点を設定
-<<<<<<< Updated upstream
-	Camera::Instance().SetlookAt(eye, target, DirectX::XMFLOAT3(0, 1, 0));
-
-=======
 	Camera::Instance().SetlookAt(eye, target, up);
 }
 
@@ -218,5 +176,4 @@ void CameraController::DrawDebugGUI()
 	}
 	ImGui::End();
 #endif //DEBUG
->>>>>>> Stashed changes
 }

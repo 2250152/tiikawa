@@ -6,8 +6,6 @@
 class CameraController
 {
 public:
-<<<<<<< Updated upstream
-=======
 	// インスタンス取得
 	static CameraController& Instance()
 	{
@@ -18,7 +16,6 @@ public:
 	//初期化
 	void Initialize();
 
->>>>>>> Stashed changes
 	//更新処理
 	void Update(float elapsedTime);
 
@@ -30,14 +27,6 @@ public:
 
 private:
 	DirectX::XMFLOAT3 target = { 0,0,0 }; //注視点
-<<<<<<< Updated upstream
-	DirectX::XMFLOAT3 angle  = { 0,0,0 }; //回転角度
-	float             rollSpeed = DirectX::XMConvertToRadians(90); //回転速度
-	float             range = 10.0f; //距離
-
-	float             maxAngleX = DirectX::XMConvertToRadians(45);
-	float             minAngleX = DirectX::XMConvertToRadians(-45);
-=======
 	DirectX::XMFLOAT3 eye = { 0, 0, 0 }; //視点
 	DirectX::XMFLOAT3 front = {0, 0, 0}; //前方向ベクトル
 	DirectX::XMFLOAT3 up = {0, 0, 0}; //上方向ベクトル
@@ -56,5 +45,4 @@ private:
 	////-------- クォータニオン ----------------------------------------------------------------
 	DirectX::XMFLOAT4	orientation = { 0, 0, 0, 1};
 	float				yaw = 0.0f, pitch = 0.0f, roll = 0.0f;
->>>>>>> Stashed changes
 };

@@ -31,13 +31,8 @@ void SceneGame::Initialize()
 		1000.0f  //ƒNƒŠƒbƒv‹——£(‰“)
 	);
 
-<<<<<<< Updated upstream
-	
-	cameraController = new CameraController();
-
-=======
 	CameraController::Instance().Initialize();
->>>>>>> Stashed changes
+
 
 
 
