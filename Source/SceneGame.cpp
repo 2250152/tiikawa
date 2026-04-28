@@ -7,6 +7,7 @@
 #include "Group.h"
 #include "Block_Normal.h"
 #include "Block_Start.h"
+#include"SkyBox.h"
 
 // èâä˙âª
 void SceneGame::Initialize()
@@ -34,6 +35,9 @@ void SceneGame::Initialize()
 	
 	cameraController = new CameraController();
 
+
+	//îwåi
+	SkyBox::Instance().Initialize();
 
 
 
@@ -84,6 +88,8 @@ void SceneGame::Finalize()
 	//}
 	Player::Instance().Finalize();
 
+	//îwåi
+	SkyBox::Instance().Finalize();
 	
 }
 
@@ -103,6 +109,8 @@ void SceneGame::Update(float elapsedTime)
 	/*player->Update(elapsedTime);*/
 	Player::Instance().Update(elapsedTime);
 
+	//îwåi
+	SkyBox::Instance().Update(elapsedTime);
 
 	
 	//ÉGÉtÉFÉNÉgçXêVèàóù
@@ -169,6 +177,8 @@ void SceneGame::Render()
 		/*player->Render(rc, modelRenderer);*/
 		Player::Instance().Render(rc, modelRenderer);
 
+		//îwåi
+		SkyBox::Instance().Render(rc, modelRenderer);
 		
 		//ÉGÉtÉFÉNÉgï`âÊ
 		EffectManager::Instance().Render(rc.view, rc.projection);
