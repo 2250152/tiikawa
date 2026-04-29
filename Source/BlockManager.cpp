@@ -119,3 +119,12 @@ void BlockManager::InputMove()
 		}
 	}
 }
+
+void BlockManager::DrawDebugGUI()
+{
+	for (auto& group : groups)
+	{
+
+		group->DrawDebugGUI();
+	}
+}

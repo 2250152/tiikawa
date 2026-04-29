@@ -23,6 +23,7 @@ void Group::Update(float elapsedTime,const std::vector<Group*>& allGroups)
 	{
 		block->Update(elapsedTime);
 	}
+	Rotation(elapsedTime);
 }
 
 void Group::Move(float elapsedTime, const std::vector<Group*>& allGroups)
@@ -230,4 +231,19 @@ bool Group::WillHitAnyGroup(float dx, const std::vector<Group*>& allGroups)
 	}
 
 	return false;
+}
+void Group::Rotation(float elapsedTime)
+{
+	for (auto& b : blocks)
+	{
+		//b->angle.x -= 0.1f;
+	}
+}
+
+void Group::DrawDebugGUI()
+{
+	for (auto& b : blocks)
+	{
+		b->DrawDebugGUI();
+	}
 }

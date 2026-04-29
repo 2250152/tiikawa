@@ -216,5 +216,6 @@ void SceneGame::DrawGUI()
 {
 	/*player->DrawDebugGUI();*/
 	Player::Instance().DrawDebugGUI();
+	BlockManager::Instance().DrawDebugGUI();
 	CameraController::Instance().DrawDebugGUI();
 }

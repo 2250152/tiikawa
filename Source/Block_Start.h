@@ -19,6 +19,7 @@ public:
 
 //	void Move(float elapsedTime, const std::vector<Block*>& allBlocks)override;
 
+	void DrawDebugGUI() override;
 
 
 

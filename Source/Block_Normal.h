@@ -16,6 +16,11 @@ public:
 
 	void Render(const RenderContext& rc, ModelRenderer* renderer) override;
 
+	void DrawDebugGUI()
+	{
+
+	}
+
 	//void Move(float elapsedTime, const std::vector<Block*>& allBlocks)override;
 
 

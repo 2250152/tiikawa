@@ -45,3 +45,4 @@ void BlockNormal::Render(const RenderContext& rc, ModelRenderer* renderer)
 //
 //    position.x = nextX;
 //}
+

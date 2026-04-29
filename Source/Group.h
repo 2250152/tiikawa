@@ -70,12 +70,18 @@ public:
 
 	bool WillHitAnyGroup(float dx, const std::vector<Group*>& allGroups);
 
+	void Rotation(float elapsedTime);
+
+	void DrawDebugGUI();
+
 private:
 	std::vector<std::unique_ptr<Block>> blocks;
 
 	GroupType type;
 
 	DirectX::XMFLOAT3 position;
+
+	DirectX::XMFLOAT3 angle;
 
 	bool isMoving = false;
 	bool isBlocked = false;

@@ -29,7 +29,7 @@ public:
 	void InputMove();
 
 
-
+	void DrawDebugGUI();
 private:
 	//‰ò
 	std::vector<std::unique_ptr<Group>> groups;
