@@ -190,7 +190,7 @@ void SceneGame::Render()
 		//プレイヤーデバッグプリミティブ描画
 		/*player->RenderDebugPrimitive(rc, shapeRenderer);*/ //←プレイヤーの下に黒い線の球体のやつ
 		Player::Instance().RenderDebugPrimitive(rc, shapeRenderer);
-
+		
 	
 	}
 
