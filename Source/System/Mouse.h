@@ -61,6 +61,7 @@ public:
 	//ˆÚ“®—Êæ“¾@(’Ç‰Á‚µ‚½‚â‚Â‚â‚©‚ç‚â‚Î‚©‚Á‚½‚çÁ‚µ‚Ä‚Ë)
 	int GetMoveX() const { return positionX[0] - positionX[1]; }
 	int GetMoveY() const { return positionY[0] - positionY[1]; }
+	//int GetWheelMove() const { return wheel[0] - wheel[1]; }
 
 private:
 	MouseButton		buttonState[2] = { 0 };

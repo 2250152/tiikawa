@@ -36,5 +36,5 @@ public:
 private:
 	
 	/*Player* player = nullptr;*/
-	CameraController* cameraController = nullptr;
+	//CameraController* cameraController = nullptr;
 };
