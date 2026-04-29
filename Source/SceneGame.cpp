@@ -51,18 +51,30 @@ void SceneGame::Initialize()
 	std::unique_ptr<Group> groupStart = std::make_unique<Group>(GroupType::Start);
 	std::unique_ptr<Group> groupNormal = std::make_unique<Group>(GroupType::Normal);
 	std::unique_ptr<Group> groupNormal2 = std::make_unique<Group>(GroupType::Normal);
+	std::unique_ptr<Group> groupNormal3 = std::make_unique<Group>(GroupType::Normal);
+	std::unique_ptr<Group> groupNormal4 = std::make_unique<Group>(GroupType::Normal);
+	std::unique_ptr<Group> groupNormal5 = std::make_unique<Group>(GroupType::Normal);
+	std::unique_ptr<Group> groupNormal6 = std::make_unique<Group>(GroupType::Normal);
 
 
 	
 	// ブロック生成兼グループに追加
 	groupStart->CreateBlock<BlockStart>(GroupType::Start, DirectX::XMFLOAT3(0, 0, 0));
 	groupNormal->CreateBlock<BlockNormal>(GroupType::Normal, DirectX::XMFLOAT3(0, 0, 5));
-	groupNormal2->CreateBlock<BlockNormal>(GroupType::Normal, DirectX::XMFLOAT3(10, 0, 0));
+	groupNormal2->CreateBlock<BlockNormal>(GroupType::Normal, DirectX::XMFLOAT3(0, 0, -5));
+	groupNormal3->CreateBlock<BlockNormal>(GroupType::Normal, DirectX::XMFLOAT3(0, 5, 0));
+	groupNormal4->CreateBlock<BlockNormal>(GroupType::Normal, DirectX::XMFLOAT3(0, -5, 0));
+	groupNormal5->CreateBlock<BlockNormal>(GroupType::Normal, DirectX::XMFLOAT3(-5, 0, 0));
+	groupNormal6->CreateBlock<BlockNormal>(GroupType::Normal, DirectX::XMFLOAT3(5, 0, 0));
 
 	// マネージャーに登録
 	BlockManager::Instance().AddGroup(std::move(groupStart));
 	BlockManager::Instance().AddGroup(std::move(groupNormal));
 	BlockManager::Instance().AddGroup(std::move(groupNormal2));
+	BlockManager::Instance().AddGroup(std::move(groupNormal3));
+	BlockManager::Instance().AddGroup(std::move(groupNormal4));
+	BlockManager::Instance().AddGroup(std::move(groupNormal5));
+	BlockManager::Instance().AddGroup(std::move(groupNormal6));
 
 
 

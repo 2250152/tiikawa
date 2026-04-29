@@ -50,7 +50,7 @@ void Group::Move(float elapsedTime, const std::vector<Group*>& allGroups)
 	//æ“®‚©‚· Œã‚Å•Ï‚¦‚ë‚æ
 	for (auto& b : blocks)
 	{
-		b->position.z += dx;
+		b->position.x -= dx;
 	}
 
 	
