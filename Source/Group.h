@@ -74,10 +74,7 @@ public:
 
 	void DrawDebugGUI();
 
-	std::vector<std::unique_ptr<Block>>& GetBlocks()
-	{
-		return blocks;
-	}
+	
 
 private:
 	std::vector<std::unique_ptr<Block>> blocks;
