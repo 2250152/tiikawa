@@ -27,6 +27,8 @@ public:
 
 private:
 	const float PIDIV180 = 0.017452f;	// PAI/180
+	const float MAX_CAMERA_DISTANCE = 50.0F;
+	const float MIN_CAMERA_DISTANCE = 3.0F;
 
 	DirectX::XMFLOAT3 target = { 0,0,0 }; //注視点
 	DirectX::XMFLOAT3 eye = { 0, 0, 0 }; //視点
@@ -37,7 +39,8 @@ private:
 
 	//マウス感度！設定できるようにするなら変えてね
 	float mouseSensitivity = 0.3f; //変更済
-	float wheelSensitivity = 0.3f; //変更済
+	float wheelSensitivity = 0.01f; //変更済
+	int wheelParam = 0; // GUI描画用変数
 
 	////---------------------------------------------------------------------------------------------------
 	///*極座標制御*/
