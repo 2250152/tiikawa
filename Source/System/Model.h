@@ -43,7 +43,12 @@ public:
 
 	//À•WŒvZÕ‚è
 	void CalculateBounds();
+
+	//‚¨‚¨‚«‚³æ‚é‚Ì‰ï
+	DirectX::XMFLOAT3 GetSize();
 private:
 	std::shared_ptr<ModelResource>	resource;
 	std::vector<Node>				nodes;
 };
+
+
