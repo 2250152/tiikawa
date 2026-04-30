@@ -5,6 +5,7 @@ BlockStart::BlockStart(GroupType type, DirectX::XMFLOAT3 pos)
 {
 	model = new Model("Data/Model/BlockNormal/BlockNormal.mdl");
 	scale.x = scale.y = scale.z = 0.01f;
+	size = model->GetSize();
 	position = pos;
 	
 }
@@ -58,7 +59,9 @@ void BlockStart::DrawDebugGUI()
 		if (ImGui::CollapsingHeader("Transform", ImGuiTreeNodeFlags_DefaultOpen))
 		{
 			//ˆÊ’u
-			ImGui::InputFloat3("Position", &position.x);
+			ImGui::InputFloat3("Sizex", &size.x);
+			ImGui::InputFloat3("Sizey", &size.y);
+			ImGui::InputFloat3("Sizez", &size.z);
 			//‰ñ“]
 			DirectX::XMFLOAT3 a;
 			a.x = DirectX::XMConvertToDegrees(angle.x);

@@ -88,3 +88,15 @@ void Model::CalculateBounds()
 		}
 	}
 }
+
+
+DirectX::XMFLOAT3 Model::GetSize()
+{
+	CalculateBounds();
+
+	return {
+		max.x - min.x,
+		max.y - min.y,
+		max.z - min.z
+	};
+}

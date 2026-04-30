@@ -52,7 +52,7 @@ public:
 
 //	bool WillHit(Block* other, float nextX);
 protected:
-	
+	DirectX::XMFLOAT3 size;
 	
 	DirectX::XMFLOAT3 direction = { 0,0,1 };
 	DirectX::XMFLOAT3 scale = { 1,1,1 };
