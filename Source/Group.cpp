@@ -23,6 +23,7 @@ void Group::Update(float elapsedTime,const std::vector<Group*>& allGroups)
 	{
 		block->Update(elapsedTime);
 	}
+	if (type == GroupType::Start)
 	Rotation(elapsedTime);
 }
 
@@ -51,7 +52,7 @@ void Group::Move(float elapsedTime, const std::vector<Group*>& allGroups)
 	//æ“®‚©‚· Œã‚Å•Ï‚¦‚ë‚æ
 	for (auto& b : blocks)
 	{
-		b->position.x -= dx;
+		b->position.y -= dx;
 	}
 
 	
@@ -151,7 +152,22 @@ void Group::AddBlock(std::unique_ptr<Block> block)
 
 void Group::Go()
 {
+	if(state==Idle)
 	state = Moving;
+}
+
+void Group::revolve()
+{
+	if (state == Idle)
+	{
+		targetAngle += DirectX::XM_PIDIV2; // +90“x
+
+		// 360’´‚¦‚½‚ç–ß‚·
+		if (targetAngle >= DirectX::XM_2PI)
+			targetAngle -= DirectX::XM_2PI;
+		state = Rotating;
+	}
+
 }
 
 int Group::WillHit(Group* otherGroup, float dx)
@@ -232,16 +248,42 @@ bool Group::WillHitAnyGroup(float dx, const std::vector<Group*>& allGroups)
 
 	return false;
 }
+
 void Group::Rotation(float elapsedTime)
 {
+	if (state != Rotating) return;
+	float delta = rotateSpeed * elapsedTime;
+	float diff = targetAngle - currentAngle;
+
+
+	if (diff > DirectX::XM_PI)
+		diff -= DirectX::XM_2PI;
+	if (diff < -DirectX::XM_PI)
+		diff += DirectX::XM_2PI;
+
+
+	if (fabs(diff) <= delta)
+	{
+		currentAngle = targetAngle;
+		state = Idle;
+	}
+	else
+	{
+		currentAngle += (diff > 0 ? delta : -delta);
+	}
+
 	for (auto& b : blocks)
 	{
-		//b->angle.x -= 0.1f;
+		b->angle.x = currentAngle;
 	}
+
+	
+
 }
 
 void Group::DrawDebugGUI()
 {
+	
 	for (auto& b : blocks)
 	{
 		b->DrawDebugGUI();

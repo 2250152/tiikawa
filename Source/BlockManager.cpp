@@ -9,6 +9,7 @@ void BlockManager::Remove(Group* group)
 void BlockManager::Update(float elapsedTime)
 {
 	InputMove();
+	InputRotation();
 
 	std::vector<Block*> allBlocks;
 	std::vector<Group*> allGroups;
@@ -126,5 +127,18 @@ void BlockManager::DrawDebugGUI()
 	{
 
 		group->DrawDebugGUI();
+	}
+}
+
+
+void BlockManager::InputRotation()
+{
+	GamePad& gamePad = Input::Instance().GetGamePad();
+	if (gamePad.GetButtonDown() & GamePad::BTN_B)
+	{
+		for (auto& group : groups)
+		{
+			group->revolve();
+		}
 	}
 }

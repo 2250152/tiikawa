@@ -30,8 +30,12 @@ public:
 
 
 	void DrawDebugGUI();
+
+	void InputRotation();
 private:
 	//‰ò
 	std::vector<std::unique_ptr<Group>> groups;
 	std::set<Group*> removes;
+
+
 };

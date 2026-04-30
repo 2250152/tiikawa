@@ -16,6 +16,7 @@ enum State
 {
 	Idle,   // Ž~‚Ü‚Á‚Ä‚é
 	Moving, // “®‚¢‚Ä‚é
+	Rotating, //‰ñ“]‚µ‚Ä‚¢‚é
 };
 
 class Group
@@ -63,6 +64,8 @@ public:
 
 	void Go();
 
+	void revolve();
+
 	int WillHit(Group* otherGroup, float dx);
 
 	void Stop() { isMoving = false; }
@@ -90,5 +93,14 @@ private:
 	State state = Idle;
 
 	Group* pendingMerge = nullptr;
+
+	const float PIDIV180 = 0.017452f;
+
+	int count = 0;
+
+	float   targetAngle;
 	
+	float rotateSpeed=1.0f;
+
+	float currentAngle = 0.0f;
 };

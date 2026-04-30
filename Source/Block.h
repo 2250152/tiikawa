@@ -63,7 +63,7 @@ protected:
 	float face;
 	Model* model = nullptr;
 
-
+	
 
 	
 };
