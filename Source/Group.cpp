@@ -265,6 +265,12 @@ void Group::Rotation(float elapsedTime)
 	if (fabs(diff) <= delta)
 	{
 		currentAngle = targetAngle;
+
+		if (currentAngle >= DirectX::XM_2PI)
+			currentAngle -= DirectX::XM_2PI;
+		if (currentAngle < 0.0f)
+			currentAngle += DirectX::XM_2PI;
+
 		state = Idle;
 	}
 	else
