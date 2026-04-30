@@ -111,7 +111,7 @@ void SceneGame::Update(float elapsedTime)
 	/*DirectX::XMFLOAT3 target = player->GetPosition();*/
 	DirectX::XMFLOAT3 target = Player::Instance().GetPosition();
 	//DirectX::XMFLOAT3 target = BlockManager::Instance().
-	target.y += 0.1f;
+	target.y += 0.5f;
 	CameraController::Instance().SetTarget(target);
 	CameraController::Instance().Update(elapsedTime);
 
