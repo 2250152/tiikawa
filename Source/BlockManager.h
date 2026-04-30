@@ -32,6 +32,9 @@ public:
 	void DrawDebugGUI();
 
 	void InputRotation();
+
+	//ÉQÉbÉ^Å[
+	//std::vector<std::unique_ptr<Group>> GetGroups
 private:
 	//âÚ
 	std::vector<std::unique_ptr<Group>> groups;
