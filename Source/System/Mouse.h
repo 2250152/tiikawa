@@ -34,6 +34,9 @@ public:
 	// ホイール値の取得
 	int GetWheel() const { return wheel[1]; }
 
+	//ホイール移動量の取得
+	int GetWheelRotationDelta() const { return wheelRotationDelta; }
+
 	// マウスカーソルX座標取得
 	int GetPositionX() const { return positionX[0]; }
 
@@ -61,7 +64,6 @@ public:
 	//移動量取得　(追加したやつやからやばかったら消してね)
 	int GetMoveX() const { return positionX[0] - positionX[1]; }
 	int GetMoveY() const { return positionY[0] - positionY[1]; }
-	//int GetWheelMove() const { return wheel[0] - wheel[1]; }
 
 private:
 	MouseButton		buttonState[2] = { 0 };
@@ -70,6 +72,7 @@ private:
 	int				positionX[2];
 	int				positionY[2];
 	int				wheel[2];
+	int				wheelRotationDelta = 0;
 	int				screenWidth = 0;
 	int				screenHeight = 0;
 	HWND			hWnd = nullptr;

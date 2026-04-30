@@ -15,7 +15,7 @@
 // 垂直同期間隔設定
 static const int syncInterval = 1;
 
-//static SceneGame sceneGame;
+int mouseWheelScrollParam;
 
 // コンストラクタ
 Framework::Framework(HWND hWnd)
@@ -190,6 +190,15 @@ LRESULT CALLBACK Framework::HandleMessage(HWND hWnd, UINT msg, WPARAM wParam, LP
 	case WM_KEYDOWN:
 		if (wParam == VK_ESCAPE) PostMessage(hWnd, WM_CLOSE, 0, 0);
 		break;
+	//=======|追加|=============================================================
+	case WM_MOUSEWHEEL:
+		//ホイールの回転量を取得
+		//正の値：上スクロール、負の値：下スクロール
+		mouseWheelScrollParam = GET_WHEEL_DELTA_WPARAM(wParam);
+
+
+		break;
+	//==========================================================================
 	case WM_ENTERSIZEMOVE:
 		// WM_EXITSIZEMOVE is sent when the user grabs the resize bars.
 		timer.Stop();

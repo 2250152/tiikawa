@@ -1,4 +1,5 @@
 #include "System/Mouse.h"
+extern int mouseWheelScrollParam;
 
 static const int KeyMap[] =
 {
@@ -32,8 +33,14 @@ void Mouse::Update()
 	}
 
 	// ホイール
+	//--------|追加|----------------------------------------------
+	wheel[0] = mouseWheelScrollParam;
+	wheelRotationDelta = mouseWheelScrollParam;
+	// "valiavle" = wheel[1] - wheel[0];
 	wheel[1] = wheel[0];
-	wheel[0] = 0;
+	mouseWheelScrollParam = 0;
+	//------------------------------------------------------------
+	
 
 	// ボタン情報更新
 	buttonState[1] = buttonState[0];	// スイッチ履歴

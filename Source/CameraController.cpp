@@ -88,11 +88,16 @@ void CameraController::Update(float elapsedTime)
 		// roll(スキップ)
 	}
 
-	////カメラ距離
-	//if (mouse.GetWheelMove())
-	//{
-	//	range += mouse.GetWheelMove() * wheelSensitivity * elapsedTime;
-	//}
+	//カメラ距離
+	wheelParam = mouse.GetWheelRotationDelta();
+	if (mouse.GetWheelRotationDelta())
+	{		
+		range += mouse.GetWheelRotationDelta() * wheelSensitivity;
+		if (range > MAX_CAMERA_DISTANCE)
+			range = MAX_CAMERA_DISTANCE;
+		if (range < MIN_CAMERA_DISTANCE)
+			range = MIN_CAMERA_DISTANCE;
+	}
 
 #ifdef DEBUG
 	//初期位置へ (デバッグ用)
@@ -172,6 +177,8 @@ void CameraController::DrawDebugGUI()
 			ImGui::InputFloat("mouseSensitivity", &mouseSensitivity);
 			//マウスホイール感度
 			ImGui::InputFloat("wheelSensitivity", &wheelSensitivity);
+			//マウスホイール値
+			ImGui::InputInt("mouseWheelScrollParam", &wheelParam);
 		}
 	}
 	ImGui::End();
