@@ -19,12 +19,14 @@ void Group::Update(float elapsedTime,const std::vector<Group*>& allGroups)
 		pendingMerge = nullptr;
 	}
 
+	if (type == GroupType::Start)
+		Rotation(elapsedTime);
+
 	for (auto& block : blocks)
 	{
 		block->Update(elapsedTime);
 	}
-	if (type == GroupType::Start)
-	Rotation(elapsedTime);
+	
 }
 
 void Group::Move(float elapsedTime, const std::vector<Group*>& allGroups)
@@ -160,11 +162,16 @@ void Group::revolve()
 {
 	if (state == Idle)
 	{
+		pivot = GetStartBlockCenter();
+
+
 		targetAngle += DirectX::XM_PIDIV2; // +90ìx
 
 		// 360í¥Ç¶ÇΩÇÁñﬂÇ∑
 		if (targetAngle >= DirectX::XM_2PI)
 			targetAngle -= DirectX::XM_2PI;
+
+		rotatedAmount = 0.0f;
 		state = Rotating;
 	}
 
@@ -252,7 +259,7 @@ bool Group::WillHitAnyGroup(float dx, const std::vector<Group*>& allGroups)
 void Group::Rotation(float elapsedTime)
 {
 	if (state != Rotating) return;
-	float delta = rotateSpeed * elapsedTime;
+	float moveDelta = rotateSpeed * elapsedTime;
 	float diff = targetAngle - currentAngle;
 
 
@@ -262,7 +269,7 @@ void Group::Rotation(float elapsedTime)
 		diff += DirectX::XM_2PI;
 
 
-	if (fabs(diff) <= delta)
+	if (fabs(diff) <= moveDelta)
 	{
 		currentAngle = targetAngle;
 
@@ -275,16 +282,47 @@ void Group::Rotation(float elapsedTime)
 	}
 	else
 	{
-		currentAngle += (diff > 0 ? delta : -delta);
+		currentAngle += (diff > 0 ? moveDelta : -moveDelta);
+	}
+
+	float angleDelta = currentAngle - prevAngle;
+
+
+	rotatedAmount += fabs(angleDelta);
+
+
+	// é~ÇﬂÇÈ
+	if (rotatedAmount >= DirectX::XM_PIDIV2)
+	{
+		angleDelta -= (rotatedAmount - DirectX::XM_PIDIV2);
+		currentAngle = targetAngle;
+		state = Idle;
 	}
 
 	for (auto& b : blocks)
 	{
-		b->angle.x = currentAngle;
+		// ç°ÇÃà íu
+		DirectX::XMVECTOR p = DirectX::XMLoadFloat3(&b->position);
+		DirectX::XMVECTOR c = DirectX::XMLoadFloat3(&pivot);
+
+		// pivotäÓèÄÇ…ïœä∑
+		DirectX::XMVECTOR local = DirectX::XMVectorSubtract(p, c);
+
+		// âÒì]
+	
+		DirectX::XMMATRIX R = DirectX::XMMatrixRotationX(angleDelta);
+
+		local = DirectX::XMVector3Transform(local, R);
+
+		// ñﬂÇ∑
+		DirectX::XMVECTOR result = DirectX::XMVectorAdd(local, c);
+
+		DirectX::XMStoreFloat3(&b->position, result);
+
+		b->angle.x += angleDelta;
 	}
 
-	
-
+	prevAngle = currentAngle;
 }
 
 void Group::DrawDebugGUI()
@@ -294,4 +332,37 @@ void Group::DrawDebugGUI()
 	{
 		b->DrawDebugGUI();
 	}
+}
+
+
+//íÜêSÇ‘ÇøéÊÇË
+DirectX::XMFLOAT3 Group::GetCenter()
+{
+	DirectX::XMFLOAT3 sum = { 0,0,0 };
+
+	for (auto& b : blocks)
+	{
+		sum.x += b->position.x;
+		sum.y += b->position.y;
+		sum.z += b->position.z;
+	}
+
+	float n = (float)blocks.size();
+
+	return { sum.x / n, sum.y / n, sum.z / n };
+}
+
+
+DirectX::XMFLOAT3 Group::GetStartBlockCenter()
+{
+	for (auto& b : blocks)
+	{
+		if (b->GetType() == GroupType::Start)
+		{
+			return b->position;
+		}
+	}
+
+	// fallbackÅiîOÇÃÇΩÇﬂÅj
+	return GetCenter();
 }

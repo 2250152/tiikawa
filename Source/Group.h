@@ -3,12 +3,7 @@
 #include <vector>
 #include <set>
 #include "System/ModelRenderer.h"
-
-enum class GroupType
-{
-	Normal,
-	Start
-};
+#include "GroupType.h"
 
 class Block;
 
@@ -77,7 +72,11 @@ public:
 
 	void DrawDebugGUI();
 
+	//íÜêSÇ‘ÇøéÊÇË
+	DirectX::XMFLOAT3 GetCenter();
 	
+	DirectX::XMFLOAT3 GetStartBlockCenter();
+
 
 private:
 	std::vector<std::unique_ptr<Block>> blocks;
@@ -103,4 +102,10 @@ private:
 	float rotateSpeed=1.0f;
 
 	float currentAngle = 0.0f;
+
+	float prevAngle = 0.0f;
+
+	DirectX::XMFLOAT3 pivot = { 0,0,0 };
+
+	float rotatedAmount = 0.0f;
 };

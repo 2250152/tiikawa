@@ -2,7 +2,7 @@
 
 #include "Block.h"
 #include "System/Model.h"
-
+#include "GroupType.h"
 enum class GroupType;
 
 //ふっつーのブロック
@@ -23,6 +23,7 @@ public:
 
 	//void Move(float elapsedTime, const std::vector<Block*>& allBlocks)override;
 
+	GroupType GetType() const override { return GroupType::Normal; }
 
 
 };

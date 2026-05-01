@@ -171,6 +171,9 @@
     <ClInclude Include="Source\SkyBox.h">
       <Filter>Source\ヘッダー</Filter>
     </ClInclude>
+    <ClInclude Include="Source\GroupType.h">
+      <Filter>Source\ヘッダー</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="External\imgui-docking\imgui.cpp">

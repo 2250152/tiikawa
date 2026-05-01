@@ -1,6 +1,6 @@
 #pragma once
 #include "System/ModelRenderer.h"
-
+#include "GroupType.h"
 class BlockManager;
 class Group;
 
@@ -50,6 +50,9 @@ public:
 	Model* GetModel() { return model; }
 	const DirectX::XMFLOAT4X4 Gettranceform() const{ return transform; }
 
+	DirectX::XMFLOAT3 GetPosition() const { return position; }
+
+	virtual GroupType  GetType() const = 0;
 //	bool WillHit(Block* other, float nextX);
 protected:
 	DirectX::XMFLOAT3 size;
@@ -64,6 +67,6 @@ protected:
 	Model* model = nullptr;
 
 	
-
+	DirectX::XMFLOAT3 pivot = { 0,0,0 };
 	
 };

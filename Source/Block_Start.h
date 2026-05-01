@@ -3,7 +3,7 @@
 
 #include "Block.h"
 #include "System/Model.h"
-
+#include "GroupType.h"
 enum class GroupType;
 
 //ふっつーのブロック
@@ -21,6 +21,6 @@ public:
 
 	void DrawDebugGUI() override;
 
-
+	GroupType GetType() const override { return GroupType::Start; }
 
 };
