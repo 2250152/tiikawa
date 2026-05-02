@@ -13,6 +13,11 @@ public:
 	void DrawGUI()override;
 
 private:
-	Sprite* Map = nullptr;
+	Sprite* MapBack = nullptr;
+	Sprite* Map1 = nullptr;
+	Sprite* Map2 = nullptr;
+	Sprite* Map3 = nullptr;
+	Sprite* Map4 = nullptr;
+	Sprite* Map5 = nullptr;
 	int stage=0;  //選択してるステージ
 };
