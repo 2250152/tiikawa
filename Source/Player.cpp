@@ -50,8 +50,13 @@ void Player::Update(float elapsedTime)
 	//重力処理
 	ApplyLocalGravity(elapsedTime);
 	
+	
+#ifdef _DEBUG 
+
 	//debug用の旋回処理(Z軸が中心の回転)
-	//DebugTurn(elapsedTime);
+	DebugTurn(elapsedTime);
+
+#endif
 
 	GamePad& gamePad = Input::Instance().GetGamePad();
 	switch (state)
@@ -230,10 +235,10 @@ void Player::ApplyLocalGravity(float elapsedTime)
 	// プレイヤーのローカルupベクトルを計算
 	DirectX::XMVECTOR UP = DirectX::XMVectorSet(0, 1, 0, 0);
 	DirectX::XMMATRIX R = DirectX::XMMatrixRotationRollPitchYaw(angle.x, angle.y, angle.z);
-	DirectX::XMVECTOR localUp = DirectX::XMVector3TransformNormal(UP, R);
+	DirectX::XMVECTOR localUp = DirectX::XMVector3TransformNormal(UP, R);//XMVector3TransformNormal関数はベクトルを行列で変換する関数。ここではプレイヤーの回転行列Rを使って、ワールド座標系のupベクトルをプレイヤーのローカル座標系のupベクトルに変換している。
 
 	// upベクトルの正反対（down方向）を求める
-	DirectX::XMVECTOR localDown = DirectX::XMVectorNegate(localUp);
+	DirectX::XMVECTOR localDown = DirectX::XMVectorNegate(localUp);//XMVectorNegate関数はベクトルの符号を反転させる関数。ここではプレイヤーのローカルupベクトルを反転させて、ローカルdownベクトルを求めている。
 
 	// 重力加速度ベクトルを求める（Character::gravityは負値なので-multしない）
 	DirectX::XMVECTOR gravityVec = DirectX::XMVectorScale(localDown, std::abs(gravity));
@@ -360,11 +365,13 @@ void Player::StickToBlockFace()
 {
 	//左クリックをしたら
 	GamePad& gamePad = Input::Instance().GetGamePad();
-	//if (gamePad.GetButtonDown())
+	//if (gamePad.GetButtonDown() & )
 	//{
 	//	// スクリーンサイズ取得
 	//	float screenWidth = Graphics::Instance().GetScreenWidth();
 	//	float screenHeight = Graphics::Instance().GetScreenHeight();
 	//}
+
+
 
 }
