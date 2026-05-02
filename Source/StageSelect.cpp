@@ -40,12 +40,12 @@ void StageSelect::Update(float elapsedTime)
 	if (gamepad.GetButtonDown() & GamePad::BTN_LEFT)
 	{
 		stage--;
-		if (stage < 0)stage = 5;  //最大ステージ数になる（右端
+		if (stage <= 0)stage = 5;  //最大ステージ数になる（右端
 	}
 	if (gamepad.GetButtonDown() & GamePad::BTN_RIGHT)
 	{
 		stage++;
-		if (stage > 5)stage = 0;  //最初のステージになる（左端
+		if (stage >= 5)stage = 0;  //最初のステージになる（左端
 	}
 
 	//ステージを決定する
