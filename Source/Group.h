@@ -77,7 +77,8 @@ public:
 
 	void DrawDebugGUI();
 
-	
+	//ÉQÉbÉ^Å[
+	//DirectX::XMFLOAT3 GetPosition() const { return position; }
 
 private:
 	std::vector<std::unique_ptr<Block>> blocks;

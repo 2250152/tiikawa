@@ -33,8 +33,9 @@ public:
 
 	void InputRotation();
 
-	//ゲッター
-	//std::vector<std::unique_ptr<Group>> GetGroups
+	////ゲッター
+	std::vector<std::unique_ptr<Group>>& const GetGroups() { return groups; }
+
 private:
 	//塊
 	std::vector<std::unique_ptr<Group>> groups;

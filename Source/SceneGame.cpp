@@ -109,9 +109,10 @@ void SceneGame::Update(float elapsedTime)
 {
 	//カメラコントローラー更新処理
 	/*DirectX::XMFLOAT3 target = player->GetPosition();*/
-	DirectX::XMFLOAT3 target = Player::Instance().GetPosition();
-	//DirectX::XMFLOAT3 target = BlockManager::Instance().
-	target.y += 0.5f;
+	//DirectX::XMFLOAT3 target = Player::Instance().GetPosition();
+	DirectX::XMFLOAT3 target = BlockManager::Instance().GetGroups()[0]->GetBlocks()[0]->GetPosition();
+
+	target.y += 0.1f;
 	CameraController::Instance().SetTarget(target);
 	CameraController::Instance().Update(elapsedTime);
 

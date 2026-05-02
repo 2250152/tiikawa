@@ -41,6 +41,8 @@ public:
 	Group* GetGroup() const { return group; }
 	void SetGroup(Group* g) { group = g; }
 	
+	DirectX::XMFLOAT3 GetPosition() const { return position; }
+
 
 	DirectX::XMFLOAT3 position;
 	DirectX::XMFLOAT3	angle = { 0,0,0 };
