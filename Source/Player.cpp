@@ -3,10 +3,12 @@
 #include<imgui.h>
 #include"Camera.h"
 #include"System/Audio.h"
+#include <DirectXCollision.h>
+
 
 void Player::Initialize()
 {
-	model = new Model("Data/Model/player/Astronaut.mdl");
+	model = new Model("Data/Model/player/player.mdl");
 
 	//ヒットエフェクト読み込み
 	hitEffect = new Effect("Data/Effect/Hit.efk");
@@ -16,6 +18,8 @@ void Player::Initialize()
 
 	//モデルが大きいのでスケーリング
 	scale.x = scale.y = scale.z = 0.0005f;
+
+	state = State::IDLE;
 }
 
 //終了化
@@ -31,40 +35,49 @@ void Player::Update(float elapsedTime)
 {
 	
 	//移動入力処理
+	if (isGround)
 	InputMove(elapsedTime);
 
 	//速度処理更新
 	UpdateVelocity(elapsedTime);
+
+	//プレイヤーをブロックの面にくっつける処理
+	StickToBlockFace();
 	
 	//ジャンプ入力処理
-	//InputJump();
+	InputJump();
 
 	//重力処理
 	ApplyLocalGravity(elapsedTime);
+	
+	//debug用の旋回処理(Z軸が中心の回転)
+	//DebugTurn(elapsedTime);
 
+	GamePad& gamePad = Input::Instance().GetGamePad();
+	switch (state)
+	{
+	case State::IDLE:
+	
+		if (gamePad.GetButtonDown() & GamePad::BTN_A)
+		{
+			state = State::JumpHipDrop;
+			PlayAnimation("hip drop", false);
+		}
+		break;
 
-	//GamePad& gamePad = Input::Instance().GetGamePad();
-	//switch (state)
-	//{
-	//case State::IDLE:
-	//	if (gamePad.GetButtonDown() & GamePad::BTN_A && isGround)
-	//	{
-	//		state = State::JumpHipDrop;
-	//		PlayAnimation("Armature|CharacterAnimation", false);
-	//	}
-	//	break;
-	//case State::JumpHipDrop:
-	//	if (!isGround)
-	//	{
-	//		//ジャンプヒップドロップ中の処理
-	//	}
-	//	else
-	//	{
-	//		state = State::IDLE;
-	//		PlayAnimation("Armature|CharacterAnimation", true);
-	//	}
-	//	break;
-	//}
+	case State::JumpHipDrop:
+
+		if (!isGround)
+		{
+			//ジャンプヒップドロップ中の処理
+		}
+		else
+		{
+			state = State::IDLE;
+			PlayAnimation("IDLE", true);
+		}
+		break;
+	}
 	
 
 
@@ -341,4 +354,17 @@ void Player::UpdateAnimation(float elapsedTime)
 	}
 	//モデル行列更新
 	model->UpdateTransform();
+}
+
+void Player::StickToBlockFace()
+{
+	//左クリックをしたら
+	GamePad& gamePad = Input::Instance().GetGamePad();
+	//if (gamePad.GetButtonDown())
+	//{
+	//	// スクリーンサイズ取得
+	//	float screenWidth = Graphics::Instance().GetScreenWidth();
+	//	float screenHeight = Graphics::Instance().GetScreenHeight();
+	//}
+
 }

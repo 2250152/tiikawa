@@ -40,6 +40,8 @@ public:
 	//ジャンプ入力処理
 	void InputJump();
 
+
+
 protected:
 	//着地した時に呼ばれる
 	void OnLanding()override;
@@ -53,6 +55,17 @@ private:
 
 	//重力処理
 	void ApplyLocalGravity(float elapsedTime);
+
+	//プレイヤーをブロックの面にくっつける処理
+	void StickToBlockFace();
+
+	//debug用の回転
+	void DebugTurn(float elapsedTime) {
+		//Z軸を徐々に回転
+		angle.z += DirectX::XMConvertToRadians(10) * elapsedTime; //1秒で90度回転
+		
+	}
+
 
 	//アニメーション=================================================
 	enum class State
