@@ -4,7 +4,10 @@
 #include"Camera.h"
 #include"System/Audio.h"
 #include <DirectXCollision.h>
-
+#include <System/Graphics.h>
+#include"Collision.h"
+#include"BlockManager.h"
+#include"Group.h"
 
 void Player::Initialize()
 {
@@ -42,7 +45,7 @@ void Player::Update(float elapsedTime)
 	UpdateVelocity(elapsedTime);
 
 	//プレイヤーをブロックの面にくっつける処理
-	StickToBlockFace();
+	//StickToBlockFace();
 	
 	//ジャンプ入力処理
 	InputJump();
@@ -363,14 +366,104 @@ void Player::UpdateAnimation(float elapsedTime)
 
 void Player::StickToBlockFace()
 {
+	
+	Mouse& mouse = Input::Instance().GetMouse();
+
+	//スクリーンサイズを取得
+	float screenWidth = static_cast<float>(mouse.GetScreenWidth());
+	float screenHeight = static_cast<float>(mouse.GetScreenHeight());
+
+	//マウスカーソルの位置を取得
+	POINT cursor;
+	::GetCursorPos(&cursor);
+	::ScreenToClient(Graphics::Instance().GetWindowHandle(), &cursor);//スクリーン座標をクライアント座標に変換
+
+	//各行列を取得
+	DirectX::XMMATRIX View = DirectX::XMLoadFloat4x4(&Camera::Instance().GetView());
+	DirectX::XMMATRIX Projection = DirectX::XMLoadFloat4x4(&Camera::Instance().GetProjection());
+	DirectX::XMMATRIX World = DirectX::XMMatrixIdentity();
+
+	//スクリーン座標の設定
+	DirectX::XMVECTOR ScreenPosition, WorldPositionNear, WorldPositionFar;
+	DirectX::XMFLOAT3 screenPosition;
+	screenPosition.x = static_cast<float>(cursor.x);
+	screenPosition.y = static_cast<float>(cursor.y);
+
+
+	float viewportX = 0.0f;
+	float viewportY = 0.0f;
+	float viewportW = screenWidth;
+	float viewportH = screenHeight;
+	float viewportMinZ = 0.0f;
+	float viewportMaxZ = 1.0f;
+
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//スクリーン座標をワールド座標に変換し、レイの始点を求める。
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	screenPosition.z = 0.0f;
+
+	//スクリーン座標からNDC座標へ変換
+	DirectX::XMVECTOR NDCPositionNear = DirectX::XMVectorSet(
+		2.0f * (screenPosition.x - viewportX) / viewportW - 1.0f,
+		1.0f - 2.0f * (screenPosition.y - viewportY) / viewportH,
+		(screenPosition.z - viewportMinZ) / (viewportMaxZ - viewportMinZ),
+		1.0f);
+
+	//NDC座標からワールド座標へ変換
+	DirectX::XMMATRIX WVP = World * View * Projection;
+	DirectX::XMMATRIX IWVP = DirectX::XMMatrixInverse(nullptr, WVP);//逆行列を作る
+	WorldPositionNear = DirectX::XMVector3TransformCoord(NDCPositionNear, IWVP);//ベクトルに行列を掛けて位置として変換する.vec × matrix → w 除算も自動でやる
+
+
+	DirectX::XMFLOAT3 rayStart;
+	DirectX::XMStoreFloat3(&rayStart, WorldPositionNear);
+
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//スクリーン座標をワールド座標に変換し、レイの終点を求める
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	screenPosition.z = 1.0f;
+
+	//スクリーン座標からNDC座標へ変換
+	DirectX::XMVECTOR NDCPositionFar = DirectX::XMVectorSet(  //4次元ベクトルを作る関数。例..XMVECTOR v = XMVectorSet(1,2,3,1);中身は(x=1, y=2, z=3, w=1)
+		2.0f * (screenPosition.x - viewportX) / viewportW - 1.0f,
+		1.0f - 2.0f * (screenPosition.y - viewportY) / viewportH,
+		(screenPosition.z - viewportMinZ) / (viewportMaxZ - viewportMinZ),
+		1.0f);
+
+	WorldPositionFar = DirectX::XMVector3TransformCoord(NDCPositionFar, IWVP);
+
+	DirectX::XMFLOAT3 rayEnd;
+	DirectX::XMStoreFloat3(&rayEnd, WorldPositionFar);
+
+	//============================================================================================================
+
+	//ステージとレイキャストを行い、配置座標を求める
+	DirectX::XMFLOAT3 hitPosition, hitNormal;
+
+	for (const auto& group : BlockManager::Instance().GetGroups())
+	{
+		for (const auto& block : group->GetBlocks())
+		{
+			Block* b = block.get();
+
+			//デバッグ
+			//if (b->GetModel() == nullptr) continue;//モデルがないブロックはスルー
+			//if (b->Gettranceform()._41 == 0.0f && b->Gettranceform()._42 == 0.0f && b->Gettranceform()._43 == 0.0f) continue;//位置が(0,0,0)のブロックはスルー
+
+			if (Collision::RayCast(rayStart,rayEnd,b->Gettranceform(),b->GetModel(),hitPosition,hitNormal))
+			{
+				// ヒット処理
+				//position = hitPosition;
+			}
+		}
+	}
+
+
+
 	//左クリックをしたら
-	GamePad& gamePad = Input::Instance().GetGamePad();
-	//if (gamePad.GetButtonDown() & )
-	//{
-	//	// スクリーンサイズ取得
-	//	float screenWidth = Graphics::Instance().GetScreenWidth();
-	//	float screenHeight = Graphics::Instance().GetScreenHeight();
-	//}
+	//GamePad& gamePad = Input::Instance().GetGamePad();
 
 
 

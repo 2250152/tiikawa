@@ -119,7 +119,6 @@ void SceneGame::Update(float elapsedTime)
 
 	//プレイヤー更新処理
 	/*player->Update(elapsedTime);*/
-	Player::Instance().Update(elapsedTime);
 
 	//背景
 	SkyBox::Instance().Update(elapsedTime);
@@ -129,6 +128,8 @@ void SceneGame::Update(float elapsedTime)
 	EffectManager::Instance().Update(elapsedTime);
 
 	BlockManager::Instance().Update(elapsedTime);
+
+	Player::Instance().Update(elapsedTime);
 }
 
 // 描画処理
