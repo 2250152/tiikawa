@@ -29,6 +29,8 @@ private:
 	const float PIDIV180 = 0.017452f;	// PAI/180
 	const float MAX_CAMERA_DISTANCE = 50.0F;
 	const float MIN_CAMERA_DISTANCE = 3.0F;
+	const float YAW_MAX = 1.3f;
+	const float YAW_MIN = -1.3f;
 
 	DirectX::XMFLOAT3 target = { 0,0,0 }; //注視点
 	DirectX::XMFLOAT3 eye = { 0, 0, 0 }; //視点
@@ -44,8 +46,8 @@ private:
 
 	////---------------------------------------------------------------------------------------------------
 	///*極座標制御*/
-	DirectX::XMFLOAT3 angle = { 0, 0, 0 }; //回転角度(X, Y)
-	DirectX::XMFLOAT3 position = { 0, 0, 0 }; //カメラ位置(デバッグGUI用)
+	DirectX::XMFLOAT3 angle = { 0, 0, 0 }; //回転量
+	//DirectX::XMFLOAT3 position = { 0, 0, 0 }; //カメラ位置(デバッグGUI用)
 	////-------- クォータニオン ----------------------------------------------------------------
 	DirectX::XMFLOAT4	orientation = { 0, 0, 0, 1};
 	float				yaw = 0.0f, pitch = 0.0f, roll = 0.0f;
