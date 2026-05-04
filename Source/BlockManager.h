@@ -3,14 +3,14 @@
 #include <set>
 #include "Block.h"
 #include "Group.h"
-
+#include "Effect.h"
 
 
 class BlockManager
 {
 private:
-	BlockManager() {}
-	~BlockManager() {}
+	BlockManager() { hitEffect = new Effect("Data/Effect/Blow11.efk"); }
+	~BlockManager() { delete hitEffect; }
 public:
 	static BlockManager& Instance()
 	{
@@ -43,6 +43,8 @@ private:
 	//‰ò
 	std::vector<std::unique_ptr<Group>> groups;
 	std::set<Group*> removes;
+
+	Effect* hitEffect = nullptr;
 
 
 };

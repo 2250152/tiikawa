@@ -77,6 +77,11 @@ public:
 	
 	DirectX::XMFLOAT3 GetStartBlockCenter();
 
+	bool GetHitEvent()  { return hitEvent.active; }
+	DirectX::XMFLOAT3 GethitPosition() { return hitEvent.pos; };
+
+	void ClearHitEvent(){ hitEvent.active = false; }
+
 
 private:
 	std::vector<std::unique_ptr<Block>> blocks;
@@ -108,5 +113,14 @@ private:
 	DirectX::XMFLOAT3 pivot = { 0,0,0 };
 
 	float rotatedAmount = 0.0f;
+
+
+	struct HitEvent
+	{
+		bool active = false;
+		DirectX::XMFLOAT3 pos;
+	};
+
+	HitEvent hitEvent;
 
 };

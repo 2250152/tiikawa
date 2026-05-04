@@ -36,7 +36,7 @@ void Group::Move(float elapsedTime, const std::vector<Group*>& allGroups)
 	float speed = 1.0f;
 	DirectX::XMFLOAT3 move = { 0, speed * elapsedTime, 0 };
 
-	// ① まず動く
+	//まず動く
 	for (auto& b : blocks)
 	{
 		b->position.x += move.x;
@@ -44,12 +44,12 @@ void Group::Move(float elapsedTime, const std::vector<Group*>& allGroups)
 		b->position.z += move.z;
 	}
 
-	// ② その後当たり判定
+	//その後当たり判定
 	for (auto& g : allGroups)
 	{
 		if (g == this) continue;
 
-		int hitDir = WillHit(g, { 0,0,0 }); // ← もう動いた後なのでmoveいらない
+		int hitDir = WillHit(g, { 0,0,0 }); 
 
 		if (hitDir != 0)
 		{
@@ -122,7 +122,7 @@ int Group::WillHit(Group* otherGroup, DirectX::XMFLOAT3 move)
 
 	for (auto& a : blocks)
 	{
-		// 未来位置を一時的に作る
+		//先を見る
 		DirectX::XMFLOAT3 original = a->position;
 		a->position.x += move.x;
 		a->position.y += move.y;
@@ -130,7 +130,7 @@ int Group::WillHit(Group* otherGroup, DirectX::XMFLOAT3 move)
 
 		for (auto& b : otherGroup->blocks)
 		{
-			// ===== Y（上下）=====
+			//Y
 			{
 				auto topA = a->GetTopCenter();
 				auto bottomB = b->GetBottomCenter();
@@ -142,11 +142,13 @@ int Group::WillHit(Group* otherGroup, DirectX::XMFLOAT3 move)
 				if (dx < EPS && dz < EPS && dy < EPS)
 				{
 					a->position = original;
+					hitEvent.active = true;
+					hitEvent.pos = original;
 					return 2;
 				}
 			}
 
-			// ===== X（左右）=====
+			//X
 			{
 				auto rightA = a->GetRightCenter();
 				auto leftB = b->GetLeftCenter();
@@ -158,11 +160,13 @@ int Group::WillHit(Group* otherGroup, DirectX::XMFLOAT3 move)
 				if (dy < EPS && dz < EPS && dx < EPS)
 				{
 					a->position = original;
+					hitEvent.active = true;
+					hitEvent.pos = original;
 					return 1;
 				}
 			}
 
-			// ===== Z（前後）=====
+			//Z
 			{
 				auto frontA = a->GetFrontCenter();
 				auto backB = b->GetBackCenter();
@@ -174,12 +178,14 @@ int Group::WillHit(Group* otherGroup, DirectX::XMFLOAT3 move)
 				if (dx < EPS && dy < EPS && dz < EPS)
 				{
 					a->position = original;
+					hitEvent.active = true;
+					hitEvent.pos = original;
 					return 3;
 				}
 			}
 		}
 
-		// 元に戻す
+		//元に戻す
 		a->position = original;
 	}
 

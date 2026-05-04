@@ -11,6 +11,7 @@ void Block::GetAABB(DirectX::XMFLOAT3& outMin, DirectX::XMFLOAT3& outMax)
 {
     //後で消す鴨　
     float margin = 0.00f;
+
     outMin =
     {
         position.x + model->min.x * scale.x - margin,
@@ -119,13 +120,13 @@ HitInfo Block::IsHit(Block* other)
     GetAABB(minA, maxA);
     other->GetAABB(minB, maxB);
 
-    // --- AABB衝突チェック ---
+    //AABB衝突チェック
     if (!(minA.x <= maxB.x && maxA.x >= minB.x &&
         minA.y <= maxB.y && maxA.y >= minB.y &&
         minA.z <= maxB.z && maxA.z >= minB.z))
         return info;
 
-    // --- 侵入量（MTV） ---
+    //侵入量
     float dx1 = maxB.x - minA.x;
     float dx2 = maxA.x - minB.x;
     float dy1 = maxB.y - minA.y;
@@ -141,9 +142,9 @@ HitInfo Block::IsHit(Block* other)
     float absY = fabs(penY);
     float absZ = fabs(penZ);
 
-    const float FACE_EPS = 0.1f; // ←ここが“面判定の命”
+    const float FACE_EPS = 0.1f; 
 
-    // --- X面 ---
+    //X
     if (absX < absY && absX < absZ)
     {
         float overlapY = min(maxA.y, maxB.y) - max(minA.y, minB.y);
@@ -157,7 +158,7 @@ HitInfo Block::IsHit(Block* other)
         }
     }
 
-    // --- Y面 ---
+    //Y
     if (absY < absX && absY < absZ)
     {
         float overlapX = min(maxA.x, maxB.x) - max(minA.x, minB.x);
@@ -171,7 +172,7 @@ HitInfo Block::IsHit(Block* other)
         }
     }
 
-    // --- Z面 ---
+    //Z
     if (absZ < absX && absZ < absY)
     {
         float overlapX = min(maxA.x, maxB.x) - max(minA.x, minB.x);
