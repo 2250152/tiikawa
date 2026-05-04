@@ -40,44 +40,34 @@ void BlockManager::Update(float elapsedTime)
 	
 
 	//“–‚½‚è”»’è
-	for (int i = 0; i < allBlocks.size(); i++)
-	{
-		for (int j = i + 1; j < allBlocks.size(); j++)
-		{
-			Block* a = allBlocks[i];
-			Block* b = allBlocks[j];
-
-			if (a->IsHit(b))
-			{
-				if (a->IsHit(b)==1)
-				a->position.x -= 1 * elapsedTime;
-				else if (a->IsHit(b)==2)
-				a->position.x += 1 * elapsedTime;
-				else if (a->IsHit(b)==3)
-				a->position.y -= 1 * elapsedTime;
-				else if (a->IsHit(b)==4)
-				a->position.y += 1 * elapsedTime;
-				else if (a->IsHit(b)==5)
-				a->position.z -= 1 * elapsedTime;
-				else if (a->IsHit(b)==6)
-				a->position.z += 1 * elapsedTime;
-
-				Group* groupA = a->GetGroup();
-				Group* groupB = b->GetGroup();
-
-				//“¯‚¶ƒOƒ‹[ƒv‚È‚ç–³Ž‹
-				//if (groupA == groupB) continue;
-				//
-				////‡‘Ìˆ—
-				//groupA->Merge(groupB);
-				//Remove(groupB);
-				//a->Stop();
-				//b->Stop();
-				break;
-			}
-
-		}
-	}
+	//for (int i = 0; i < allBlocks.size(); i++)
+	//{
+	//	for (int j = i + 1; j < allBlocks.size(); j++)
+	//	{
+	//		Block* a = allBlocks[i];
+	//		Block* b = allBlocks[j];
+	//
+	//		HitInfo hit = a->IsHit(b);
+	//
+	//		if (hit.dir != 0)
+	//		{
+	//			// ‰Ÿ‚µ–ß‚µ
+	//			if (hit.dir == 1 || hit.dir == 2)
+	//				a->position.x += hit.penetration;
+	//			else if (hit.dir == 3 || hit.dir == 4)
+	//				a->position.y += hit.penetration;
+	//			else if (hit.dir == 5 || hit.dir == 6)
+	//				a->position.z += hit.penetration;
+	//
+	//			// ’âŽ~
+	//			Group* groupA = a->GetGroup();
+	//			Group* groupB = b->GetGroup();
+	//
+	//			groupA->Stop();
+	//		}
+	//
+	//	}
+	//}
 
 	
 

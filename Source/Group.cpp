@@ -33,87 +33,26 @@ void Group::Move(float elapsedTime, const std::vector<Group*>& allGroups)
 {
 	if (state != Moving) return;
 
-	float dx = 1.0f * elapsedTime;
+	float speed = 1.0f;
+	DirectX::XMFLOAT3 move = { 0, speed * elapsedTime, 0 };
 
-	/*for (auto& g : allGroups)
-	{
-		if (g == this) continue;
-
-		if (WillHit(g, dx))
-		{
-			pendingMerge = g;
-			state = Idle;
-			return;
-		}
-	}
-
+	// ① まず動く
 	for (auto& b : blocks)
 	{
-		b->position.x += dx;
-	}*/
-	//先動かす 後で変えろよ
-	for (auto& b : blocks)
-	{
-		b->position.y -= dx;
+		b->position.x += move.x;
+		b->position.y += move.y;
+		b->position.z += move.z;
 	}
 
-	
+	// ② その後当たり判定
 	for (auto& g : allGroups)
 	{
 		if (g == this) continue;
 
-		if (WillHit(g, 0.0f))
-		{
-			//if (WillHit(g, 0.0f) == 1)
-			//{
-			//	// 戻す
-			//	for (auto& b : blocks)
-			//	{
-			//		b->position.x -= 0.01f * elapsedTime;;
-			//	}
-			//}
-			//else if (WillHit(g, 0.0f) == 2)
-			//{
-			//	// 戻す
-			//	for (auto& b : blocks)
-			//	{
-			//		b->position.x += 0.01f * elapsedTime;;
-			//	}
-			//}
-			//else if (WillHit(g, 0.0f) == 3)
-			//{
-			//	// 戻す
-			//	for (auto& b : blocks)
-			//	{
-			//		b->position.y -= 0.01f * elapsedTime;;
-			//	}
-			//}
-			//else if (WillHit(g, 0.0f) == 4)
-			//{
-			//	// 戻す
-			//	for (auto& b : blocks)
-			//	{
-			//		b->position.y += 0.01f * elapsedTime;;
-			//	}
-			//}
-			//else if (WillHit(g, 0.0f) == 5)
-			//{
-			//	// 戻す
-			//	for (auto& b : blocks)
-			//	{
-			//		b->position.z -= 0.01f * elapsedTime;;
-			//	}
-			//}
-			//else if (WillHit(g, 0.0f) == 6)
-			//{
-			//	// 戻す
-			//	for (auto& b : blocks)
-			//	{
-			//		b->position.z += 0.01f * elapsedTime;;
-			//	}
-			//}
-			
+		int hitDir = WillHit(g, { 0,0,0 }); // ← もう動いた後なのでmoveいらない
 
+		if (hitDir != 0)
+		{
 			pendingMerge = g;
 			state = Idle;
 			return;
@@ -177,30 +116,74 @@ void Group::revolve()
 
 }
 
-int Group::WillHit(Group* otherGroup, float dx)
+int Group::WillHit(Group* otherGroup, DirectX::XMFLOAT3 move)
 {
+	const float EPS = 0.01f;
+
 	for (auto& a : blocks)
 	{
-		DirectX::XMFLOAT3 minA, maxA;
-		a->GetAABB(minA, maxA);
-
-		minA.x += dx;
-		maxA.x += dx;
+		// 未来位置を一時的に作る
+		DirectX::XMFLOAT3 original = a->position;
+		a->position.x += move.x;
+		a->position.y += move.y;
+		a->position.z += move.z;
 
 		for (auto& b : otherGroup->blocks)
 		{
-			DirectX::XMFLOAT3 minB, maxB;
-			b->GetAABB(minB, maxB);
-
-			if ((minA.x <= maxB.x && maxA.x >= minB.x) &&
-				(minA.y <= maxB.y && maxA.y >= minB.y) &&
-				(minA.z <= maxB.z && maxA.z >= minB.z))
+			// ===== Y（上下）=====
 			{
-				return true;
+				auto topA = a->GetTopCenter();
+				auto bottomB = b->GetBottomCenter();
+
+				float dx = fabs(topA.x - bottomB.x);
+				float dz = fabs(topA.z - bottomB.z);
+				float dy = fabs(topA.y - bottomB.y);
+
+				if (dx < EPS && dz < EPS && dy < EPS)
+				{
+					a->position = original;
+					return 2;
+				}
+			}
+
+			// ===== X（左右）=====
+			{
+				auto rightA = a->GetRightCenter();
+				auto leftB = b->GetLeftCenter();
+
+				float dy = fabs(rightA.y - leftB.y);
+				float dz = fabs(rightA.z - leftB.z);
+				float dx = fabs(rightA.x - leftB.x);
+
+				if (dy < EPS && dz < EPS && dx < EPS)
+				{
+					a->position = original;
+					return 1;
+				}
+			}
+
+			// ===== Z（前後）=====
+			{
+				auto frontA = a->GetFrontCenter();
+				auto backB = b->GetBackCenter();
+
+				float dx = fabs(frontA.x - backB.x);
+				float dy = fabs(frontA.y - backB.y);
+				float dz = fabs(frontA.z - backB.z);
+
+				if (dx < EPS && dy < EPS && dz < EPS)
+				{
+					a->position = original;
+					return 3;
+				}
 			}
 		}
+
+		// 元に戻す
+		a->position = original;
 	}
-	return false;
+
+	return 0;
 }
 
 bool Group::WillHitAnyGroup(float dx, const std::vector<Group*>& allGroups)

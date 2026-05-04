@@ -61,7 +61,7 @@ public:
 
 	void revolve();
 
-	int WillHit(Group* otherGroup, float dx);
+	int WillHit(Group* otherGroup, DirectX::XMFLOAT3 dx);
 
 	void Stop() { isMoving = false; }
 	void Start() { isMoving = true; }
@@ -108,4 +108,5 @@ private:
 	DirectX::XMFLOAT3 pivot = { 0,0,0 };
 
 	float rotatedAmount = 0.0f;
+
 };

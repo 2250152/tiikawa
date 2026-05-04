@@ -4,6 +4,12 @@
 class BlockManager;
 class Group;
 
+struct HitInfo
+{
+	int dir;
+	float penetration;
+};
+
 class Block
 {
 public:
@@ -36,7 +42,7 @@ public:
 	DirectX::XMFLOAT3 GetRightCenter();
 	DirectX::XMFLOAT3 GetLeftCenter();
 
-	int IsHit(Block* other);
+	HitInfo IsHit(Block* other);
 	
 	Group* GetGroup() const { return group; }
 	void SetGroup(Group* g) { group = g; }
@@ -53,9 +59,14 @@ public:
 	DirectX::XMFLOAT3 GetPosition() const { return position; }
 
 	virtual GroupType  GetType() const = 0;
+
+	static float DistSq(const DirectX::XMFLOAT3& a, const DirectX::XMFLOAT3& b);
+
 //	bool WillHit(Block* other, float nextX);
 protected:
 	DirectX::XMFLOAT3 size;
+
+
 	
 	DirectX::XMFLOAT3 direction = { 0,0,1 };
 	DirectX::XMFLOAT3 scale = { 1,1,1 };

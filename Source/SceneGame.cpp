@@ -59,12 +59,12 @@ void SceneGame::Initialize()
 	
 	// ブロック生成兼グループに追加
 	groupStart->CreateBlock<BlockStart>(GroupType::Start, DirectX::XMFLOAT3(0, 0, 0));
-	groupNormal->CreateBlock<BlockNormal>(GroupType::Normal, DirectX::XMFLOAT3(0, 0, 5));
-	groupNormal2->CreateBlock<BlockNormal>(GroupType::Normal, DirectX::XMFLOAT3(0, 0, -5));
+	groupNormal->CreateBlock<BlockNormal>(GroupType::Normal, DirectX::XMFLOAT3(3, 0, 2));
+	groupNormal2->CreateBlock<BlockNormal>(GroupType::Normal, DirectX::XMFLOAT3(1, 9, 2));
 	groupNormal3->CreateBlock<BlockNormal>(GroupType::Normal, DirectX::XMFLOAT3(0, 5, 0));
-	groupNormal4->CreateBlock<BlockNormal>(GroupType::Normal, DirectX::XMFLOAT3(0, -5, 0));
-	groupNormal5->CreateBlock<BlockNormal>(GroupType::Normal, DirectX::XMFLOAT3(-5, 0, 0));
-	groupNormal6->CreateBlock<BlockNormal>(GroupType::Normal, DirectX::XMFLOAT3(5, 0, 0));
+	groupNormal4->CreateBlock<BlockNormal>(GroupType::Normal, DirectX::XMFLOAT3(1, 6, 0));
+	groupNormal5->CreateBlock<BlockNormal>(GroupType::Normal, DirectX::XMFLOAT3(0, 7, 2));
+	groupNormal6->CreateBlock<BlockNormal>(GroupType::Normal, DirectX::XMFLOAT3(1, 0, 0));
 
 	// マネージャーに登録
 	BlockManager::Instance().AddGroup(std::move(groupStart));
