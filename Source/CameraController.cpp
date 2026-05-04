@@ -78,9 +78,30 @@ void CameraController::Update(float elapsedTime)
 
 		//回転軸と回転角から回転クォータニオン（q）を求める
 		// yaw
-		DirectX::XMVECTOR qy = DirectX::XMQuaternionRotationAxis(rightDir, angle.y);
-		orientationVec = DirectX::XMQuaternionMultiply(orientationVec, qy);
-		yaw = normalizeAngle(yaw - angle.y);
+		DirectX::XMVECTOR qy;
+		// yawの範囲制限
+		if (yaw - angle.y > YAW_MAX)
+		{
+			float correctionValue = yaw - YAW_MAX; //補正された回転角
+			qy = DirectX::XMQuaternionRotationAxis(rightDir, correctionValue);
+			orientationVec = DirectX::XMQuaternionMultiply(orientationVec, qy);
+			yaw = normalizeAngle(yaw - correctionValue);
+		}
+		else if (yaw - angle.y < -YAW_MAX)
+		{
+			float correctionValue = yaw - YAW_MIN; //補正された回転角
+			qy = DirectX::XMQuaternionRotationAxis(rightDir, correctionValue);
+			orientationVec = DirectX::XMQuaternionMultiply(orientationVec, qy);
+			yaw = normalizeAngle(yaw - correctionValue);
+		}
+		else
+		{
+			qy = DirectX::XMQuaternionRotationAxis(rightDir, angle.y);
+			orientationVec = DirectX::XMQuaternionMultiply(orientationVec, qy);
+			yaw = normalizeAngle(yaw - angle.y);
+		}
+
+
 		// pitch
 		DirectX::XMVECTOR qx = DirectX::XMQuaternionRotationAxis(upDir, angle.x);
 		orientationVec = DirectX::XMQuaternionMultiply(orientationVec, qx);
@@ -92,7 +113,7 @@ void CameraController::Update(float elapsedTime)
 	wheelParam = mouse.GetWheelRotationDelta();
 	if (mouse.GetWheelRotationDelta())
 	{		
-		range += mouse.GetWheelRotationDelta() * wheelSensitivity;
+		range -= mouse.GetWheelRotationDelta() * wheelSensitivity;
 		if (range > MAX_CAMERA_DISTANCE)
 			range = MAX_CAMERA_DISTANCE;
 		if (range < MIN_CAMERA_DISTANCE)
@@ -133,7 +154,7 @@ void CameraController::Update(float elapsedTime)
 
 	//回転行列から前方向ベクトルを取り出す
 	DirectX::XMStoreFloat3(&front, Q.r[2]);
-	DirectX::XMVECTOR positionVec = DirectX::XMLoadFloat3(&position);
+	//DirectX::XMVECTOR positionVec = DirectX::XMLoadFloat3(&position);
 
 	//注視点から後ろベクトル方向に一定距離離れたカメラ視点を求める
 	eye.x = target.x - front.x * range;
@@ -173,6 +194,7 @@ void CameraController::DrawDebugGUI()
 			ImGui::InputFloat("roll", &roll);
 			//カメラ距離
 			ImGui::InputFloat("range", &range);
+			//ImGui::SliderFloat("range", &range, MIN_CAMERA_DISTANCE, MAX_CAMERA_DISTANCE, "%.3f");
 			//マウス感度
 			ImGui::InputFloat("mouseSensitivity", &mouseSensitivity);
 			//マウスホイール感度
