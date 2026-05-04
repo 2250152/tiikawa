@@ -4,6 +4,7 @@
 #include"Character.h"
 #include"Effect.h"
 #include"System/AudioSource.h"
+#include"System/Input.h"
 
 //プライヤー
 class Player :public Character
@@ -40,6 +41,8 @@ public:
 	//ジャンプ入力処理
 	void InputJump();
 
+
+
 protected:
 	//着地した時に呼ばれる
 	void OnLanding()override;
@@ -53,6 +56,20 @@ private:
 
 	//重力処理
 	void ApplyLocalGravity(float elapsedTime);
+
+	//プレイヤーをブロックの面にくっつける処理
+	void StickToBlockFace();
+
+	//debug用の回転
+	void DebugTurn(float elapsedTime) {
+
+		GamePad& gamePad = Input::Instance().GetGamePad();
+		if(gamePad.GetButtonDown() & GamePad::BTN_Y)// "V"キーを押したら
+		//Z軸を徐々に回転
+		angle.z += DirectX::XMConvertToRadians(91); //91度回転
+		
+	}
+
 
 	//アニメーション=================================================
 	enum class State

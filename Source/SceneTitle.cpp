@@ -11,8 +11,8 @@
 void SceneTitle::Initialize()
 {
 	//スプライト初期化
-	sprite = new Sprite("Data/Sprite/Title.png");
-	font = new Sprite("Data/Sprite/S.png");
+	sprite = new Sprite("Data/Sprite/Title.png"); //タイトル背景
+	font = new Sprite("Data/Sprite/S.png");       //タイトル
 }
 
 //終了化

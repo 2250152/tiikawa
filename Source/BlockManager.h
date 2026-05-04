@@ -37,7 +37,8 @@ public:
 	void InputRotation();
 
 	//ƒQƒbƒ^[
-	//std::vector<std::unique_ptr<Group>> GetGroups
+	std::vector<std::unique_ptr<Group>>& const GetGroups() { return groups; }
+
 private:
 	//‰ò
 	std::vector<std::unique_ptr<Group>> groups;

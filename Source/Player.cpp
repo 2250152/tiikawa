@@ -3,10 +3,12 @@
 #include<imgui.h>
 #include"Camera.h"
 #include"System/Audio.h"
+#include <DirectXCollision.h>
+
 
 void Player::Initialize()
 {
-	model = new Model("Data/Model/player/Astronaut.mdl");
+	model = new Model("Data/Model/player/player.mdl");
 
 	//ヒットエフェクト読み込み
 	hitEffect = new Effect("Data/Effect/Hit.efk");
@@ -16,6 +18,8 @@ void Player::Initialize()
 
 	//モデルが大きいのでスケーリング
 	scale.x = scale.y = scale.z = 0.0005f;
+
+	state = State::IDLE;
 }
 
 //終了化
@@ -31,40 +35,54 @@ void Player::Update(float elapsedTime)
 {
 	
 	//移動入力処理
+	if (isGround)
 	InputMove(elapsedTime);
 
 	//速度処理更新
 	UpdateVelocity(elapsedTime);
+
+	//プレイヤーをブロックの面にくっつける処理
+	StickToBlockFace();
 	
 	//ジャンプ入力処理
-	//InputJump();
+	InputJump();
 
 	//重力処理
 	ApplyLocalGravity(elapsedTime);
+	
+	
+#ifdef _DEBUG 
 
+	//debug用の旋回処理(Z軸が中心の回転)
+	DebugTurn(elapsedTime);
 
-	//GamePad& gamePad = Input::Instance().GetGamePad();
-	//switch (state)
-	//{
-	//case State::IDLE:
-	//	if (gamePad.GetButtonDown() & GamePad::BTN_A && isGround)
-	//	{
-	//		state = State::JumpHipDrop;
-	//		PlayAnimation("Armature|CharacterAnimation", false);
-	//	}
-	//	break;
-	//case State::JumpHipDrop:
-	//	if (!isGround)
-	//	{
-	//		//ジャンプヒップドロップ中の処理
-	//	}
-	//	else
-	//	{
-	//		state = State::IDLE;
-	//		PlayAnimation("Armature|CharacterAnimation", true);
-	//	}
-	//	break;
-	//}
+#endif
+
+	GamePad& gamePad = Input::Instance().GetGamePad();
+	switch (state)
+	{
+	case State::IDLE:
+	
+		if (gamePad.GetButtonDown() & GamePad::BTN_A)
+		{
+			state = State::JumpHipDrop;
+			PlayAnimation("hip drop", false);
+		}
+		break;
+
+	case State::JumpHipDrop:
+
+		if (!isGround)
+		{
+			//ジャンプヒップドロップ中の処理
+		}
+		else
+		{
+			state = State::IDLE;
+			PlayAnimation("IDLE", true);
+		}
+		break;
+	}
 	
 
 
@@ -217,10 +235,10 @@ void Player::ApplyLocalGravity(float elapsedTime)
 	// プレイヤーのローカルupベクトルを計算
 	DirectX::XMVECTOR UP = DirectX::XMVectorSet(0, 1, 0, 0);
 	DirectX::XMMATRIX R = DirectX::XMMatrixRotationRollPitchYaw(angle.x, angle.y, angle.z);
-	DirectX::XMVECTOR localUp = DirectX::XMVector3TransformNormal(UP, R);
+	DirectX::XMVECTOR localUp = DirectX::XMVector3TransformNormal(UP, R);//XMVector3TransformNormal関数はベクトルを行列で変換する関数。ここではプレイヤーの回転行列Rを使って、ワールド座標系のupベクトルをプレイヤーのローカル座標系のupベクトルに変換している。
 
 	// upベクトルの正反対（down方向）を求める
-	DirectX::XMVECTOR localDown = DirectX::XMVectorNegate(localUp);
+	DirectX::XMVECTOR localDown = DirectX::XMVectorNegate(localUp);//XMVectorNegate関数はベクトルの符号を反転させる関数。ここではプレイヤーのローカルupベクトルを反転させて、ローカルdownベクトルを求めている。
 
 	// 重力加速度ベクトルを求める（Character::gravityは負値なので-multしない）
 	DirectX::XMVECTOR gravityVec = DirectX::XMVectorScale(localDown, std::abs(gravity));
@@ -341,4 +359,19 @@ void Player::UpdateAnimation(float elapsedTime)
 	}
 	//モデル行列更新
 	model->UpdateTransform();
+}
+
+void Player::StickToBlockFace()
+{
+	//左クリックをしたら
+	GamePad& gamePad = Input::Instance().GetGamePad();
+	//if (gamePad.GetButtonDown() & )
+	//{
+	//	// スクリーンサイズ取得
+	//	float screenWidth = Graphics::Instance().GetScreenWidth();
+	//	float screenHeight = Graphics::Instance().GetScreenHeight();
+	//}
+
+
+
 }
