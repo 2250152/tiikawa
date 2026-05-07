@@ -19,14 +19,6 @@ enum RotateAxis
 	AxisY,
 	AxisZ
 };
-
-
-enum RotateAxis
-{
-	AxisX,
-	AxisY,
-	AxisZ
-};
 class Group
 {
 private:
