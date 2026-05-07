@@ -19,5 +19,6 @@ private:
 	Sprite* Map3 = nullptr;
 	Sprite* Map4 = nullptr;
 	Sprite* Map5 = nullptr;
+	Sprite* feed = nullptr;
 	int stage=0;  //選択してるステージ
 };

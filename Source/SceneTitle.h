@@ -29,8 +29,8 @@ public:
 
 private:
 	Sprite* sprite = nullptr;
-
 	Sprite* font = nullptr;
+	Sprite* feed = nullptr;
 	//void DrawText(Sprite* font, const RenderContext& rc,
 	//	const char* text,
 	//	float x, float y,

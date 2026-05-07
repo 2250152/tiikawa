@@ -21,6 +21,12 @@ enum RotateAxis
 };
 
 
+enum RotateAxis
+{
+	AxisX,
+	AxisY,
+	AxisZ
+};
 class Group
 {
 private:

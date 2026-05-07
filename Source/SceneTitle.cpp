@@ -6,6 +6,8 @@
 #include "SceneManager.h"
 #include"SceneLoading.h"
 
+bool feedOut = false;
+float feedColor = 0.0f;
 
 //初期化
 void SceneTitle::Initialize()
@@ -13,6 +15,7 @@ void SceneTitle::Initialize()
 	//スプライト初期化
 	sprite = new Sprite("Data/Sprite/Title.png"); //タイトル背景
 	font = new Sprite("Data/Sprite/S.png");       //タイトル
+	feed = new Sprite("Data/Sprite/black.png");  //フェードアウト
 }
 
 //終了化
@@ -23,14 +26,17 @@ void SceneTitle::Finalize()
 	{
 		delete sprite;		
 		delete font;
+		delete feed;
 		sprite = nullptr;
 		font = nullptr;
+		feed = nullptr;
 	}
 }
 
 //更新処理
 void SceneTitle::Update(float elapsedTime)
 {
+	
 	GamePad& gamePad = Input::Instance().GetGamePad();
 
 	// 何かボタンを押したらゲームシーンへ切り替え
@@ -42,12 +48,18 @@ void SceneTitle::Update(float elapsedTime)
 
 	if (gamePad.GetButtonDown() & anyButton)
 	{
-		/*SceneManager::Instance().ChangeScene(new SceneGame);*/
-		/*SceneManager::Instance().ChangeScene(new SceneLoading);*/
-		SceneManager::Instance().ChangeScene(new StageSelect);
-		
+		feedOut = true;
 	}
-
+	if (feedOut)
+	{
+		feedColor += 0.003f;
+	}
+	if (feedColor >= 1.0f) {
+		SceneManager::Instance().ChangeScene(new StageSelect);
+		feedOut = false;
+	}
+	if (feedColor >= 1.0f)
+		feedColor = 0.0f;
 }
 
 //描画処理
@@ -73,23 +85,19 @@ void SceneTitle::Render()
 		sprite->Render(rc,
 			0, 0, 0, screenWidth, screenHeight,
 			0,
-			1, 1, 0, 1);
-		float a= 1.0f;
+			1, 1, 1, 1);
+		
 		font->Render(rc,
 			570, 500, 0, 256, 256,
 			0,
-			1, 1, 1, a);
+			1, 1, 1, 1);
 		
-	/*	DrawText(font, rc, "START", 640, 600, 5, 5);
-	RECT rect;
-	SetRect(&rect, 10, 10, 200, 100);
 
-	DrawTextW(font,rc, "Hello, World!",  10, 10, 32,32);*/
-
-	
+		feed->Render(rc,
+			0, 0, 0, screenWidth, screenHeight,
+			0,
+			1, 1, 0, feedColor);
 	}
-	
-
 }
 
 //GUI描画
