@@ -5,6 +5,8 @@
 
 #include"Scene.h"
 
+#include "Stage.h"
+
 // ƒQ[ƒ€ƒV[ƒ“
 class SceneGame:public Scene
 {
@@ -34,7 +36,7 @@ public:
 	void DrawGUI()override;
 
 private:
-	
+	Stage stage;
 	/*Player* player = nullptr;*/
 	//CameraController* cameraController = nullptr;
 };

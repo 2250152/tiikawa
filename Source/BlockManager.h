@@ -39,6 +39,8 @@ public:
 	//ƒQƒbƒ^[
 	std::vector<std::unique_ptr<Group>>& const GetGroups() { return groups; }
 
+	void Clear();
+
 private:
 	//‰ò
 	std::vector<std::unique_ptr<Group>> groups;

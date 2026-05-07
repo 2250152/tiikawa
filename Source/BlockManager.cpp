@@ -160,3 +160,10 @@ void Group::RequestRotate(RotateAxis axis)
 {
 	revolve(axis);
 }
+
+void BlockManager::Clear()
+{
+	removes.clear();
+
+	groups.clear();
+}
