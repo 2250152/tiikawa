@@ -99,21 +99,22 @@ void Group::Go()
 
 void Group::revolve(RotateAxis axis)
 {
-	if (state == Idle)
-	{
-		rotateAxis = axis;
+	if (state != Idle)
+		return;
 
-		pivot = GetStartBlockCenter();
+	rotateAxis = axis;
 
-		targetAngle += DirectX::XM_PIDIV2;
+	pivot = GetStartBlockCenter();
 
-		if (targetAngle >= DirectX::XM_2PI)
-			targetAngle -= DirectX::XM_2PI;
+	currentAngle = 0.0f;
+	prevAngle = 0.0f;
+	targetAngle = DirectX::XM_PIDIV2;
 
-		rotatedAmount = 0.0f;
+	visualAngle = 0.0f;
 
-		state = Rotating;
-	}
+	rotatedAmount = 0.0f;
+
+	state = Rotating;
 
 }
 
@@ -192,6 +193,8 @@ int Group::WillHit(Group* otherGroup, DirectX::XMFLOAT3 move)
 
 	return 0;
 }
+
+
 
 bool Group::WillHitAnyGroup(float dx, const std::vector<Group*>& allGroups)
 {
@@ -277,6 +280,7 @@ void Group::Rotation(float elapsedTime)
 
 	float angleDelta = currentAngle - prevAngle;
 
+	visualAngle += angleDelta;
 
 	rotatedAmount += fabs(angleDelta);
 
@@ -286,6 +290,7 @@ void Group::Rotation(float elapsedTime)
 	{
 		angleDelta -= (rotatedAmount - DirectX::XM_PIDIV2);
 		currentAngle = targetAngle;
+		visualAngle = DirectX::XM_PIDIV2;
 		state = Idle;
 	}
 
@@ -323,7 +328,36 @@ void Group::Rotation(float elapsedTime)
 
 		DirectX::XMStoreFloat3(&b->position, result);
 
-		b->angle.x += angleDelta;
+		/*switch (rotateAxis)
+		{
+		case AxisX:
+			b->angle.x += angleDelta;
+			break;
+
+		case AxisY:
+			b->angle.y += angleDelta;
+			break;
+
+		case AxisZ:
+			b->angle.z += angleDelta;
+			break;
+		}*/
+		b->angle = { 0,0,0 };
+
+		switch (rotateAxis)
+		{
+		case AxisX:
+			b->angle.x = visualAngle;
+			break;
+
+		case AxisY:
+			b->angle.y = visualAngle;
+			break;
+
+		case AxisZ:
+			b->angle.z = visualAngle;
+			break;
+		}
 	}
 
 	prevAngle = currentAngle;

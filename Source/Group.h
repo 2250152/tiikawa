@@ -13,6 +13,13 @@ enum State
 	Moving, // “®‚¢‚Ä‚é
 	Rotating, //‰ñ“]‚µ‚Ä‚¢‚é
 };
+enum RotateAxis
+{
+	AxisX,
+	AxisY,
+	AxisZ
+};
+
 
 class Group
 {
@@ -82,6 +89,7 @@ public:
 
 	void ClearHitEvent(){ hitEvent.active = false; }
 
+	void RequestRotate(RotateAxis axis);
 
 private:
 	std::vector<std::unique_ptr<Block>> blocks;
@@ -124,5 +132,8 @@ private:
 	HitEvent hitEvent;
 
 	RotateAxis rotateAxis=AxisX;
+
+	//‰‰o‚Ì‰ñ“]—p
+	float visualAngle = 0.0f;
 
 };

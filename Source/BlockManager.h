@@ -9,7 +9,7 @@
 class BlockManager
 {
 private:
-	BlockManager() { hitEffect = new Effect("Data/Effect/Blow11.efk"); }
+	BlockManager() { hitEffect = new Effect("Data/Effect/goalEnd.efk"); }
 	~BlockManager() { delete hitEffect; }
 public:
 	static BlockManager& Instance()

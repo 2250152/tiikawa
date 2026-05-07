@@ -135,41 +135,28 @@ void BlockManager::DrawDebugGUI()
 
 void BlockManager::InputRotation()
 {
-	Camera& camera = Camera::Instance();
-	DirectX::XMFLOAT3 front = camera.GetFront();
-
-	bool sideView = fabs(front.x) > fabs(front.z);
+	GamePad& gamePad = Input::Instance().GetGamePad();
 
 	for (auto& group : groups)
 	{
-		// W
-		if (GetAsyncKeyState('W') & 0x0001)
+		if (gamePad.GetButtonDown() & GamePad::BTN_X)
 		{
-			if (sideView)
-				group->revolve(AxisZ);
-			else
-				group->revolve(AxisX);
+			group->RequestRotate(AxisX);
 		}
 
-		// S
-		if (GetAsyncKeyState('S') & 0x0001)
+		if (gamePad.GetButtonDown() & GamePad::BTN_Y)
 		{
-			if (sideView)
-				group->revolve(AxisZ);
-			else
-				group->revolve(AxisX);
+			group->RequestRotate(AxisY);
 		}
 
-		// A
-		if (GetAsyncKeyState('A') & 0x0001)
+		if (gamePad.GetButtonDown() & GamePad::BTN_B)
 		{
-			group->revolve(AxisY);
-		}
-
-		// D
-		if (GetAsyncKeyState('D') & 0x0001)
-		{
-			group->revolve(AxisY);
+			group->RequestRotate(AxisZ);
 		}
 	}
+}
+
+void Group::RequestRotate(RotateAxis axis)
+{
+	revolve(axis);
 }
