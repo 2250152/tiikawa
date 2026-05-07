@@ -14,14 +14,6 @@ enum State
 	Rotating, //‰ñ“]‚µ‚Ä‚¢‚é
 };
 
-//‰ñ“]Ž²
-enum RotateAxis
-{
-	AxisX,
-	AxisY,
-	AxisZ
-};
-
 class Group
 {
 private:
@@ -130,7 +122,5 @@ private:
 	};
 
 	HitEvent hitEvent;
-
-	RotateAxis rotate;
 
 };
