@@ -67,7 +67,7 @@ public:
 
 	void Go();
 
-	void revolve();
+	void revolve(RotateAxis axis);
 
 	int WillHit(Group* otherGroup, DirectX::XMFLOAT3 dx);
 
@@ -131,6 +131,6 @@ private:
 
 	HitEvent hitEvent;
 
-	RotateAxis rotate;
+	RotateAxis rotateAxis=AxisX;
 
 };

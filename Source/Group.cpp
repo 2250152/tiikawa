@@ -97,20 +97,21 @@ void Group::Go()
 	state = Moving;
 }
 
-void Group::revolve()
+void Group::revolve(RotateAxis axis)
 {
 	if (state == Idle)
 	{
+		rotateAxis = axis;
+
 		pivot = GetStartBlockCenter();
 
+		targetAngle += DirectX::XM_PIDIV2;
 
-		targetAngle += DirectX::XM_PIDIV2; // +90“x
-
-		// 360’´‚¦‚½‚ç–ß‚·
 		if (targetAngle >= DirectX::XM_2PI)
 			targetAngle -= DirectX::XM_2PI;
 
 		rotatedAmount = 0.0f;
+
 		state = Rotating;
 	}
 
@@ -299,7 +300,21 @@ void Group::Rotation(float elapsedTime)
 
 		// ‰ñ“]
 	
-		DirectX::XMMATRIX R = DirectX::XMMatrixRotationX(angleDelta);
+		DirectX::XMMATRIX R;
+
+		switch (rotateAxis)
+		{
+		case AxisX:
+			R = DirectX::XMMatrixRotationX(angleDelta);
+			break;
+		case AxisY:
+			R = DirectX::XMMatrixRotationY(angleDelta);
+			break;
+		case AxisZ:
+			R = DirectX::XMMatrixRotationZ(angleDelta);
+			break;
+
+		}
 
 		local = DirectX::XMVector3Transform(local, R);
 
