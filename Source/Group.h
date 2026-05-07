@@ -14,6 +14,12 @@ enum State
 	Rotating, //‰ñ“]‚µ‚Ä‚¢‚é
 };
 
+enum RotateAxis
+{
+	AxisX,
+	AxisY,
+	AxisZ
+};
 class Group
 {
 private:
