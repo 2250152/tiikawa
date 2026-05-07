@@ -45,7 +45,7 @@ void Player::Update(float elapsedTime)
 	UpdateVelocity(elapsedTime);
 
 	//プレイヤーをブロックの面にくっつける処理
-	//StickToBlockFace();
+	StickToBlockFace();
 	
 	//ジャンプ入力処理
 	InputJump();
@@ -370,8 +370,8 @@ void Player::StickToBlockFace()
 	Mouse& mouse = Input::Instance().GetMouse();
 
 	//スクリーンサイズを取得
-	float screenWidth = static_cast<float>(mouse.GetScreenWidth());
-	float screenHeight = static_cast<float>(mouse.GetScreenHeight());
+	float screenWidth = Graphics::Instance().GetScreenWidth();
+	float screenHeight = Graphics::Instance().GetScreenHeight();
 
 	//マウスカーソルの位置を取得
 	POINT cursor;
@@ -441,21 +441,24 @@ void Player::StickToBlockFace()
 
 	//ステージとレイキャストを行い、配置座標を求める
 	DirectX::XMFLOAT3 hitPosition, hitNormal;
+	float hitDistance;
 
 	for (const auto& group : BlockManager::Instance().GetGroups())
 	{
 		for (const auto& block : group->GetBlocks())
 		{
-			Block* b = block.get();
 
 			//デバッグ
-			//if (b->GetModel() == nullptr) continue;//モデルがないブロックはスルー
+			if (block->GetModel() == nullptr) continue;//モデルがないブロックはスルー
 			//if (b->Gettranceform()._41 == 0.0f && b->Gettranceform()._42 == 0.0f && b->Gettranceform()._43 == 0.0f) continue;//位置が(0,0,0)のブロックはスルー
 
-			if (Collision::RayCast(rayStart,rayEnd,b->Gettranceform(),b->GetModel(),hitPosition,hitNormal))
+			//ここでエラーがおきちょる
+			if (Collision::RayCast(rayStart,rayEnd,block->Gettranceform(),block->GetModel(),hitPosition,hitNormal,hitDistance))
 			{
 				// ヒット処理
-				//position = hitPosition;
+				position = hitPosition;
+				isGround = true;
+				velocity = { 0.0f,0.0f,0.0f };
 			}
 		}
 	}
