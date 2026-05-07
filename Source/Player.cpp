@@ -442,6 +442,7 @@ void Player::StickToBlockFace()
 	//ステージとレイキャストを行い、配置座標を求める
 	DirectX::XMFLOAT3 hitPosition, hitNormal;
 	float hitDistance;
+	float normalX, normalY, normalZ;
 
 	for (const auto& group : BlockManager::Instance().GetGroups())
 	{
@@ -449,16 +450,29 @@ void Player::StickToBlockFace()
 		{
 
 			//デバッグ
-			if (block->GetModel() == nullptr) continue;//モデルがないブロックはスルー
+			//if (block->GetModel() == nullptr) continue;//モデルがないブロックはスルー
 			//if (b->Gettranceform()._41 == 0.0f && b->Gettranceform()._42 == 0.0f && b->Gettranceform()._43 == 0.0f) continue;//位置が(0,0,0)のブロックはスルー
 
 			//ここでエラーがおきちょる
 			if (Collision::RayCast(rayStart,rayEnd,block->Gettranceform(),block->GetModel(),hitPosition,hitNormal,hitDistance))
 			{
-				// ヒット処理
-				position = hitPosition;
-				isGround = true;
-				velocity = { 0.0f,0.0f,0.0f };
+				GamePad& gamePad = Input::Instance().GetGamePad();
+				if (mouse.GetButton() & mouse.BTN_LEFT)
+				{
+					DirectX::XMVECTOR normal = DirectX::XMLoadFloat3(&hitNormal);
+					normal = DirectX::XMVector3Normalize(normal);
+					normalX = DirectX::XMVectorGetX(normal);
+					normalY = DirectX::XMVectorGetY(normal);
+					normalZ = DirectX::XMVectorGetZ(normal);
+
+
+					// ヒット処理
+					position = hitPosition;
+					angle.x = atan2f(normalZ, normalY);
+					angle.z = -atan2f(normalX, normalY);
+					isGround = true;
+					velocity = { 0.0f,0.0f,0.0f };
+				}
 			}
 		}
 	}
