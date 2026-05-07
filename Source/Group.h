@@ -14,6 +14,12 @@ enum State
 	Rotating, //‰ñ“]‚µ‚Ä‚¢‚é
 };
 
+enum RotateAxis
+{
+	AxisX,
+	AxisY,
+	AxisZ
+};
 class Group
 {
 private:
@@ -59,7 +65,7 @@ public:
 
 	void Go();
 
-	void revolve();
+	void revolve(RotateAxis axis);
 
 	int WillHit(Group* otherGroup, DirectX::XMFLOAT3 dx);
 
@@ -122,5 +128,7 @@ private:
 	};
 
 	HitEvent hitEvent;
+
+	RotateAxis rotateAxis=AxisX;
 
 };

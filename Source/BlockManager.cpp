@@ -1,5 +1,6 @@
 #include "BlockManager.h"
 #include"System/Input.h"
+#include <Camera.h>
 //‚Ô‚¿Á‚µ
 void BlockManager::Remove(Group* group)
 {
@@ -134,12 +135,41 @@ void BlockManager::DrawDebugGUI()
 
 void BlockManager::InputRotation()
 {
-	GamePad& gamePad = Input::Instance().GetGamePad();
-	if (gamePad.GetButtonDown() & GamePad::BTN_B)
+	Camera& camera = Camera::Instance();
+	DirectX::XMFLOAT3 front = camera.GetFront();
+
+	bool sideView = fabs(front.x) > fabs(front.z);
+
+	for (auto& group : groups)
 	{
-		for (auto& group : groups)
+		// W
+		if (GetAsyncKeyState('W') & 0x0001)
 		{
-			group->revolve();
+			if (sideView)
+				group->revolve(AxisZ);
+			else
+				group->revolve(AxisX);
+		}
+
+		// S
+		if (GetAsyncKeyState('S') & 0x0001)
+		{
+			if (sideView)
+				group->revolve(AxisZ);
+			else
+				group->revolve(AxisX);
+		}
+
+		// A
+		if (GetAsyncKeyState('A') & 0x0001)
+		{
+			group->revolve(AxisY);
+		}
+
+		// D
+		if (GetAsyncKeyState('D') & 0x0001)
+		{
+			group->revolve(AxisY);
 		}
 	}
 }
