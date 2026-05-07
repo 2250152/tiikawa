@@ -453,11 +453,10 @@ void Player::StickToBlockFace()
 			//if (block->GetModel() == nullptr) continue;//モデルがないブロックはスルー
 			//if (b->Gettranceform()._41 == 0.0f && b->Gettranceform()._42 == 0.0f && b->Gettranceform()._43 == 0.0f) continue;//位置が(0,0,0)のブロックはスルー
 
-			//ここでエラーがおきちょる
 			if (Collision::RayCast(rayStart,rayEnd,block->Gettranceform(),block->GetModel(),hitPosition,hitNormal,hitDistance))
 			{
 				GamePad& gamePad = Input::Instance().GetGamePad();
-				if (mouse.GetButton() & mouse.BTN_LEFT)
+				if (mouse.GetButtonDown() & mouse.BTN_LEFT)
 				{
 					DirectX::XMVECTOR normal = DirectX::XMLoadFloat3(&hitNormal);
 					normal = DirectX::XMVector3Normalize(normal);
