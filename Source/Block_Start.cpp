@@ -3,7 +3,7 @@
 //コンストラクタ
 BlockStart::BlockStart(GroupType type, DirectX::XMFLOAT3 pos)
 {
-	model = new Model("Data/Model/BlockNormal/BlockNormal.mdl");
+	model = new Model("Data/Model/BlockNormal/BlockNormal.mdl");//BlockNormal.mdl    blockk.mdl
 	scale.x = scale.y = scale.z = 0.01f;
 	size = model->GetSize();
 	position = pos;
