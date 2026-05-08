@@ -39,7 +39,7 @@ void SceneGame::Initialize()
 	SkyBox::Instance().Initialize();
 
 	//‚±‚±‚ÅstageŒÄ‚Ô‚í‚æ
-	stage.Load(2);
+	stage.Load(1);
 
 }
 

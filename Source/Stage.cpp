@@ -9,6 +9,7 @@ void Stage::Load(int stageNo)
 {
     BlockManager::Instance().Clear();
 
+    //‚à‚¤‚±‚±‚Å‘S•”ì‚Á‚Ä‚Ë
     switch (stageNo)
     {
     case 1:
