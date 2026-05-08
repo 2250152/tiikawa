@@ -36,23 +36,16 @@ void Stage::Load(int stageNo)
         BlockManager::Instance().AddGroup(std::move(groupNormal4));
         BlockManager::Instance().AddGroup(std::move(groupNormal5));
         BlockManager::Instance().AddGroup(std::move(groupNormal6));
-
         break;
     }
 
     case 2:
     {
-        auto start = std::make_unique<Group>(GroupType::Start);
-
-        start->CreateBlock<BlockStart>(
-            GroupType::Start,
-            DirectX::XMFLOAT3(0, 0, 0));
-
         // •Ê”z’u
+        auto start = std::make_unique<Group>(GroupType::Start);
         auto normal1 = std::make_unique<Group>(GroupType::Normal);
-        normal1->CreateBlock<BlockNormal>(
-            GroupType::Normal,
-            DirectX::XMFLOAT3(5, 3, 0));
+        start->CreateBlock<BlockStart>(GroupType::Start,DirectX::XMFLOAT3(0, 0, 0));
+        normal1->CreateBlock<BlockNormal>(GroupType::Normal,DirectX::XMFLOAT3(5, 3, 0));
 
         BlockManager::Instance().AddGroup(std::move(start));
         BlockManager::Instance().AddGroup(std::move(normal1));
