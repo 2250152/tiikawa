@@ -8,6 +8,9 @@
 #include "Block_Normal.h"
 #include "Block_Start.h"
 #include"SkyBox.h"
+#include"SceneManager.h"
+#include"SceneLoading.h"
+#include"StageSelect.h"
 
 // 初期化
 void SceneGame::Initialize()
@@ -94,6 +97,15 @@ void SceneGame::Update(float elapsedTime)
 	BlockManager::Instance().Update(elapsedTime);
 
 	Player::Instance().Update(elapsedTime);
+
+	//ステージセレクトに戻る
+	GamePad& gamepad = Input::Instance().GetGamePad();
+	if (gamepad.GetButtonDown() & (GamePad::BTN_UP))  //ボタンは自由に
+	{
+		SceneManager::Instance().ChangeScene(
+			new SceneLoading(new StageSelect));
+	}
+
 }
 
 // 描画処理
