@@ -20,15 +20,16 @@ void Stage::Load(int stageNo)
         auto groupNormal3 = std::make_unique<Group>(GroupType::Normal);
         auto groupNormal4 = std::make_unique<Group>(GroupType::Normal);
         auto groupNormal5 = std::make_unique<Group>(GroupType::Normal);
-        auto groupNormal6 = std::make_unique<Group>(GroupType::Normal);
-
+      //↓最初からつながってるやつはここを一緒にしてね(下二つみたいな感じ！！)
         start->CreateBlock<BlockStart>(GroupType::Start,DirectX::XMFLOAT3(0, 0, 0));
+        start->CreateBlock<BlockNormal>(GroupType::Normal, DirectX::XMFLOAT3(1, 0, 0));
+                                                  //↑ここはブロック自体の働きだから合わせず欲しいブロックのものを
         groupNormal->CreateBlock<BlockNormal>(GroupType::Normal,DirectX::XMFLOAT3(3, 0, 2));
         groupNormal2->CreateBlock<BlockNormal>(GroupType::Normal, DirectX::XMFLOAT3(1, 9, 2));
         groupNormal3->CreateBlock<BlockNormal>(GroupType::Normal, DirectX::XMFLOAT3(0, 5, 0));
         groupNormal4->CreateBlock<BlockNormal>(GroupType::Normal, DirectX::XMFLOAT3(1, 6, 0));
         groupNormal5->CreateBlock<BlockNormal>(GroupType::Normal, DirectX::XMFLOAT3(0, 7, 2));
-        groupNormal6->CreateBlock<BlockNormal>(GroupType::Normal, DirectX::XMFLOAT3(1, 0, 0));
+        
 
         BlockManager::Instance().AddGroup(std::move(start));
         BlockManager::Instance().AddGroup(std::move(groupNormal));
@@ -36,7 +37,6 @@ void Stage::Load(int stageNo)
         BlockManager::Instance().AddGroup(std::move(groupNormal3));
         BlockManager::Instance().AddGroup(std::move(groupNormal4));
         BlockManager::Instance().AddGroup(std::move(groupNormal5));
-        BlockManager::Instance().AddGroup(std::move(groupNormal6));
         break;
     }
 

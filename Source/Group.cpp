@@ -33,8 +33,16 @@ void Group::Move(float elapsedTime, const std::vector<Group*>& allGroups)
 {
 	if (state != Moving) return;
 
-	float speed = 1.0f;
-	DirectX::XMFLOAT3 move = { 0, speed * elapsedTime, 0 };
+	DirectX::XMFLOAT3 speed = {0,1,0};
+	DirectX::XMFLOAT3 move;
+	//‚±‚±‚Åplayer‚Æ‚©Žg‚Á‚Ä•Ï‚¦‚æ‚¤
+
+
+
+
+	move.x = speed.x * elapsedTime;
+	move.y = speed.y * elapsedTime;
+	move.z = speed.z * elapsedTime;
 
 	//‚Ü‚¸“®‚­
 	for (auto& b : blocks)
@@ -55,7 +63,7 @@ void Group::Move(float elapsedTime, const std::vector<Group*>& allGroups)
 		{
 			pendingMerge = g;
 			state = Idle;
-			return;
+			//return;
 		}
 	}
 }
@@ -293,6 +301,8 @@ void Group::Rotation(float elapsedTime)
 		visualAngle = DirectX::XM_PIDIV2;
 		state = Idle;
 	}
+
+
 
 	for (auto& b : blocks)
 	{
