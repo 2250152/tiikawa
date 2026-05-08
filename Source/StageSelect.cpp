@@ -9,6 +9,7 @@
 bool feedTime = false;
 int PosX=0;
 float feedcolor = 1;
+float feedcolor2 = 0;
 void StageSelect::Initialize()
 {
 	MapBack = new Sprite("Data/Sprite/Title.png");//ステージセレクト背景
@@ -36,13 +37,17 @@ void StageSelect::Finalize()
 	Map5 = nullptr;
 	delete feed;
 	feed = nullptr;
+	feedcolor = 1;
+	feedcolor2 = 0;
 }
 
 void StageSelect::Update(float elapsedTime)
 {
-	feedcolor -= 0.003f;
-	if (feedcolor >= 1.0f)
-		feedcolor = 1.0f;
+	if (feedcolor >= 0) {
+		feedcolor -= 0.005f;
+		if (feedcolor <= 0)
+			feedcolor = 0;
+	}
 	GamePad& gamepad = Input::Instance().GetGamePad();
 	//左右でステージセレクト
 	if (gamepad.GetButtonDown() & GamePad::BTN_LEFT)
@@ -65,21 +70,21 @@ void StageSelect::Update(float elapsedTime)
 		feedcolor= 1;
 	}
 	//タイトルに戻る
-	//if (gamepad.GetButtonDown() & GamePad::BTN_B)
-	//{
-	//	feedTime=true;
-	//	//feedcolor = 1;
-	//}
-	//if (feedTime) {
-	//	feedcolor += 0.003f;
-	//}
-	//if (feedcolor >= 1)
-	//{
-	//	SceneManager::Instance().ChangeScene(
-	//		new SceneTitle()
-	//	);
-	//}
-
+	if (gamepad.GetButtonDown() & GamePad::BTN_B)
+	{
+		feedTime=true;		
+	}
+	if (feedTime) 
+	{
+		feedcolor2 += 0.005f;
+	}
+	if (feedcolor2 >= 1)
+	{
+		SceneManager::Instance().ChangeScene(new SceneTitle());
+		feedTime = false;
+		
+	}
+	
 }
 
 void StageSelect::Render()
@@ -110,6 +115,7 @@ void StageSelect::Render()
 			Map5->Render(rc, 0, 0, 0, w, h, 0, 0, 1, 1, 1);  break;
 		}
 		feed->Render(rc, PosX, 0, 0, w, h, 0, 1, 1, 1, feedcolor);
+		feed->Render(rc, PosX, 0, 0, w, h, 0, 1, 1, 1, feedcolor2);
 	
 }
 

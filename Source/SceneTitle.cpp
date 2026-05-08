@@ -6,9 +6,10 @@
 #include "SceneManager.h"
 #include"SceneLoading.h"
 
+bool Back = false;
 bool feedOut = false;
 float feedColor = 0.0f;
-
+float feedColor2 = 1.0f;
 //初期化
 void SceneTitle::Initialize()
 {
@@ -30,13 +31,21 @@ void SceneTitle::Finalize()
 		sprite = nullptr;
 		font = nullptr;
 		feed = nullptr;
+		feedColor = 0;
+		feedColor2 = 1;
 	}
 }
 
 //更新処理
 void SceneTitle::Update(float elapsedTime)
 {
-	
+	if (Back)
+	{
+		feedColor2 -= 0.005f;
+		if (feedColor2 <= 0) {
+			feedColor2 = 0;
+		}
+	}
 	GamePad& gamePad = Input::Instance().GetGamePad();
 
 	// 何かボタンを押したらゲームシーンへ切り替え
@@ -45,21 +54,21 @@ void SceneTitle::Update(float elapsedTime)
 		GamePad::BTN_B |
 		GamePad::BTN_X |
 		GamePad::BTN_Y;
-
+	
 	if (gamePad.GetButtonDown() & anyButton)
 	{
 		feedOut = true;
 	}
 	if (feedOut)
 	{
-		feedColor += 0.003f;
+		feedColor += 0.005f;
 	}
 	if (feedColor >= 1.0f) {
 		SceneManager::Instance().ChangeScene(new StageSelect);
 		feedOut = false;
+		Back = true;
 	}
-	if (feedColor >= 1.0f)
-		feedColor = 0.0f;
+	
 }
 
 //描画処理
@@ -97,6 +106,13 @@ void SceneTitle::Render()
 			0, 0, 0, screenWidth, screenHeight,
 			0,
 			1, 1, 0, feedColor);
+		
+		if (Back) {
+			feed->Render(rc,
+				0, 0, 0, screenWidth, screenHeight,
+				0,
+				1, 1, 0, feedColor2);
+		}
 	}
 }
 
