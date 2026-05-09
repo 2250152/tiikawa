@@ -8,6 +8,9 @@
 class Character
 {
 public:
+	//‚æ‚µ‚«‚É‚Ç[‚¼ô
+	const DirectX::XMFLOAT3& GetVelocity() const { return velocity; }
+
 	//ˆÊ’uæ“¾
 	const DirectX::XMFLOAT3& GetPosition() const { return position; }
 

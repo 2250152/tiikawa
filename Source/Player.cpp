@@ -38,20 +38,21 @@ void Player::Update(float elapsedTime)
 {
 	
 	//移動入力処理
-	if (isGround)
-	InputMove(elapsedTime);
+	/*if (isGround)
+	InputMove(elapsedTime);*/
 
-	//速度処理更新
-	UpdateVelocity(elapsedTime);
 
-	//プレイヤーをブロックの面にくっつける処理
+	//プレイヤーをブロックの面に配置する処理
 	StickToBlockFace();
 	
 	//ジャンプ入力処理
 	InputJump();
-
 	//重力処理
 	ApplyLocalGravity(elapsedTime);
+	//速度処理更新
+	UpdateVelocity(elapsedTime);
+
+
 	
 	
 #ifdef _DEBUG 
@@ -456,7 +457,7 @@ void Player::StickToBlockFace()
 			if (Collision::RayCast(rayStart,rayEnd,block->Gettranceform(),block->GetModel(),hitPosition,hitNormal,hitDistance))
 			{
 				GamePad& gamePad = Input::Instance().GetGamePad();
-				if (mouse.GetButtonDown() & mouse.BTN_LEFT)
+				if (mouse.GetButtonDown() & mouse.BTN_LEFT)//左クリックをしたら
 				{
 					DirectX::XMVECTOR normal = DirectX::XMLoadFloat3(&hitNormal);
 					normal = DirectX::XMVector3Normalize(normal);
@@ -475,12 +476,5 @@ void Player::StickToBlockFace()
 			}
 		}
 	}
-
-
-
-	//左クリックをしたら
-	//GamePad& gamePad = Input::Instance().GetGamePad();
-
-
 
 }

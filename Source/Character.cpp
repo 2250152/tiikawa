@@ -85,14 +85,26 @@ void Character::Turn(float elapsedTime, float vx, float vz, float speed)
 		angle.y += rot;
 	}
 
-
 }
 
 //ジャンプ処理
 void Character::Jump(float speed)
 {
 	//上方向の力を設定
-	velocity.y = speed;
+	//velocity.y = speed;
+
+	//playerのup(上方向のベクトルを算出)
+	DirectX::XMVECTOR up = DirectX::XMVectorSet(0, 1, 0, 0);
+	DirectX::XMMATRIX R = DirectX::XMMatrixRotationRollPitchYaw(angle.x, angle.y, angle.z);
+	DirectX::XMVECTOR localUp = DirectX::XMVector3TransformNormal(up, R);
+	localUp = DirectX::XMVector3Normalize(localUp);
+
+	//ジャンプ速度を加える
+	DirectX::XMVECTOR vel = DirectX::XMLoadFloat3(&velocity);
+	vel = DirectX::XMVectorAdd(vel, DirectX::XMVectorScale(localUp, speed));
+	DirectX::XMStoreFloat3(&velocity, vel);
+
+
 }
 
 //速力処理更新
@@ -157,8 +169,7 @@ void Character::UpdateInvincibleTimer(float elapsedTime)
 void Character::UpdateVerticalVelocity(float elapsedTime)
 {
 	//重力処理
-	velocity.y += gravity * elapsedTime;
-	
+	//velocity.y += gravity * elapsedTime;
 }
 
 void Character::UpdateVerticalMove(float elapsedTime)
@@ -266,4 +277,7 @@ void Character::UpdateHorizontalMove(float elapsedTime)
 	//移動処理
 	position.x += velocity.x * elapsedTime;
 	position.z += velocity.z * elapsedTime;
+
+	//ためし
+	//position.y += velocity.y * elapsedTime;
 }

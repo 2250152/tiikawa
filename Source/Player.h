@@ -41,7 +41,7 @@ public:
 	//ジャンプ入力処理
 	void InputJump();
 
-
+	
 
 protected:
 	//着地した時に呼ばれる
@@ -59,6 +59,11 @@ private:
 
 	//プレイヤーをブロックの面にくっつける処理
 	void StickToBlockFace();
+
+
+	//void 
+
+
 
 	//debug用の回転
 	void DebugTurn(float elapsedTime) {
