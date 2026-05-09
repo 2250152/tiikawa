@@ -98,8 +98,7 @@ void StageSelect::Render()
 	float w = (float)graphics.GetScreenWidth();
 	float h = (float)graphics.GetScreenHeight();
 
-	//MapBack->Render(rc, PosX, 0, 0, w, h, 0, 1, 1, 1, 1);
-	
+
 	
 		switch (stage)
 		{
