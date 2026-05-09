@@ -13,11 +13,12 @@ void Group::Update(float elapsedTime,const std::vector<Group*>& allGroups)
 	if (type == GroupType::Start)
 	Move(elapsedTime, allGroups);
 
-	if (pendingMerge)
+	for (auto& g : pendingMerge)
 	{
-		Merge(pendingMerge);
-		pendingMerge = nullptr;
+		Merge(g);
 	}
+
+	pendingMerge.clear();
 
 	if (type == GroupType::Start)
 		Rotation(elapsedTime);
@@ -33,8 +34,16 @@ void Group::Move(float elapsedTime, const std::vector<Group*>& allGroups)
 {
 	if (state != Moving) return;
 
-	float speed = 1.0f;
-	DirectX::XMFLOAT3 move = { 0, speed * elapsedTime, 0 };
+	DirectX::XMFLOAT3 speed = {0,1,0};
+	DirectX::XMFLOAT3 move;
+	//‚±‚±‚Åplayer‚Æ‚©Žg‚Á‚Ä•Ï‚¦‚æ‚¤
+
+
+
+
+	move.x = speed.x * elapsedTime;
+	move.y = speed.y * elapsedTime;
+	move.z = speed.z * elapsedTime;
 
 	//‚Ü‚¸“®‚­
 	for (auto& b : blocks)
@@ -49,13 +58,13 @@ void Group::Move(float elapsedTime, const std::vector<Group*>& allGroups)
 	{
 		if (g == this) continue;
 
-		int hitDir = WillHit(g, { 0,0,0 }); 
+		int hitDir = WillHit(g,{0,0,0});
 
 		if (hitDir != 0)
 		{
-			pendingMerge = g;
+			pendingMerge.push_back(g);
 			state = Idle;
-			return;
+			//return;
 		}
 	}
 }
@@ -145,7 +154,7 @@ int Group::WillHit(Group* otherGroup, DirectX::XMFLOAT3 move)
 				{
 					a->position = original;
 					hitEvent.active = true;
-					hitEvent.pos = original;
+					hitEvent.pos.push_back(original);
 					return 2;
 				}
 			}
@@ -163,7 +172,7 @@ int Group::WillHit(Group* otherGroup, DirectX::XMFLOAT3 move)
 				{
 					a->position = original;
 					hitEvent.active = true;
-					hitEvent.pos = original;
+					hitEvent.pos.push_back(original);
 					return 1;
 				}
 			}
@@ -181,7 +190,7 @@ int Group::WillHit(Group* otherGroup, DirectX::XMFLOAT3 move)
 				{
 					a->position = original;
 					hitEvent.active = true;
-					hitEvent.pos = original;
+					hitEvent.pos.push_back(original);
 					return 3;
 				}
 			}
@@ -293,6 +302,8 @@ void Group::Rotation(float elapsedTime)
 		visualAngle = DirectX::XM_PIDIV2;
 		state = Idle;
 	}
+
+
 
 	for (auto& b : blocks)
 	{

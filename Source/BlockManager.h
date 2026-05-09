@@ -9,7 +9,7 @@
 class BlockManager
 {
 private:
-	BlockManager() { hitEffect = new Effect("Data/Effect/goalEnd.efk"); }
+	BlockManager() { hitEffect = new Effect("Data/Effect/Blow11.efk"); }
 	~BlockManager() { delete hitEffect; }
 public:
 	static BlockManager& Instance()
@@ -38,6 +38,8 @@ public:
 
 	//ÉQÉbÉ^Å[
 	std::vector<std::unique_ptr<Group>>& const GetGroups() { return groups; }
+
+	void Clear();
 
 private:
 	//âÚ

@@ -8,6 +8,9 @@
 #include "Block_Normal.h"
 #include "Block_Start.h"
 #include"SkyBox.h"
+#include"SceneManager.h"
+#include"SceneLoading.h"
+#include"StageSelect.h"
 
 // 初期化
 void SceneGame::Initialize()
@@ -38,44 +41,8 @@ void SceneGame::Initialize()
 	//背景
 	SkyBox::Instance().Initialize();
 
-
-
-	//EnemySlime* slime = new EnemySlime();             敵を増やしたいから消して下のfor文にした。
-	//slime->SetPosition(DirectX::XMFLOAT3(0,0,5));
-	//enemyManager.Register(slime);
-
-	
-
-	// グループ作成
-	std::unique_ptr<Group> groupStart = std::make_unique<Group>(GroupType::Start);
-	std::unique_ptr<Group> groupNormal = std::make_unique<Group>(GroupType::Normal);
-	std::unique_ptr<Group> groupNormal2 = std::make_unique<Group>(GroupType::Normal);
-	std::unique_ptr<Group> groupNormal3 = std::make_unique<Group>(GroupType::Normal);
-	std::unique_ptr<Group> groupNormal4 = std::make_unique<Group>(GroupType::Normal);
-	std::unique_ptr<Group> groupNormal5 = std::make_unique<Group>(GroupType::Normal);
-	std::unique_ptr<Group> groupNormal6 = std::make_unique<Group>(GroupType::Normal);
-
-
-	
-	// ブロック生成兼グループに追加
-	groupStart->CreateBlock<BlockStart>(GroupType::Start, DirectX::XMFLOAT3(0, 0, 0));
-	groupNormal->CreateBlock<BlockNormal>(GroupType::Normal, DirectX::XMFLOAT3(3, 0, 2));
-	groupNormal2->CreateBlock<BlockNormal>(GroupType::Normal, DirectX::XMFLOAT3(1, 9, 2));
-	groupNormal3->CreateBlock<BlockNormal>(GroupType::Normal, DirectX::XMFLOAT3(0, 5, 0));
-	groupNormal4->CreateBlock<BlockNormal>(GroupType::Normal, DirectX::XMFLOAT3(1, 6, 0));
-	groupNormal5->CreateBlock<BlockNormal>(GroupType::Normal, DirectX::XMFLOAT3(0, 7, 2));
-	groupNormal6->CreateBlock<BlockNormal>(GroupType::Normal, DirectX::XMFLOAT3(1, 0, 0));
-
-	// マネージャーに登録
-	BlockManager::Instance().AddGroup(std::move(groupStart));
-	BlockManager::Instance().AddGroup(std::move(groupNormal));
-	BlockManager::Instance().AddGroup(std::move(groupNormal2));
-	BlockManager::Instance().AddGroup(std::move(groupNormal3));
-	BlockManager::Instance().AddGroup(std::move(groupNormal4));
-	BlockManager::Instance().AddGroup(std::move(groupNormal5));
-	BlockManager::Instance().AddGroup(std::move(groupNormal6));
-
-
+	//ここでstage呼ぶわよ 引数の数値で呼ぶstage変えてねぃ
+	stage.Load(1);
 
 }
 
@@ -130,6 +97,15 @@ void SceneGame::Update(float elapsedTime)
 	BlockManager::Instance().Update(elapsedTime);
 
 	Player::Instance().Update(elapsedTime);
+
+	//ステージセレクトに戻る
+	GamePad& gamepad = Input::Instance().GetGamePad();
+	if (gamepad.GetButtonDown() & (GamePad::BTN_UP))  //ボタンは自由に
+	{
+		SceneManager::Instance().ChangeScene(
+			new SceneLoading(new StageSelect));
+	}
+
 }
 
 // 描画処理

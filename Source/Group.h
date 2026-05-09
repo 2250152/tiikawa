@@ -83,9 +83,13 @@ public:
 	DirectX::XMFLOAT3 GetStartBlockCenter();
 
 	bool GetHitEvent()  { return hitEvent.active; }
-	DirectX::XMFLOAT3 GethitPosition() { return hitEvent.pos; };
+	const std::vector<DirectX::XMFLOAT3>& GetHitPositions() { return hitEvent.pos; };
 
-	void ClearHitEvent(){ hitEvent.active = false; }
+	void ClearHitEvent()
+	{
+		hitEvent.active = false;
+		hitEvent.pos.clear();
+	}
 
 	void RequestRotate(RotateAxis axis);
 
@@ -102,7 +106,7 @@ private:
 	bool isBlocked = false;
 	State state = Idle;
 
-	Group* pendingMerge = nullptr;
+	std::vector<Group*>  pendingMerge;
 
 	const float PIDIV180 = 0.017452f;
 
@@ -124,7 +128,7 @@ private:
 	struct HitEvent
 	{
 		bool active = false;
-		DirectX::XMFLOAT3 pos;
+		std::vector<DirectX::XMFLOAT3> pos;
 	};
 
 	HitEvent hitEvent;
