@@ -39,12 +39,15 @@ void BlockManager::Update(float elapsedTime)
 
 	for (auto& group : groups)
 	{
-		if (group->GetHitEvent())
+		if (!group->GetHitPositions().empty())
 		{
-			hitEffect->Play(group->GethitPosition());
+			for (auto& pos : group->GetHitPositions())
+			{
+				hitEffect->Play(pos);
+			}
+
 			group->ClearHitEvent();
 		}
-		
 	}
 
 

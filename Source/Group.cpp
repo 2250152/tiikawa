@@ -13,11 +13,12 @@ void Group::Update(float elapsedTime,const std::vector<Group*>& allGroups)
 	if (type == GroupType::Start)
 	Move(elapsedTime, allGroups);
 
-	if (pendingMerge)
+	for (auto& g : pendingMerge)
 	{
-		Merge(pendingMerge);
-		pendingMerge = nullptr;
+		Merge(g);
 	}
+
+	pendingMerge.clear();
 
 	if (type == GroupType::Start)
 		Rotation(elapsedTime);
@@ -57,11 +58,11 @@ void Group::Move(float elapsedTime, const std::vector<Group*>& allGroups)
 	{
 		if (g == this) continue;
 
-		int hitDir = WillHit(g, { 0,0,0 }); 
+		int hitDir = WillHit(g,{0,0,0});
 
 		if (hitDir != 0)
 		{
-			pendingMerge = g;
+			pendingMerge.push_back(g);
 			state = Idle;
 			//return;
 		}
@@ -153,7 +154,7 @@ int Group::WillHit(Group* otherGroup, DirectX::XMFLOAT3 move)
 				{
 					a->position = original;
 					hitEvent.active = true;
-					hitEvent.pos = original;
+					hitEvent.pos.push_back(original);
 					return 2;
 				}
 			}
@@ -171,7 +172,7 @@ int Group::WillHit(Group* otherGroup, DirectX::XMFLOAT3 move)
 				{
 					a->position = original;
 					hitEvent.active = true;
-					hitEvent.pos = original;
+					hitEvent.pos.push_back(original);
 					return 1;
 				}
 			}
@@ -189,7 +190,7 @@ int Group::WillHit(Group* otherGroup, DirectX::XMFLOAT3 move)
 				{
 					a->position = original;
 					hitEvent.active = true;
-					hitEvent.pos = original;
+					hitEvent.pos.push_back(original);
 					return 3;
 				}
 			}
