@@ -117,6 +117,10 @@ void Player::RenderDebugPrimitive(const RenderContext& rc, ShapeRenderer* render
 	//基底クラスの関数呼び出し
 	Character::RenderDebugPrimitive(rc, renderer);
 
+	
+
+
+
 }
 
 //デバッグ用GUI描画
@@ -444,37 +448,85 @@ void Player::StickToBlockFace()
 	DirectX::XMFLOAT3 hitPosition, hitNormal;
 	float hitDistance;
 	float normalX, normalY, normalZ;
+	float minDistance = FLT_MAX; // 一番近い距離を保存する変数
+	bool isHit = false;
+	DirectX::XMFLOAT3 bestPosition, bestNormal;
 
 	for (const auto& group : BlockManager::Instance().GetGroups())
 	{
 		for (const auto& block : group->GetBlocks())
 		{
-
-			//デバッグ
-			//if (block->GetModel() == nullptr) continue;//モデルがないブロックはスルー
-			//if (b->Gettranceform()._41 == 0.0f && b->Gettranceform()._42 == 0.0f && b->Gettranceform()._43 == 0.0f) continue;//位置が(0,0,0)のブロックはスルー
-
 			if (Collision::RayCast(rayStart,rayEnd,block->Gettranceform(),block->GetModel(),hitPosition,hitNormal,hitDistance))
 			{
-				GamePad& gamePad = Input::Instance().GetGamePad();
-				if (mouse.GetButtonDown() & mouse.BTN_LEFT)//左クリックをしたら
+				if (hitDistance < minDistance)
 				{
-					DirectX::XMVECTOR normal = DirectX::XMLoadFloat3(&hitNormal);
-					normal = DirectX::XMVector3Normalize(normal);
-					normalX = DirectX::XMVectorGetX(normal);
-					normalY = DirectX::XMVectorGetY(normal);
-					normalZ = DirectX::XMVectorGetZ(normal);
-
-
-					// ヒット処理
-					position = hitPosition;
-					angle.x = atan2f(normalZ, normalY);
-					angle.z = -atan2f(normalX, normalY);
-					isGround = true;
-					velocity = { 0.0f,0.0f,0.0f };
+					minDistance = hitDistance;
+					bestPosition = hitPosition;
+					bestNormal = hitNormal;
+					isHit = true;
 				}
 			}
 		}
 	}
 
+	GamePad& gamePad = Input::Instance().GetGamePad();
+
+	//ダメだったコード
+	//if (isHit && (mouse.GetButtonDown() & mouse.BTN_LEFT))
+	//{
+	//	DirectX::XMVECTOR normal = DirectX::XMLoadFloat3(&bestNormal);
+	//	normal = DirectX::XMVector3Normalize(normal);
+
+	//	normalX = DirectX::XMVectorGetX(normal);
+	//	normalY = DirectX::XMVectorGetY(normal);
+	//	normalZ = DirectX::XMVectorGetZ(normal);
+
+	//	// ヒット処理
+	//	position = bestPosition;
+	//	angle.x = atan2f(normalZ, normalY);
+	//	angle.z = -atan2f(normalX, normalY);
+	//	isGround = true;
+	//	velocity = { 0.0f,0.0f,0.0f };
+	//}
+	
+	if (isHit && (mouse.GetButtonDown() & mouse.BTN_LEFT))
+	{
+		DirectX::XMVECTOR normal = DirectX::XMLoadFloat3(&bestNormal);
+		normal = DirectX::XMVector3Normalize(normal);
+
+		// 1. 新しい上方向ベクトル（法線）
+		DirectX::XMVECTOR newUp = normal;
+
+		// 2. 仮の右方向ベクトルを計算（法線が真上・真下に近い場合の回避処理付き）
+		DirectX::XMVECTOR worldForward = DirectX::XMVectorSet(0, 0, 1, 0);
+		if (fabsf(DirectX::XMVectorGetY(newUp)) > 0.99f) {
+			worldForward = DirectX::XMVectorSet(1, 0, 0, 0); // 真上/真下なら前方向を変える
+		}
+
+		DirectX::XMVECTOR newRight = DirectX::XMVector3Normalize(DirectX::XMVector3Cross(newUp, worldForward));
+		DirectX::XMVECTOR newForward = DirectX::XMVector3Cross(newRight, newUp);
+
+		// 3. 回転行列を作成
+		DirectX::XMMATRIX rotationMatrix;
+		rotationMatrix.r[0] = newRight;
+		rotationMatrix.r[1] = newUp;
+		rotationMatrix.r[2] = newForward;
+		rotationMatrix.r[3] = DirectX::XMVectorSet(0, 0, 0, 1);
+
+		// ヒット処理
+		position = bestPosition;
+
+		// もし angle を直接更新したい場合（簡易版）
+		// 法線(nx, ny, nz)に基づいた角度計算の修正
+		float nx = DirectX::XMVectorGetX(normal);
+		float ny = DirectX::XMVectorGetY(normal);
+		float nz = DirectX::XMVectorGetZ(normal);
+
+		angle.x = asinf(nz);
+		angle.z = atan2f(-nx, ny);
+		angle.y = 0; // 必要に応じて現在の向きを保持
+
+		isGround = true;
+		velocity = { 0.0f,0.0f,0.0f };
+	}
 }
