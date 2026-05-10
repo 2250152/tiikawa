@@ -102,7 +102,7 @@ private:
 	float jumpSpeed = 10.0f;
 
 	int jumpCount = 0;
-	int jumpLimit = 2;
+	int jumpLimit = 1;
 
 	
 

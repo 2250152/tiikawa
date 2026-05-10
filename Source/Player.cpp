@@ -23,6 +23,7 @@ void Player::Initialize()
 	scale.x = scale.y = scale.z = 0.0005f;
 
 	state = State::IDLE;
+	PlayAnimation("IDLE", true);
 }
 
 //èIóπâª
