@@ -60,8 +60,8 @@ private:
 	//プレイヤーをブロックの面にくっつける処理
 	void StickToBlockFace();
 
-
-	//void 
+	//接地処理
+	void Grounding();
 
 
 
@@ -99,7 +99,7 @@ private:
 	Model* model = nullptr;
 	float moveSpeed = 5.0f;
 	float turnSpeed = DirectX::XMConvertToRadians(720);
-	float jumpSpeed = 12.0f;
+	float jumpSpeed = 10.0f;
 
 	int jumpCount = 0;
 	int jumpLimit = 2;

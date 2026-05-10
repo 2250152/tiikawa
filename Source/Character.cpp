@@ -112,15 +112,15 @@ void Character::UpdateVelocity(float elapsedTime) //Velocity...速度
 {
 	//垂直速力更新処理
 	//UpdateVerticalVelocity(elapsedTime);
-
 	//水平速力更新処理
-	UpdateHorizonzalVelocity(elapsedTime);
-
+	//UpdateHorizonzalVelocity(elapsedTime);
 	//垂直移動更新処理
-	UpdateVerticalMove(elapsedTime);
-
+	//UpdateVerticalMove(elapsedTime);
 	//水平移動更新処理
-	UpdateHorizontalMove(elapsedTime);
+	//UpdateHorizontalMove(elapsedTime);
+
+	//垂直 & 水平
+	UpdateVHmove(elapsedTime);
 }
 
 bool Character::ApplyDamage(int damage,float invincibleTime)
@@ -280,4 +280,33 @@ void Character::UpdateHorizontalMove(float elapsedTime)
 
 	//ためし
 	//position.y += velocity.y * elapsedTime;
+}
+
+void Character::UpdateVHmove(float elapsedTime)
+{
+	//移動処理
+	position.x += velocity.x * elapsedTime;
+	position.y += velocity.y * elapsedTime;
+	position.z += velocity.z * elapsedTime;
+
+    #ifdef _DEBUG
+	//地面判定
+	if (position.y < 0.0f)
+	{
+		position.y = 0.0f;
+
+		//着地した
+		if (!isGround)
+		{
+			OnLanding();
+		}
+		isGround = true;
+		velocity.y = 0.0f;
+	}
+	else
+	{
+		isGround = false;
+	}
+    #endif
+
 }

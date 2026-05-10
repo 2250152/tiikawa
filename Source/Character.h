@@ -106,17 +106,20 @@ protected:
 	float airControl = 0.3f;
 
 private:
+
+	//使わん================
 	//垂直速力更新処理  
 	void UpdateVerticalVelocity(float elapsedTime);
-
 	//垂直移動更新処理
 	void UpdateVerticalMove(float elapsedTime);
-
 	//水平速力更新処理
 	void UpdateHorizonzalVelocity(float elapsedTime);
-
 	//水平移動更新処理
 	void UpdateHorizontalMove(float elapsedTime);
+
+	//使う==================
+	//垂直 & 水平移動更新処理
+	void UpdateVHmove(float elapsedTime);
 
 };
 

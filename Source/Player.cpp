@@ -49,9 +49,10 @@ void Player::Update(float elapsedTime)
 	InputJump();
 	//重力処理
 	ApplyLocalGravity(elapsedTime);
+	//接地処理
+	Grounding();
 	//速度処理更新
 	UpdateVelocity(elapsedTime);
-
 
 	
 	
@@ -494,10 +495,10 @@ void Player::StickToBlockFace()
 		DirectX::XMVECTOR normal = DirectX::XMLoadFloat3(&bestNormal);
 		normal = DirectX::XMVector3Normalize(normal);
 
-		// 1. 新しい上方向ベクトル（法線）
+		//　新しい上方向ベクトル（法線）
 		DirectX::XMVECTOR newUp = normal;
 
-		// 2. 仮の右方向ベクトルを計算（法線が真上・真下に近い場合の回避処理付き）
+		//　仮の右方向ベクトルを計算（法線が真上・真下に近い場合の回避処理付き）
 		DirectX::XMVECTOR worldForward = DirectX::XMVectorSet(0, 0, 1, 0);
 		if (fabsf(DirectX::XMVectorGetY(newUp)) > 0.99f) {
 			worldForward = DirectX::XMVectorSet(1, 0, 0, 0); // 真上/真下なら前方向を変える
@@ -506,7 +507,7 @@ void Player::StickToBlockFace()
 		DirectX::XMVECTOR newRight = DirectX::XMVector3Normalize(DirectX::XMVector3Cross(newUp, worldForward));
 		DirectX::XMVECTOR newForward = DirectX::XMVector3Cross(newRight, newUp);
 
-		// 3. 回転行列を作成
+		//　回転行列を作成
 		DirectX::XMMATRIX rotationMatrix;
 		rotationMatrix.r[0] = newRight;
 		rotationMatrix.r[1] = newUp;
@@ -522,11 +523,72 @@ void Player::StickToBlockFace()
 		float ny = DirectX::XMVectorGetY(normal);
 		float nz = DirectX::XMVectorGetZ(normal);
 
-		angle.x = asinf(nz);
+		angle.x = asinf(nz);    //
 		angle.z = atan2f(-nx, ny);
 		angle.y = 0; // 必要に応じて現在の向きを保持
 
 		isGround = true;
 		velocity = { 0.0f,0.0f,0.0f };
+	}
+}
+
+//接地処理
+void Player::Grounding()
+{
+	bool onGround = isGround; //目のフレームのisGroundを保存
+	isGround = false;
+
+	//プレイヤーのローカルdownベクトルを計算
+	DirectX::XMVECTOR UP = DirectX::XMVectorSet(0, 1, 0, 0);
+	DirectX::XMMATRIX R = DirectX::XMMatrixRotationRollPitchYaw(angle.x, angle.y, angle.z);
+	DirectX::XMVECTOR localUp = DirectX::XMVector3TransformNormal(UP, R);
+	DirectX::XMVECTOR localDown = DirectX::XMVectorNegate(localUp);//符号を反転させてdownベクトルを求める
+	//現在の速度ベクトルを取得
+	DirectX::XMVECTOR velocityVec = DirectX::XMLoadFloat3(&velocity);
+	//playerが下がっているか、Dotで確かめる。
+	float UpOrDown = DirectX::XMVectorGetX(DirectX::XMVector3Dot(velocityVec, localDown));
+
+
+	//playerが降下中だったら
+	if (UpOrDown > 0.0f)
+	{
+		//レイの始点と終点を求める
+		DirectX::XMVECTOR START, END;
+		DirectX::XMFLOAT3 start, end;
+	    //playerのposをぶち奪い
+		DirectX::XMVECTOR playerPosVec = DirectX::XMLoadFloat3(&position);
+
+		//                
+		START = DirectX::XMVectorMultiplyAdd(localUp, DirectX::XMVectorReplicate(0.5f), playerPosVec); //playerPos + localDown * 0.5f
+		END = playerPosVec;//DirectX::XMVectorMultiplyAdd(localDown, DirectX::XMVectorReplicate(1.5f), playerPosVec); //playerPos + localDown * 1.0f
+
+		DirectX::XMStoreFloat3(&start, START);
+		DirectX::XMStoreFloat3(&end, END);
+
+		DirectX::XMFLOAT3 hitPosition, hitNormal;
+		float hitDistance;
+		float minDistance = FLT_MAX; // 一番近い距離を保存する変数
+		bool isHit = false;
+		DirectX::XMFLOAT3 bestPosition;
+
+		for (const auto& group : BlockManager::Instance().GetGroups())
+		{
+			for (const auto& block : group->GetBlocks())
+			{
+				if (Collision::RayCast(start, end, block->Gettranceform(), block->GetModel(), hitPosition, hitNormal,hitDistance))
+				{
+					minDistance = hitDistance;
+					bestPosition = hitPosition;
+					isHit = true;
+				}
+			}
+		}
+		if (isHit)
+		{
+			OnLanding();
+			position = hitPosition;
+			velocity = { 0,0,0 };
+			isGround = true;
+		}
 	}
 }
