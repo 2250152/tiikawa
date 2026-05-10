@@ -39,7 +39,7 @@ void Stage::Load(int stageNo)
         BlockManager::Instance().AddGroup(std::move(groupNormal5));
         break;
     }
-
+    
     case 2:
     {
         // •Ê”z’u
