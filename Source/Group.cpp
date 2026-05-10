@@ -1,5 +1,7 @@
 #include "Group.h"
 #include "Block.h"
+#include "Player.h"
+
 //ここでグループ分けしたやつらを動かそうの会
 
 //試行錯誤で進めとるからまとまってきたらいらんの消すね
@@ -7,7 +9,7 @@
 void Group::Update(float elapsedTime,const std::vector<Group*>& allGroups)
 {
 	
-
+	
 	Rotate();
 
 	if (type == GroupType::Start)
@@ -34,7 +36,12 @@ void Group::Move(float elapsedTime, const std::vector<Group*>& allGroups)
 {
 	if (state != Moving) return;
 
-	DirectX::XMFLOAT3 speed = {0,1,0};
+
+	Player& player = Player::Instance();
+
+	DirectX::XMFLOAT3 v = player.GetVelocity();
+
+	DirectX::XMFLOAT3 speed = {v.x,v.y,v.z};
 	DirectX::XMFLOAT3 move;
 	//ここでplayerとか使って変えよう
 
