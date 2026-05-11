@@ -553,6 +553,11 @@ void Player::Grounding()
 	//playerが降下中だったら
 	if (UpOrDown > 0.0f)
 	{
+		//重力抽出
+		DirectX::XMVECTOR downVelocityVec = DirectX::XMVectorScale(localDown, UpOrDown);
+		DirectX::XMStoreFloat3(&DownGravity, downVelocityVec);
+
+
 		//レイの始点と終点を求める
 		DirectX::XMVECTOR START, END;
 		DirectX::XMFLOAT3 start, end;
@@ -591,5 +596,10 @@ void Player::Grounding()
 			velocity = { 0,0,0 };
 			isGround = true;
 		}
+	}
+	else
+	{
+		// 上に向かっている、または止まっているときは 0 にする
+		DownGravity = { 0.0f, 0.0f, 0.0f };
 	}
 }

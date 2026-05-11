@@ -10,6 +10,10 @@ class Character
 public:
 	//ÇÊÇµÇ´Ç…Ç«Å[ÇºÅÙ
 	const DirectX::XMFLOAT3& GetVelocity() const { return velocity; }
+	const DirectX::XMFLOAT3& GetDownGravity() const { return DownGravity; }
+
+
+
 
 	//à íuéÊìæ
 	const DirectX::XMFLOAT3& GetPosition() const { return position; }
@@ -104,6 +108,7 @@ protected:
 	float moveVecX = 0.0f;
 	float moveVecZ = 0.0f;
 	float airControl = 0.3f;
+	DirectX::XMFLOAT3 DownGravity;
 
 private:
 
