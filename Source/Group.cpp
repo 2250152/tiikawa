@@ -52,46 +52,61 @@ void Group::Move(float elapsedTime, const std::vector<Group*>& allGroups)
 	move.y = speed.y * elapsedTime;
 	move.z = speed.z * elapsedTime;
 
-	bool hit = false;
 
-	for (auto& g : allGroups)
+	int step = 10;
+
+	DirectX::XMFLOAT3 subMove =
 	{
-		if (g == this) continue;
+		move.x / step,
+		move.y / step,
+		move.z / step
+	};
 
-		int hitDir = WillHit(g, move);
+	for (int i = 0; i < step; i++)
+	{
+		bool hit = false;
 
-		if (hitDir != 0)
+		for (auto& g : allGroups)
 		{
-			hit = true;
+			if (g == this) continue;
 
-			if (g->GetType() != GroupType::Stop)
+			int hitDir = WillHit(g, subMove);
+
+			if (hitDir != 0)
 			{
-				pendingMerge.push_back(g);
+				hit = true;
+
+				if (g->GetType() != GroupType::Stop)
+				{
+					pendingMerge.push_back(g);
+				}
+				else
+				{
+					// ­‚µ—£‚·
+					for (auto& b : blocks)
+					{
+						b->position.x -= subMove.x * 0.1f;
+						b->position.y -= subMove.y * 0.1f;
+						b->position.z -= subMove.z * 0.1f;
+					}
+				}
+
+				state = Idle;
+				break;
 			}
-
-			state = Idle;
 		}
-	}
 
-	if (!hit)
-	{
+		if (hit)
+			break;
+
 		for (auto& b : blocks)
 		{
-			b->position.x += move.x;
-			b->position.y += move.y;
-			b->position.z += move.z;
+			b->position.x += subMove.x;
+			b->position.y += subMove.y;
+			b->position.z += subMove.z;
 		}
 	}
-	else
-	{
-		// ­‚µ—£‚·
-		for (auto& b : blocks)
-		{
-			b->position.x -= move.x * 0.01f;
-			b->position.y -= move.y * 0.01f;
-			b->position.z -= move.z * 0.01f;
-		}
-	}
+
 }
 
 void Group::Rotate()
