@@ -335,7 +335,7 @@ void Group::Rotation(float elapsedTime)
 
 	float angleDelta = currentAngle - prevAngle;
 
-	visualAngle += angleDelta;
+	visualAngle += angleDelta * rotateDir;
 
 	rotatedAmount += fabs(angleDelta);
 
@@ -367,13 +367,13 @@ void Group::Rotation(float elapsedTime)
 		switch (rotateAxis)
 		{
 		case AxisX:
-			R = DirectX::XMMatrixRotationX(angleDelta);
+			R = DirectX::XMMatrixRotationX(angleDelta * rotateDir);
 			break;
 		case AxisY:
-			R = DirectX::XMMatrixRotationY(angleDelta);
+			R = DirectX::XMMatrixRotationY(angleDelta * rotateDir);
 			break;
 		case AxisZ:
-			R = DirectX::XMMatrixRotationZ(angleDelta);
+			R = DirectX::XMMatrixRotationZ(angleDelta * rotateDir);
 			break;
 
 		}
