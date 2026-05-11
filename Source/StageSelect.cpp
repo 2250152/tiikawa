@@ -44,7 +44,7 @@ void StageSelect::Finalize()
 void StageSelect::Update(float elapsedTime)
 {
 	if (feedcolor >= 0) {
-		feedcolor -= 0.007f;
+		feedcolor -= 0.009f;
 		if (feedcolor <= 0)
 			feedcolor = 0;
 	}
@@ -76,7 +76,7 @@ void StageSelect::Update(float elapsedTime)
 	}
 	if (feedTime) 
 	{
-		feedcolor2 += 0.007f;
+		feedcolor2 += 0.009f;
 	}
 	if (feedcolor2 >= 1)
 	{

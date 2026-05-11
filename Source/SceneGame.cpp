@@ -16,7 +16,7 @@
 //メニューON
 bool menyuON=false;
 bool BACK = false;
-float posX = 530, posY = 210;
+float posX = 530, posY = 360;
 
 
 // 初期化
@@ -132,15 +132,15 @@ void SceneGame::Update(float elapsedTime)
 	if (menyuON)
 	{
 
-		if (gamepad.GetButtonDown() & (GamePad::BTN_UP))
+		if (gamepad.GetButtonDown() & (GamePad::BTN_UP))  
 		{
-			posY = 210;
+			posY = 360;
 			BACK = false;
 		}
 
 		if (gamepad.GetButtonDown() & (GamePad::BTN_DOWN))
 		{
-			posY = 330;
+			posY = 544;
 			BACK = true;
 		}
 
@@ -148,11 +148,16 @@ void SceneGame::Update(float elapsedTime)
 		{
 			menyuON = false;
 		}
-		if (BACK == true && gamepad.GetButtonDown() & (GamePad::BTN_A))  //ボタンは自由に
+		if (BACK == true && gamepad.GetButtonDown() & (GamePad::BTN_A))  //ボタンは自由に、 ステージセレクトへ
 		{
 			SceneManager::Instance().ChangeScene(
 				new SceneLoading(new StageSelect));
 		}
+
+		//if (BACK == false && gamepad.GetButtonDown() & (GamePad::BTN_A))  //リトライ
+		//{
+		//	
+		//}
 	}
 
 }
@@ -242,9 +247,9 @@ void SceneGame::Render()
 	// 2Dスプライト描画
 	{
 		if (menyuON) {
-			menyu->Render(rc, 530, 210, 0, 300, 300, 0, 0, 1, 1, 0.5f);
-			choise->Render(rc, 530, 210, 0, 300, 300, 0, 1, 1, 1, 1);
-			flame->Render(rc, posX, posY, 0, 300, 300, 0, 1, 1, 1, 1);
+			menyu->Render(rc, 780, 360, 0, 400, 400, 0, 0, 1, 1, 0.5f);
+			choise->Render(rc, 800, 360, 0, 380, 430, 0, 1, 1, 1, 1);
+			flame->Render(rc, 790, posY, 0, 400, 400, 0, 1, 1, 1, 1);
 		}
 	}
 }
