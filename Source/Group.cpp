@@ -298,6 +298,11 @@ bool Group::WillHitAnyGroup(float dx, const std::vector<Group*>& allGroups)
 	return false;
 }
 
+void Group::RequestRotate(RotateAxis axis)
+{
+	revolve(axis);
+}
+
 void Group::Rotation(float elapsedTime)
 {
 	if (state != Rotating) return;

@@ -159,10 +159,7 @@ void BlockManager::InputRotation()
 	}
 }
 
-void Group::RequestRotate(RotateAxis axis)
-{
-	revolve(axis);
-}
+
 
 void BlockManager::Clear()
 {
