@@ -3,6 +3,7 @@
 #include "Group.h"
 #include "Block_Normal.h"
 #include "Block_Start.h"
+#include "Block_Stop.h"
 
 
 void Stage::Load(int stageNo)
@@ -17,7 +18,7 @@ void Stage::Load(int stageNo)
         auto start = std::make_unique<Group>(GroupType::Start);
         auto groupNormal = std::make_unique<Group>(GroupType::Normal);
         auto groupNormal2 = std::make_unique<Group>(GroupType::Normal);
-        auto groupNormal3 = std::make_unique<Group>(GroupType::Normal);
+        auto groupNormal3 = std::make_unique<Group>(GroupType::Stop);
         auto groupNormal4 = std::make_unique<Group>(GroupType::Normal);
         auto groupNormal5 = std::make_unique<Group>(GroupType::Normal);
       //↓最初からつながってるやつはここを一緒にしてね(下二つみたいな感じ！！)
@@ -26,7 +27,7 @@ void Stage::Load(int stageNo)
                                                   //↑ここはブロック自体の働きだから合わせず欲しいブロックのものを
         groupNormal->CreateBlock<BlockNormal>(GroupType::Normal,DirectX::XMFLOAT3(3, 0, 2));
         groupNormal2->CreateBlock<BlockNormal>(GroupType::Normal, DirectX::XMFLOAT3(1, 9, 2));
-        groupNormal3->CreateBlock<BlockNormal>(GroupType::Normal, DirectX::XMFLOAT3(0, 5, 0));
+        groupNormal3->CreateBlock<BlockStop>(GroupType::Stop, DirectX::XMFLOAT3(0, 5, 0));
         groupNormal4->CreateBlock<BlockNormal>(GroupType::Normal, DirectX::XMFLOAT3(1, 6, 0));
         groupNormal5->CreateBlock<BlockNormal>(GroupType::Normal, DirectX::XMFLOAT3(0, 7, 2));
         

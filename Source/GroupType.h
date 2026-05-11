@@ -3,5 +3,6 @@
 enum class GroupType
 {
 	Normal,
-	Start
+	Start,
+	Stop,
 };

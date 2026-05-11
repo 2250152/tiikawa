@@ -69,7 +69,10 @@ void Group::Move(float elapsedTime, const std::vector<Group*>& allGroups)
 
 		if (hitDir != 0)
 		{
-			pendingMerge.push_back(g);
+			if (g->GetType() != GroupType::Stop)
+			{
+				pendingMerge.push_back(g);
+			}
 			state = Idle;
 			//return;
 		}
