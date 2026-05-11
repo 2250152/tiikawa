@@ -152,6 +152,9 @@ void Player::DrawDebugGUI()
 			ImGui::InputFloat3("Scale", &scale.x);
 			//ë¨óÕ
 			ImGui::InputFloat3("Velocity", &velocity.x);
+
+			//ê⁄ín
+			ImGui::Checkbox("IsGround", &isGround);
 		}
 	}
 	ImGui::End();
@@ -596,6 +599,8 @@ void Player::Grounding()
 			velocity = { 0,0,0 };
 			isGround = true;
 		}
+		else
+			isGround = onGround;
 	}
 	else
 	{
