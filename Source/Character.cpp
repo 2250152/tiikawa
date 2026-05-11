@@ -290,23 +290,25 @@ void Character::UpdateVHmove(float elapsedTime)
 	position.z += velocity.z * elapsedTime;
 
     #ifdef _DEBUG
+	//何の意図があったの？これのせいでisGroundeが常にfalseになってたんだけど?
+	// 殺すぞ
 	//地面判定
-	if (position.y < 0.0f)
-	{
-		position.y = 0.0f;
+	//if (position.y < 0.0f)
+	//{
+	//	position.y = 0.0f;
 
-		//着地した
-		if (!isGround)
-		{
-			OnLanding();
-		}
-		isGround = true;
-		velocity.y = 0.0f;
-	}
-	else
-	{
-		isGround = false;
-	}
+	//	//着地した
+	//	if (!isGround)
+	//	{
+	//		OnLanding();
+	//	}
+	//	isGround = true;
+	//	velocity.y = 0.0f;
+	//}
+	//else
+	//{
+	//	isGround = false;
+	//}
     #endif
 
 }
