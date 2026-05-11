@@ -64,7 +64,7 @@ public:
 
 	void Go();
 
-	void revolve(RotateAxis axis);
+	void revolve(RotateAxis axis,float dir);
 
 	int WillHit(Group* otherGroup, DirectX::XMFLOAT3 dx);
 
@@ -91,7 +91,7 @@ public:
 		hitEvent.pos.clear();
 	}
 
-	void RequestRotate(RotateAxis axis);
+	void RequestRotate(RotateAxis axis,float dir);
 
 private:
 	std::vector<std::unique_ptr<Block>> blocks;
@@ -138,4 +138,5 @@ private:
 	//ââèoÇÃâÒì]óp
 	float visualAngle = 0.0f;
 
+	float rotateDir = 1.0f;
 };

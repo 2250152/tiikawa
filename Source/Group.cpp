@@ -52,31 +52,61 @@ void Group::Move(float elapsedTime, const std::vector<Group*>& allGroups)
 	move.y = speed.y * elapsedTime;
 	move.z = speed.z * elapsedTime;
 
-	//‚Ü‚¸“®‚­
-	for (auto& b : blocks)
+
+	int step = 10;
+
+	DirectX::XMFLOAT3 subMove =
 	{
-		b->position.x += move.x;
-		b->position.y += move.y;
-		b->position.z += move.z;
-	}
+		move.x / step,
+		move.y / step,
+		move.z / step
+	};
 
-	//‚»‚ÌŒã“–‚½‚è”»’è
-	for (auto& g : allGroups)
+	for (int i = 0; i < step; i++)
 	{
-		if (g == this) continue;
+		bool hit = false;
 
-		int hitDir = WillHit(g,{0,0,0});
-
-		if (hitDir != 0)
+		for (auto& g : allGroups)
 		{
-			if (g->GetType() != GroupType::Stop)
+			if (g == this) continue;
+
+			int hitDir = WillHit(g, subMove);
+
+			if (hitDir != 0)
 			{
-				pendingMerge.push_back(g);
+				hit = true;
+
+				if (g->GetType() != GroupType::Stop)
+				{
+					pendingMerge.push_back(g);
+				}
+				else
+				{
+					// ­‚µ—£‚·
+					for (auto& b : blocks)
+					{
+						b->position.x -= subMove.x * 0.1f;
+						b->position.y -= subMove.y * 0.1f;
+						b->position.z -= subMove.z * 0.1f;
+					}
+				}
+
+				state = Idle;
+				break;
 			}
-			state = Idle;
-			//return;
+		}
+
+		if (hit)
+			break;
+
+		for (auto& b : blocks)
+		{
+			b->position.x += subMove.x;
+			b->position.y += subMove.y;
+			b->position.z += subMove.z;
 		}
 	}
+
 }
 
 void Group::Rotate()
@@ -116,21 +146,22 @@ void Group::Go()
 	state = Moving;
 }
 
-void Group::revolve(RotateAxis axis)
+void Group::revolve(RotateAxis axis,float dir)
 {
 	if (state != Idle)
 		return;
 
 	rotateAxis = axis;
+	rotateDir = dir;
 
 	pivot = GetStartBlockCenter();
 
 	currentAngle = 0.0f;
 	prevAngle = 0.0f;
+
 	targetAngle = DirectX::XM_PIDIV2;
 
 	visualAngle = 0.0f;
-
 	rotatedAmount = 0.0f;
 
 	state = Rotating;
@@ -268,6 +299,11 @@ bool Group::WillHitAnyGroup(float dx, const std::vector<Group*>& allGroups)
 	return false;
 }
 
+void Group::RequestRotate(RotateAxis axis,float dir)
+{
+	revolve(axis,dir);
+}
+
 void Group::Rotation(float elapsedTime)
 {
 	if (state != Rotating) return;
@@ -299,7 +335,7 @@ void Group::Rotation(float elapsedTime)
 
 	float angleDelta = currentAngle - prevAngle;
 
-	visualAngle += angleDelta;
+	visualAngle += angleDelta * rotateDir;
 
 	rotatedAmount += fabs(angleDelta);
 
@@ -331,13 +367,13 @@ void Group::Rotation(float elapsedTime)
 		switch (rotateAxis)
 		{
 		case AxisX:
-			R = DirectX::XMMatrixRotationX(angleDelta);
+			R = DirectX::XMMatrixRotationX(angleDelta * rotateDir);
 			break;
 		case AxisY:
-			R = DirectX::XMMatrixRotationY(angleDelta);
+			R = DirectX::XMMatrixRotationY(angleDelta * rotateDir);
 			break;
 		case AxisZ:
-			R = DirectX::XMMatrixRotationZ(angleDelta);
+			R = DirectX::XMMatrixRotationZ(angleDelta * rotateDir);
 			break;
 
 		}
