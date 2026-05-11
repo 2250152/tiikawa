@@ -44,7 +44,7 @@ void StageSelect::Finalize()
 void StageSelect::Update(float elapsedTime)
 {
 	if (feedcolor >= 0) {
-		feedcolor -= 0.005f;
+		feedcolor -= 0.007f;
 		if (feedcolor <= 0)
 			feedcolor = 0;
 	}
@@ -53,12 +53,12 @@ void StageSelect::Update(float elapsedTime)
 	if (gamepad.GetButtonDown() & GamePad::BTN_LEFT)
 	{
 		stage--;
-		if (stage < 0)stage = 4;  //最大ステージ数になる（右端
+		if (stage < 1)stage = 5;  //最大ステージ数になる（右端
 	}
 	if (gamepad.GetButtonDown() & GamePad::BTN_RIGHT)
 	{
 		stage++;
-		if (stage >= 5)stage = 0;  //最初のステージになる（左端
+		if (stage >= 6)stage = 1;  //最初のステージになる（左端
 	}
 
 	//ステージを決定する
@@ -76,7 +76,7 @@ void StageSelect::Update(float elapsedTime)
 	}
 	if (feedTime) 
 	{
-		feedcolor2 += 0.005f;
+		feedcolor2 += 0.007f;
 	}
 	if (feedcolor2 >= 1)
 	{
@@ -102,15 +102,15 @@ void StageSelect::Render()
 	
 		switch (stage)
 		{
-		case 0://ステージ1
+		case 1://ステージ1
 			Map1->Render(rc, 0, 0, 0, w, h, 0, 1, 0, 1, 1);  break;
-		case 1://ステージ２
+		case 2://ステージ２
 			Map2->Render(rc, 0, 0, 0, w, h, 0, 1, 0, 0, 1);  break;
-		case 2://ステージ３
+		case 3://ステージ３
 			Map3->Render(rc, 0, 0, 0, w, h, 0, 0, 1, 0, 1);  break;
-		case 3://ステージ４
+		case 4://ステージ４
 			Map4->Render(rc, 0, 0, 0, w, h, 0, 1, 1, 0, 1);  break;
-		case 4://ステージ５
+		case 5://ステージ５
 			Map5->Render(rc, 0, 0, 0, w, h, 0, 0, 1, 1, 1);  break;
 		}
 		feed->Render(rc, PosX, 0, 0, w, h, 0, 1, 1, 1, feedcolor);

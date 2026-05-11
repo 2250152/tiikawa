@@ -465,6 +465,7 @@ void Player::StickToBlockFace()
 			{
 				if (hitDistance < minDistance)
 				{
+					SearchClosestHitPositionToFaceCenter(hitPosition, block.get());
 					minDistance = hitDistance;
 					bestPosition = hitPosition;
 					bestNormal = hitNormal;
@@ -519,7 +520,7 @@ void Player::StickToBlockFace()
 		rotationMatrix.r[3] = DirectX::XMVectorSet(0, 0, 0, 1);
 
 		// ヒット処理
-		position = bestPosition;
+		position = closestHitPositionToFaceCenter;//bestPosition
 
 		// もし angle を直接更新したい場合（簡易版）
 		// 法線(nx, ny, nz)に基づいた角度計算の修正
@@ -568,7 +569,7 @@ void Player::Grounding()
 		DirectX::XMVECTOR playerPosVec = DirectX::XMLoadFloat3(&position);
 
 		//                
-		START = DirectX::XMVectorMultiplyAdd(localUp, DirectX::XMVectorReplicate(0.5f), playerPosVec); //playerPos + localDown * 0.5f
+		START = DirectX::XMVectorMultiplyAdd(localUp, DirectX::XMVectorReplicate(0.5f), playerPosVec); //playerPos + localUp * 0.5f
 		END = playerPosVec;//DirectX::XMVectorMultiplyAdd(localDown, DirectX::XMVectorReplicate(1.5f), playerPosVec); //playerPos + localDown * 1.0f
 
 		DirectX::XMStoreFloat3(&start, START);
@@ -586,6 +587,7 @@ void Player::Grounding()
 			{
 				if (Collision::RayCast(start, end, block->Gettranceform(), block->GetModel(), hitPosition, hitNormal,hitDistance))
 				{
+					SearchClosestHitPositionToFaceCenter(hitPosition, block.get());
 					minDistance = hitDistance;
 					bestPosition = hitPosition;
 					isHit = true;
@@ -595,7 +597,7 @@ void Player::Grounding()
 		if (isHit)
 		{
 			OnLanding();
-			position = hitPosition;
+			position = closestHitPositionToFaceCenter;//hitPosition
 			velocity = { 0,0,0 };
 			isGround = true;
 		}

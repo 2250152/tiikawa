@@ -5,6 +5,7 @@
 #include"Effect.h"
 #include"System/AudioSource.h"
 #include"System/Input.h"
+#include"Block.h"
 
 //プライヤー
 class Player :public Character
@@ -63,6 +64,29 @@ private:
 	//接地処理
 	void Grounding();
 
+	//レイキャストでhitPositionがブロックの面の中心から一番近い位置を探してその近い距離を返す関数
+	void SearchClosestHitPositionToFaceCenter(DirectX::XMFLOAT3 HitPos, Block* block)
+	{
+		float minDistance = FLT_MAX;
+		DirectX::XMFLOAT3 faceCenters[6] = {
+			block->GetTopCenter(),
+			block->GetBottomCenter(),
+			block->GetFrontCenter(),
+			block->GetBackCenter(),
+			block->GetRightCenter(),
+			block->GetLeftCenter()
+		};
+
+		for (const auto& faceCenter : faceCenters)
+		{
+			float distance = DirectX::XMVectorGetX(DirectX::XMVector3Length(DirectX::XMVectorSubtract(DirectX::XMLoadFloat3(&HitPos), DirectX::XMLoadFloat3(&faceCenter))));
+			if (distance < minDistance)
+			{
+				minDistance = distance;
+				closestHitPositionToFaceCenter = faceCenter;
+			}
+		}
+	}
 
 
 	//debug用の回転
@@ -100,10 +124,9 @@ private:
 	float moveSpeed = 5.0f;
 	float turnSpeed = DirectX::XMConvertToRadians(720);
 	float jumpSpeed = 10.0f;
-
 	int jumpCount = 0;
 	int jumpLimit = 1;
-
+	DirectX::XMFLOAT3 closestHitPositionToFaceCenter;//レイキャストでhitPositionがブロックの面の中心から一番近い位置
 	
 
 	Effect*  hitEffect = nullptr;

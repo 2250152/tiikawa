@@ -41,7 +41,7 @@ void SceneTitle::Update(float elapsedTime)
 {
 	if (Back)
 	{
-		feedColor2 -= 0.005f;
+		feedColor2 -= 0.007f;
 		if (feedColor2 <= 0) {
 			feedColor2 = 0;
 		}
@@ -61,7 +61,7 @@ void SceneTitle::Update(float elapsedTime)
 	}
 	if (feedOut)
 	{
-		feedColor += 0.005f;
+		feedColor += 0.007f;
 	}
 	if (feedColor >= 1.0f) {
 		SceneManager::Instance().ChangeScene(new StageSelect);
