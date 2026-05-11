@@ -71,7 +71,7 @@ void CameraController::Update(float elapsedTime)
 	// XMVECTORƒNƒ‰ƒX‚Ö•ÏŠ·
 	DirectX::XMVECTOR orientationVec = DirectX::XMLoadFloat4(&orientation);
 	DirectX::XMMATRIX m = DirectX::XMMatrixRotationQuaternion(orientationVec);
-	if (mouse.GetButton() & mouse.BTN_LEFT)
+	if (mouse.GetButton() & mouse.BTN_RIGHT)
 	{
 		angle.x = ax * mouseSensitivity * elapsedTime;
 		angle.y = ay * mouseSensitivity * elapsedTime;
