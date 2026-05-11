@@ -146,21 +146,22 @@ void Group::Go()
 	state = Moving;
 }
 
-void Group::revolve(RotateAxis axis)
+void Group::revolve(RotateAxis axis,float dir)
 {
 	if (state != Idle)
 		return;
 
 	rotateAxis = axis;
+	rotateDir = dir;
 
 	pivot = GetStartBlockCenter();
 
 	currentAngle = 0.0f;
 	prevAngle = 0.0f;
+
 	targetAngle = DirectX::XM_PIDIV2;
 
 	visualAngle = 0.0f;
-
 	rotatedAmount = 0.0f;
 
 	state = Rotating;
@@ -298,9 +299,9 @@ bool Group::WillHitAnyGroup(float dx, const std::vector<Group*>& allGroups)
 	return false;
 }
 
-void Group::RequestRotate(RotateAxis axis)
+void Group::RequestRotate(RotateAxis axis,float dir)
 {
-	revolve(axis);
+	revolve(axis,dir);
 }
 
 void Group::Rotation(float elapsedTime)

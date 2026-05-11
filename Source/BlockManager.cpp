@@ -140,25 +140,94 @@ void BlockManager::InputRotation()
 {
 	GamePad& gamePad = Input::Instance().GetGamePad();
 
+	Camera& camera = Camera::Instance();
+
+	DirectX::XMFLOAT3 f = camera.GetFront();
+
+	float lx = gamePad.GetAxisLX();
+	float ly = gamePad.GetAxisLY();
+
+	const float DEADZONE = 0.5f;
+
 	for (auto& group : groups)
 	{
-		if (gamePad.GetButtonDown() & GamePad::BTN_X)
+		// D
+		if (lx > DEADZONE)
 		{
-			group->RequestRotate(AxisX);
+			if (fabs(f.z) > fabs(f.x))
+			{
+				if (f.z > 0)
+					group->RequestRotate(AxisY, 1.0f);
+				else
+					group->RequestRotate(AxisY, -1.0f);
+			}
+			else
+			{
+				if (f.x > 0)
+					group->RequestRotate(AxisY, -1.0f);
+				else
+					group->RequestRotate(AxisY, 1.0f);
+			}
 		}
 
-		if (gamePad.GetButtonDown() & GamePad::BTN_Y)
+		// A
+		if (lx < -DEADZONE)
 		{
-			group->RequestRotate(AxisY);
+			if (fabs(f.z) > fabs(f.x))
+			{
+				if (f.z > 0)
+					group->RequestRotate(AxisY, -1.0f);
+				else
+					group->RequestRotate(AxisY, 1.0f);
+			}
+			else
+			{
+				if (f.x > 0)
+					group->RequestRotate(AxisY, 1.0f);
+				else
+					group->RequestRotate(AxisY, -1.0f);
+			}
 		}
 
-		if (gamePad.GetButtonDown() & GamePad::BTN_B)
+		// W
+		if (ly > DEADZONE)
 		{
-			group->RequestRotate(AxisZ);
+			if (fabs(f.z) > fabs(f.x))
+			{
+				if (f.z > 0)
+					group->RequestRotate(AxisX, 1.0f);
+				else
+					group->RequestRotate(AxisX, -1.0f);
+			}
+			else
+			{
+				if (f.x > 0)
+					group->RequestRotate(AxisZ, 1.0f);
+				else
+					group->RequestRotate(AxisZ, -1.0f);
+			}
+		}
+
+		// S
+		if (ly < -DEADZONE)
+		{
+			if (fabs(f.z) > fabs(f.x))
+			{
+				if (f.z > 0)
+					group->RequestRotate(AxisX, -1.0f);
+				else
+					group->RequestRotate(AxisX, 1.0f);
+			}
+			else
+			{
+				if (f.x > 0)
+					group->RequestRotate(AxisZ, -1.0f);
+				else
+					group->RequestRotate(AxisZ, 1.0f);
+			}
 		}
 	}
 }
-
 
 
 void BlockManager::Clear()
