@@ -52,29 +52,44 @@ void Group::Move(float elapsedTime, const std::vector<Group*>& allGroups)
 	move.y = speed.y * elapsedTime;
 	move.z = speed.z * elapsedTime;
 
-	//‚Ü‚¸“®‚­
-	for (auto& b : blocks)
-	{
-		b->position.x += move.x;
-		b->position.y += move.y;
-		b->position.z += move.z;
-	}
+	bool hit = false;
 
-	//‚»‚ÌŒã“–‚½‚è”»’è
 	for (auto& g : allGroups)
 	{
 		if (g == this) continue;
 
-		int hitDir = WillHit(g,{0,0,0});
+		int hitDir = WillHit(g, move);
 
 		if (hitDir != 0)
 		{
+			hit = true;
+
 			if (g->GetType() != GroupType::Stop)
 			{
 				pendingMerge.push_back(g);
 			}
+
 			state = Idle;
-			//return;
+		}
+	}
+
+	if (!hit)
+	{
+		for (auto& b : blocks)
+		{
+			b->position.x += move.x;
+			b->position.y += move.y;
+			b->position.z += move.z;
+		}
+	}
+	else
+	{
+		// ­‚µ—£‚·
+		for (auto& b : blocks)
+		{
+			b->position.x -= move.x * 0.01f;
+			b->position.y -= move.y * 0.01f;
+			b->position.z -= move.z * 0.01f;
 		}
 	}
 }
