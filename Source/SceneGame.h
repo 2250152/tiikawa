@@ -7,6 +7,7 @@
 
 #include "Stage.h"
 
+class Sprite;
 // ÉQÅ[ÉÄÉVÅ[Éì
 class SceneGame:public Scene
 {
@@ -37,6 +38,9 @@ public:
 
 private:
 	Stage stage;
+	Sprite* menyu = nullptr;
+	Sprite* choise = nullptr;
+	Sprite* flame = nullptr;
 	/*Player* player = nullptr;*/
 	//CameraController* cameraController = nullptr;
 };

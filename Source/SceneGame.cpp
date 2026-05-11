@@ -11,6 +11,13 @@
 #include"SceneManager.h"
 #include"SceneLoading.h"
 #include"StageSelect.h"
+#include "System/Sprite.h"
+
+//メニューON
+bool menyuON=false;
+bool BACK = false;
+float posX = 530, posY = 360;
+
 
 // 初期化
 void SceneGame::Initialize()
@@ -19,6 +26,11 @@ void SceneGame::Initialize()
 	//プレーヤー初期化
 	/*player = new Player();*/
 	Player::Instance().Initialize();
+	
+	//メニュー
+	menyu = new Sprite("Data/Sprite/black.png");
+	choise = new Sprite("Data/Sprite/choise.png");
+	flame = new Sprite("Data/Sprite/flame.png");
 
 	//カメラ初期設定
 	Graphics& graphics = Graphics::Instance();
@@ -56,7 +68,16 @@ void SceneGame::Finalize()
 		cameraController = nullptr;
 	}*/
 
-
+	if (menyu != nullptr)
+	{
+		delete menyu;
+		delete choise;
+		delete flame;
+		menyu = nullptr;
+		choise = nullptr;
+		flame = nullptr;
+		menyuON = false;
+	}
 
 	
 	//if (player != nullptr)
@@ -100,10 +121,43 @@ void SceneGame::Update(float elapsedTime)
 
 	//ステージセレクトに戻る
 	GamePad& gamepad = Input::Instance().GetGamePad();
-	if (gamepad.GetButtonDown() & (GamePad::BTN_UP))  //ボタンは自由に
+	
+	
+
+	//メニューを出す
+	if (gamepad.GetButtonDown() & (GamePad::BTN_LEFT))
 	{
-		SceneManager::Instance().ChangeScene(
-			new SceneLoading(new StageSelect));
+		menyuON = true;
+	}
+	if (menyuON)
+	{
+
+		if (gamepad.GetButtonDown() & (GamePad::BTN_UP))  
+		{
+			posY = 360;
+			BACK = false;
+		}
+
+		if (gamepad.GetButtonDown() & (GamePad::BTN_DOWN))
+		{
+			posY = 544;
+			BACK = true;
+		}
+
+		if (gamepad.GetButtonDown() & (GamePad::BTN_RIGHT))
+		{
+			menyuON = false;
+		}
+		if (BACK == true && gamepad.GetButtonDown() & (GamePad::BTN_A))  //ボタンは自由に、 ステージセレクトへ
+		{
+			SceneManager::Instance().ChangeScene(
+				new SceneLoading(new StageSelect));
+		}
+
+		//if (BACK == false && gamepad.GetButtonDown() & (GamePad::BTN_A))  //リトライ
+		//{
+		//	
+		//}
 	}
 
 }
@@ -122,10 +176,17 @@ void SceneGame::Render()
 	rc.lightDirection = { 0.0f, -1.0f, 0.0f };	// ライト方向（下方向）
 	rc.renderState = graphics.GetRenderState();
 
+	float w = (float)graphics.GetScreenWidth();
+	float h = (float)graphics.GetScreenHeight();
+
 	//カメラパラメータ設定
 	Camera& camera = Camera::Instance();
 	rc.view = camera.GetView();
 	rc.projection = camera.GetProjection();
+
+
+	
+
 
 
 	/*　　　　　　　↑
@@ -185,7 +246,11 @@ void SceneGame::Render()
 
 	// 2Dスプライト描画
 	{
-
+		if (menyuON) {
+			menyu->Render(rc, 780, 360, 0, 400, 400, 0, 0, 1, 1, 0.5f);
+			choise->Render(rc, 800, 360, 0, 380, 430, 0, 1, 1, 1, 1);
+			flame->Render(rc, 790, posY, 0, 400, 400, 0, 1, 1, 1, 1);
+		}
 	}
 }
 

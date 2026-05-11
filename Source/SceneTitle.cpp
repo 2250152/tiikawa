@@ -8,14 +8,16 @@
 
 bool Back = false;
 bool feedOut = false;
+bool start=false;
 float feedColor = 0.0f;
 float feedColor2 = 1.0f;
+float color = 1;
 //初期化
 void SceneTitle::Initialize()
 {
 	//スプライト初期化
 	sprite = new Sprite("Data/Sprite/Title.png"); //タイトル背景
-	font = new Sprite("Data/Sprite/S.png");       //タイトル
+	font = new Sprite("Data/Sprite/START.png");       //タイトル
 	feed = new Sprite("Data/Sprite/black.png");  //フェードアウト
 }
 
@@ -39,11 +41,35 @@ void SceneTitle::Finalize()
 //更新処理
 void SceneTitle::Update(float elapsedTime)
 {
+	if (feedColor2 < 0)  //暗転中はSTARTは点滅しない
+	{
+		color += 1;
+	}
+	if (!start)  //タイトル点滅
+	{
+		color -= 0.01f;
+		if (color <= 0.3f)
+		{
+			start = true;
+		}
+	}
+
+	if (start)   //タイトル点滅
+	{
+		color += 0.01f;
+		if (color >= 1.0f)
+		{
+			start = false;
+		}
+	}
+
+
 	if (Back)
 	{
-		feedColor2 -= 0.005f;
+		feedColor2 -= 0.009f;
 		if (feedColor2 <= 0) {
 			feedColor2 = 0;
+			Back= false;
 		}
 	}
 	GamePad& gamePad = Input::Instance().GetGamePad();
@@ -58,10 +84,11 @@ void SceneTitle::Update(float elapsedTime)
 	if (gamePad.GetButtonDown() & anyButton)
 	{
 		feedOut = true;
+		color += 1;
 	}
 	if (feedOut)
 	{
-		feedColor += 0.005f;
+		feedColor += 0.009f;
 	}
 	if (feedColor >= 1.0f) {
 		SceneManager::Instance().ChangeScene(new StageSelect);
@@ -94,12 +121,12 @@ void SceneTitle::Render()
 		sprite->Render(rc,
 			0, 0, 0, screenWidth, screenHeight,
 			0,
-			1, 1, 1, 1);
+			0, 0, 0, 1);
 		
 		font->Render(rc,
-			570, 500, 0, 256, 256,
+			0, 0, 0, screenWidth, screenHeight,
 			0,
-			1, 1, 1, 1);
+			1, 1, 1, color);
 		
 
 		feed->Render(rc,
