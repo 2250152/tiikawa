@@ -12,9 +12,12 @@ class Sprite;
 class SceneGame:public Scene
 {
 public:
-	SceneGame(int stage) {};
+	SceneGame(int stageNo);
+	//SceneGame(int stage) {};
 	/*~SceneGame() {};*/
 	~SceneGame()override {};
+
+	
 
 	// 初期化        ※ゲームは　初期化,終了化,更新処理,描画処理　が基本
 	/*void Initialize();*/
@@ -37,6 +40,7 @@ public:
 	void DrawGUI()override;
 
 private:
+	int m_stageNo = 1;
 	Stage stage;
 	Sprite* menyu = nullptr;
 	Sprite* choise = nullptr;
