@@ -47,6 +47,6 @@ private:
 	std::set<Group*> removes;
 
 	Effect* hitEffect = nullptr;
-
+	
 
 };

@@ -38,6 +38,7 @@ void Group::Move(float elapsedTime, const std::vector<Group*>& allGroups)
 
 
 	Player& player = Player::Instance();
+	
 
 	DirectX::XMFLOAT3 v = player.GetDownGravity();
 
@@ -61,7 +62,7 @@ void Group::Move(float elapsedTime, const std::vector<Group*>& allGroups)
 		move.y / step,
 		move.z / step
 	};
-
+	if(player.IsGround())
 	for (int i = 0; i < step; i++)
 	{
 		bool hit = false;
@@ -75,21 +76,26 @@ void Group::Move(float elapsedTime, const std::vector<Group*>& allGroups)
 			if (hitDir != 0)
 			{
 				hit = true;
+				if (g->GetType() == GroupType::Goal)
+				{
+					//‚±‚±‚©‚çgoal‚Ìˆ—s‚Á‚Ä‚Ë
 
-				if (g->GetType() != GroupType::Stop)
+				}
+				else if (g->GetType() != GroupType::Stop)
 				{
 					pendingMerge.push_back(g);
 				}
 				else
 				{
 					// ­‚µ—£‚·
-					for (auto& b : blocks)
+					/*for (auto& b : blocks)
 					{
 						b->position.x -= subMove.x * 0.1f;
 						b->position.y -= subMove.y * 0.1f;
 						b->position.z -= subMove.z * 0.1f;
-					}
+					}*/
 				}
+
 				if (this->GetType() == GroupType::Start)
 				{
 					//‰½ŒÂ‚Â‚È‚ª‚Á‚Ä‚¢‚é‚©
@@ -186,6 +192,7 @@ void Group::Move(float elapsedTime, const std::vector<Group*>& allGroups)
 
 		for (auto& b : blocks)
 		{
+
 			b->position.x += subMove.x;
 			b->position.y += subMove.y;
 			b->position.z += subMove.z;

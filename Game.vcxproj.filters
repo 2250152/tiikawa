@@ -183,6 +183,9 @@
     <ClInclude Include="Source\Block_Stop.h">
       <Filter>Source\ヘッダー</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Block_Goal.h">
+      <Filter>Source\ヘッダー</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="External\imgui-docking\imgui.cpp">
@@ -318,6 +321,9 @@
       <Filter>Source\cpp</Filter>
     </ClCompile>
     <ClCompile Include="Source\Block_Stop.cpp">
+      <Filter>Source\cpp</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Block_Goal.cpp">
       <Filter>Source\cpp</Filter>
     </ClCompile>
   </ItemGroup>

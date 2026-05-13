@@ -4,6 +4,7 @@
 #include "Block_Normal.h"
 #include "Block_Start.h"
 #include "Block_Stop.h"
+#include "Block_Goal.h"
 
 
 void Stage::Load(int stageNo)
@@ -21,6 +22,7 @@ void Stage::Load(int stageNo)
              auto groupNormal3 = std::make_unique<Group>(GroupType::Normal);
              auto groupNormal4 = std::make_unique<Group>(GroupType::Normal);
              auto groupNormal5 = std::make_unique<Group>(GroupType::Normal);
+             auto groupGoal = std::make_unique<Group>(GroupType::Goal);
            //«Å‰‚©‚ç‚Â‚È‚ª‚Á‚Ä‚é‚â‚Â‚Í‚±‚±‚ðˆê‚É‚µ‚Ä‚Ë(‰º“ñ‚Â‚Ý‚½‚¢‚ÈŠ´‚¶II)
              start->CreateBlock<BlockStart>(GroupType::Start,DirectX::XMFLOAT3(0, 0, 0));
              start->CreateBlock<BlockNormal>(GroupType::Normal, DirectX::XMFLOAT3(1, 0, 0));
@@ -29,12 +31,15 @@ void Stage::Load(int stageNo)
              groupNormal2->CreateBlock<BlockNormal>(GroupType::Normal, DirectX::XMFLOAT3(1, 9, 2));
              groupNormal3->CreateBlock<BlockNormal>(GroupType::Normal, DirectX::XMFLOAT3(0, 5, 0));
              groupNormal4->CreateBlock<BlockNormal>(GroupType::Normal, DirectX::XMFLOAT3(1, 6, 0));
-             groupNormal5->CreateBlock<BlockNormal>(GroupType::Normal, DirectX::XMFLOAT3(0, 7, 2));/*
-             groupNormal->CreateBlock<BlockNormal>(GroupType::Normal, DirectX::XMFLOAT3(0, 0, 5));
-             groupNormal2->CreateBlock<BlockNormal>(GroupType::Normal, DirectX::XMFLOAT3(0, 0, -5));
-             groupNormal3->CreateBlock<BlockNormal>(GroupType::Normal, DirectX::XMFLOAT3(0, -5, 0));
-             groupNormal4->CreateBlock<BlockNormal>(GroupType::Normal, DirectX::XMFLOAT3(0, 5, 0));
-             groupNormal5->CreateBlock<BlockNormal>(GroupType::Normal, DirectX::XMFLOAT3(-5, 0, 0));*/
+             groupNormal5->CreateBlock<BlockNormal>(GroupType::Normal, DirectX::XMFLOAT3(0, 7, 2));
+             groupGoal->CreateBlock<BlockGoal>(GroupType::Goal, DirectX::XMFLOAT3(0, 0, 9));
+             
+            //groupNormal->CreateBlock<BlockNormal>(GroupType::Normal, DirectX::XMFLOAT3(0, 0, 5));
+            //groupNormal2->CreateBlock<BlockNormal>(GroupType::Normal, DirectX::XMFLOAT3(0, 0, -5));
+            //groupNormal3->CreateBlock<BlockNormal>(GroupType::Normal, DirectX::XMFLOAT3(0, -5, 0));
+            //groupNormal4->CreateBlock<BlockNormal>(GroupType::Normal, DirectX::XMFLOAT3(0, 5, 0));
+            //groupNormal5->CreateBlock<BlockNormal>(GroupType::Normal, DirectX::XMFLOAT3(-5, 0, 0));
+			//groupGoal->CreateBlock<BlockGoal>(GroupType::Goal, DirectX::XMFLOAT3(10, 0, 0));
              
 
              BlockManager::Instance().AddGroup(std::move(start));
@@ -43,6 +48,7 @@ void Stage::Load(int stageNo)
              BlockManager::Instance().AddGroup(std::move(groupNormal3));
              BlockManager::Instance().AddGroup(std::move(groupNormal4));
              BlockManager::Instance().AddGroup(std::move(groupNormal5));
+             BlockManager::Instance().AddGroup(std::move(groupGoal));
              break;
          }
          
