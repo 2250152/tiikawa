@@ -18,6 +18,10 @@ bool menyuON=false;
 bool BACK = false;
 float posX = 530, posY = 360;
 
+SceneGame::SceneGame(int stageNo)
+{
+	m_stageNo = stageNo;
+}
 
 // 初期化
 void SceneGame::Initialize()
@@ -54,7 +58,8 @@ void SceneGame::Initialize()
 	SkyBox::Instance().Initialize();
 
 	//ここでstage呼ぶわよ 引数の数値で呼ぶstage変えてねぃ
-	stage.Load(1);
+	stage.Load(m_stageNo);
+	//stage.Load(1);
 
 }
 
@@ -154,10 +159,11 @@ void SceneGame::Update(float elapsedTime)
 				new SceneLoading(new StageSelect));
 		}
 
-		//if (BACK == false && gamepad.GetButtonDown() & (GamePad::BTN_A))  //リトライ
-		//{
-		//	
-		//}
+		if (BACK == false && gamepad.GetButtonDown() & (GamePad::BTN_A))  //リトライ
+		{
+			this->Finalize();
+			this->Initialize();
+		}
 	}
 
 }
