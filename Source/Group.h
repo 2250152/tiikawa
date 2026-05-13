@@ -93,6 +93,12 @@ public:
 
 	void RequestRotate(RotateAxis axis,float dir);
 
+	int GetMergeCount() const { return mergeCount; }
+
+	void Explosion(float elapsedTime);
+
+	bool GetExplosion() const { return explosionf; }
+
 private:
 	std::vector<std::unique_ptr<Block>> blocks;
 
@@ -149,4 +155,6 @@ private:
 
 	//GroupType::StartÇ≈ìñÇΩÇ¡ÇΩÉuÉçÉbÉN
 	Block* hitBlock = nullptr;
+
+	bool explosionf = 0;
 };

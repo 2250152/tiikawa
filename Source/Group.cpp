@@ -8,7 +8,11 @@
 
 void Group::Update(float elapsedTime,const std::vector<Group*>& allGroups)
 {
-	
+	if (GetExplosion())
+	{
+		Explosion(elapsedTime);
+		return;
+	}
 	
 	Rotate();
 
@@ -78,10 +82,21 @@ void Group::Move(float elapsedTime, const std::vector<Group*>& allGroups)
 				hit = true;
 				if (g->GetType() == GroupType::Goal)
 				{
-					//ここからgoalの処理行ってね
+					//数が足りていたら
+					if (this->GetMergeCount() > 10)
+					{
+						//ゴールの判定
+
+					}
+					//数が足りていなかったら
+					else
+					{
+						//爆散
+						Explosion(elapsedTime);
+					}
 
 				}
-				else if (g->GetType() != GroupType::Stop)
+				else if (g->GetType() == GroupType::Normal)
 				{
 					pendingMerge.push_back(g);
 				}
@@ -631,4 +646,39 @@ DirectX::XMFLOAT3 Group::GetStartBlockCenter()
 
 	// fallback（念のため）
 	return GetCenter();
+}
+
+void Group::Explosion(float elapsedTime)
+{
+	//グループのブロックがそれぞれランダムな方向へ飛んでいく
+	for (auto& b : blocks)
+	{
+		//ランダムな方向ベクトルを生成
+		DirectX::XMFLOAT3 dir = {
+			(float)(rand() % 200 - 100) / 100.0f,
+			(float)(rand() % 200 - 100) / 100.0f,
+			(float)(rand() % 200 - 100) / 100.0f
+		};
+		//正規化
+		float length = sqrtf(dir.x * dir.x + dir.y * dir.y + dir.z * dir.z);
+		if (length > 0.0f)
+		{
+			dir.x /= length;
+			dir.y /= length;
+			dir.z /= length;
+		}
+		//速さをかける
+		float speed = 5.0f; // 好きな速さに調整
+		dir.x *= speed;
+		dir.y *= speed;
+		dir.z *= speed;
+		//時間をかけて移動
+
+
+
+		b->position.x +=dir.x; 
+		b->position.y +=dir.y; 
+		b->position.z +=dir.z; 
+	}
+
 }
