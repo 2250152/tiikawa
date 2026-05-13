@@ -723,9 +723,11 @@ void Group::ExplosionUpdate(float elapsedTime)
 {
 	for (auto& b : blocks)
 	{
-		if(b->GetGroup()!=Group::Start)
-		b->position.x += b->velocity.x * elapsedTime;
-		b->position.y += b->velocity.y * elapsedTime;
-		b->position.z += b->velocity.z * elapsedTime;
+		{
+			b->position.x += b->velocity.x * elapsedTime;
+			b->position.y += b->velocity.y * elapsedTime;
+			b->position.z += b->velocity.z * elapsedTime;
+		}
+	
 	}
 }
