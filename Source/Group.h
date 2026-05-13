@@ -24,7 +24,7 @@ class Group
 private:
 	
 public:
-	Group(GroupType type) : type(type) {}
+	Group(GroupType type) : type(type) { mergeCount = 1; }
 	~Group() {}
 
 	GroupType GetType() const { return type; }
@@ -139,4 +139,14 @@ private:
 	float visualAngle = 0.0f;
 
 	float rotateDir = 1.0f;
+
+	int mergeCount = 0;
+
+	const float EPS = 0.01f;
+
+	//当たったブロック
+	Block* selfHitBlock = nullptr;
+
+	//GroupType::Startで当たったブロック
+	Block* hitBlock = nullptr;
 };

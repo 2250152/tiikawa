@@ -1,7 +1,7 @@
 #include "Group.h"
 #include "Block.h"
 #include "Player.h"
-
+#include<imgui.h>
 //ここでグループ分けしたやつらを動かそうの会
 
 //試行錯誤で進めとるからまとまってきたらいらんの消すね
@@ -39,7 +39,7 @@ void Group::Move(float elapsedTime, const std::vector<Group*>& allGroups)
 
 	Player& player = Player::Instance();
 
-	DirectX::XMFLOAT3 v = player.GetVelocity();
+	DirectX::XMFLOAT3 v = player.GetDownGravity();
 
 	DirectX::XMFLOAT3 speed = {v.x,v.y,v.z};
 	DirectX::XMFLOAT3 move;
@@ -53,7 +53,7 @@ void Group::Move(float elapsedTime, const std::vector<Group*>& allGroups)
 	move.z = speed.z * elapsedTime;
 
 
-	int step = 10;
+	int step = 70;
 
 	DirectX::XMFLOAT3 subMove =
 	{
@@ -90,9 +90,94 @@ void Group::Move(float elapsedTime, const std::vector<Group*>& allGroups)
 						b->position.z -= subMove.z * 0.1f;
 					}
 				}
+				if (this->GetType() == GroupType::Start)
+				{
+					//何個つながっているか
+					mergeCount++;
+				}
+				
 
 				state = Idle;
-				break;
+				switch (hitDir)
+				{
+				case 1:
+				{
+					float offset =
+						(hitBlock->position.y - 1.0f)
+						- selfHitBlock->position.y;
+
+					for (auto& b : blocks)
+					{
+						b->position.y += offset;
+					}
+					break;
+				}
+					
+				case 2:
+				{
+					float offset =
+						(hitBlock->position.y + 1.0f)
+						- selfHitBlock->position.y;
+
+					for (auto& b : blocks)
+					{
+						b->position.y += offset;
+					}
+					break;
+				}
+					
+				case 3:
+				{
+					float offset =
+						(hitBlock->position.x - 1.0f)
+						- selfHitBlock->position.x;
+
+					for (auto& b : blocks)
+					{
+						b->position.x += offset;
+					}
+					break;
+				}
+				
+				case 4:
+				{
+					float offset =
+						(hitBlock->position.x + 1.0f)
+						- selfHitBlock->position.x;
+
+					for (auto& b : blocks)
+					{
+						b->position.x += offset;
+					}
+					break;
+				}
+				case 5:
+				{
+					float offset =
+						(hitBlock->position.z - 1.0f)
+						- selfHitBlock->position.z;
+
+					for (auto& b : blocks)
+					{
+						b->position.z += offset;
+					}
+					break;
+				}
+				case 6:
+				{
+					float offset =
+						(hitBlock->position.z + 1.0f)
+						- selfHitBlock->position.z;
+
+					for (auto& b : blocks)
+					{
+						b->position.z += offset;
+					}
+					break;
+				}
+				}
+
+				//break;
 			}
 		}
 
@@ -170,7 +255,6 @@ void Group::revolve(RotateAxis axis,float dir)
 
 int Group::WillHit(Group* otherGroup, DirectX::XMFLOAT3 move)
 {
-	const float EPS = 0.01f;
 
 	for (auto& a : blocks)
 	{
@@ -182,7 +266,7 @@ int Group::WillHit(Group* otherGroup, DirectX::XMFLOAT3 move)
 
 		for (auto& b : otherGroup->blocks)
 		{
-			//Y
+			//Y上からあたる
 			{
 				auto topA = a->GetTopCenter();
 				auto bottomB = b->GetBottomCenter();
@@ -196,6 +280,27 @@ int Group::WillHit(Group* otherGroup, DirectX::XMFLOAT3 move)
 					a->position = original;
 					hitEvent.active = true;
 					hitEvent.pos.push_back(original);
+					hitBlock = b.get();
+					selfHitBlock = a.get();
+					return 1;
+				}
+			}
+			//下からあたる
+			{
+				auto topB = a->GetBottomCenter();
+				auto bottomA = b->GetTopCenter();
+
+				float dx = fabs(topB.x - bottomA.x);
+				float dz = fabs(topB.z - bottomA.z);
+				float dy = fabs(topB.y - bottomA.y);
+
+				if (dx < EPS && dz < EPS && dy < EPS)
+				{
+					a->position = original;
+					hitEvent.active = true;
+					hitEvent.pos.push_back(original);
+					hitBlock = b.get();
+					selfHitBlock = a.get();
 					return 2;
 				}
 			}
@@ -214,9 +319,28 @@ int Group::WillHit(Group* otherGroup, DirectX::XMFLOAT3 move)
 					a->position = original;
 					hitEvent.active = true;
 					hitEvent.pos.push_back(original);
-					return 1;
+					hitBlock = b.get();
+					selfHitBlock = a.get();
+					return 3;
 				}
 			}
+			{
+				auto rightB = a->GetLeftCenter();
+				auto leftA = b->GetRightCenter();
+				float dy = fabs(rightB.y - leftA.y);
+				float dz = fabs(rightB.z - leftA.z);
+				float dx = fabs(rightB.x - leftA.x);
+				if (dy < EPS && dz < EPS && dx < EPS)
+				{
+					a->position = original;
+					hitEvent.active = true;
+					hitEvent.pos.push_back(original);
+					hitBlock = b.get();
+					selfHitBlock = a.get();
+					return 4;
+				}
+			}
+
 
 			//Z
 			{
@@ -232,7 +356,25 @@ int Group::WillHit(Group* otherGroup, DirectX::XMFLOAT3 move)
 					a->position = original;
 					hitEvent.active = true;
 					hitEvent.pos.push_back(original);
-					return 3;
+					hitBlock = b.get();
+					selfHitBlock = a.get();
+					return 5;
+				}
+			}
+			{
+				auto frontB = a->GetBackCenter();
+				auto backA = b->GetFrontCenter();
+				float dx = fabs(frontB.x - backA.x);
+				float dy = fabs(frontB.y - backA.y);
+				float dz = fabs(frontB.z - backA.z);
+				if (dx < EPS && dy < EPS && dz < EPS)
+				{
+					a->position = original;
+					hitEvent.active = true;
+					hitEvent.pos.push_back(original);
+					hitBlock = b.get();
+					selfHitBlock = a.get();
+					return 6;
 				}
 			}
 		}
@@ -347,6 +489,14 @@ void Group::Rotation(float elapsedTime)
 		currentAngle = targetAngle;
 		visualAngle = DirectX::XM_PIDIV2;
 		state = Idle;
+		for (auto& b : blocks)
+		{
+			b->position.x = roundf(b->position.x);
+			b->position.y = roundf(b->position.y);
+			b->position.z = roundf(b->position.z);
+		}
+		prevAngle = currentAngle;
+		return;
 	}
 
 
@@ -422,6 +572,20 @@ void Group::Rotation(float elapsedTime)
 
 void Group::DrawDebugGUI()
 {
+	if (this->GetType() == GroupType::Start)
+	{
+		ImVec2 pos = ImGui::GetMainViewport()->GetWorkPos();
+		ImGui::SetNextWindowPos(ImVec2(pos.x + 210, pos.y + 10), ImGuiCond_Once);
+		ImGui::SetNextWindowSize(ImVec2(300, 300), ImGuiCond_FirstUseEver);
+
+		if (ImGui::Begin("Group", nullptr, ImGuiWindowFlags_None))
+		{
+			//何個つながっているか
+			ImGui::InputInt("mergeCount", &mergeCount);
+		}
+		ImGui::End();
+	}
+	
 	
 	for (auto& b : blocks)
 	{
