@@ -9,12 +9,15 @@ BlockGoal::BlockGoal(GroupType type, DirectX::XMFLOAT3 pos)
 	position = pos;
 
 	BarrierEffect = new Effect("Data/Effect/goal.efk");
+	BarrierbreakEffect = new Effect("Data/Effect/goalEnd.efk");
 	BarrierEffect->Play(position);
 }
 
 BlockGoal::~BlockGoal()
 {
 	delete model;
+	delete BarrierEffect;
+	delete BarrierbreakEffect;
 }
 
 void BlockGoal::Update(float elapsedTime)

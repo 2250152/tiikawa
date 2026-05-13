@@ -29,6 +29,9 @@ public:
 
 	GroupType GetType() const override { return GroupType::Normal; }
 
+	void BreakBarrier() { BarrierbreakEffect->Play(position); }
+
 	Effect* BarrierEffect = nullptr;
+	Effect* BarrierbreakEffect = nullptr;
 
 };
