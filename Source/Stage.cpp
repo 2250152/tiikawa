@@ -32,7 +32,7 @@ void Stage::Load(int stageNo)
              groupNormal3->CreateBlock<BlockNormal>(GroupType::Normal, DirectX::XMFLOAT3(0, 5, 0));
              groupNormal4->CreateBlock<BlockNormal>(GroupType::Normal, DirectX::XMFLOAT3(1, 6, 0));
              groupNormal5->CreateBlock<BlockNormal>(GroupType::Normal, DirectX::XMFLOAT3(0, 7, 2));
-             groupGoal->CreateBlock<BlockGoal>(GroupType::Goal, DirectX::XMFLOAT3(0, 0, 9));
+             groupGoal->CreateBlock<BlockGoal>(GroupType::Goal, DirectX::XMFLOAT3(0, 9, 9));
              
             //groupNormal->CreateBlock<BlockNormal>(GroupType::Normal, DirectX::XMFLOAT3(0, 0, 5));
             //groupNormal2->CreateBlock<BlockNormal>(GroupType::Normal, DirectX::XMFLOAT3(0, 0, -5));

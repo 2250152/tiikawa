@@ -95,9 +95,11 @@ public:
 
 	int GetMergeCount() const { return mergeCount; }
 
-	void Explosion(float elapsedTime);
+	void Explosion();
 
 	bool GetExplosion() const { return explosionf; }
+
+	void ExplosionUpdate(float elapsedTime);
 
 private:
 	std::vector<std::unique_ptr<Block>> blocks;

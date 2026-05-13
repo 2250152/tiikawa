@@ -51,6 +51,8 @@ public:
 	DirectX::XMFLOAT3 position;
 	DirectX::XMFLOAT3	angle = { 0,0,0 };
 
+	DirectX::XMFLOAT3 velocity;
+
 	virtual void DrawDebugGUI()=0;
 
 	Model* GetModel() { return model; }

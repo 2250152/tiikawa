@@ -8,9 +8,16 @@
 
 void Group::Update(float elapsedTime,const std::vector<Group*>& allGroups)
 {
+	//爆散の時はそれだけ動かす
 	if (GetExplosion())
 	{
-		Explosion(elapsedTime);
+		ExplosionUpdate(elapsedTime);
+
+		for (auto& block : blocks)
+		{
+			block->Update(elapsedTime);
+		}
+
 		return;
 	}
 	
@@ -92,7 +99,7 @@ void Group::Move(float elapsedTime, const std::vector<Group*>& allGroups)
 					else
 					{
 						//爆散
-						Explosion(elapsedTime);
+						Explosion();
 					}
 
 				}
@@ -130,6 +137,9 @@ void Group::Move(float elapsedTime, const std::vector<Group*>& allGroups)
 					for (auto& b : blocks)
 					{
 						b->position.y += offset;
+						b->position.x = roundf(b->position.x);
+						b->position.y = roundf(b->position.y);
+						b->position.z = roundf(b->position.z);
 					}
 					break;
 				}
@@ -143,6 +153,9 @@ void Group::Move(float elapsedTime, const std::vector<Group*>& allGroups)
 					for (auto& b : blocks)
 					{
 						b->position.y += offset;
+						b->position.x = roundf(b->position.x);
+						b->position.y = roundf(b->position.y);
+						b->position.z = roundf(b->position.z);
 					}
 					break;
 				}
@@ -156,6 +169,9 @@ void Group::Move(float elapsedTime, const std::vector<Group*>& allGroups)
 					for (auto& b : blocks)
 					{
 						b->position.x += offset;
+						b->position.x = roundf(b->position.x);
+						b->position.y = roundf(b->position.y);
+						b->position.z = roundf(b->position.z);
 					}
 					break;
 				}
@@ -169,6 +185,9 @@ void Group::Move(float elapsedTime, const std::vector<Group*>& allGroups)
 					for (auto& b : blocks)
 					{
 						b->position.x += offset;
+						b->position.x = roundf(b->position.x);
+						b->position.y = roundf(b->position.y);
+						b->position.z = roundf(b->position.z);
 					}
 					break;
 				}
@@ -181,6 +200,9 @@ void Group::Move(float elapsedTime, const std::vector<Group*>& allGroups)
 					for (auto& b : blocks)
 					{
 						b->position.z += offset;
+						b->position.x = roundf(b->position.x);
+						b->position.y = roundf(b->position.y);
+						b->position.z = roundf(b->position.z);
 					}
 					break;
 				}
@@ -193,6 +215,9 @@ void Group::Move(float elapsedTime, const std::vector<Group*>& allGroups)
 					for (auto& b : blocks)
 					{
 						b->position.z += offset;
+						b->position.x = roundf(b->position.x);
+						b->position.y = roundf(b->position.y);
+						b->position.z = roundf(b->position.z);
 					}
 					break;
 				}
@@ -211,8 +236,24 @@ void Group::Move(float elapsedTime, const std::vector<Group*>& allGroups)
 			b->position.x += subMove.x;
 			b->position.y += subMove.y;
 			b->position.z += subMove.z;
+
+
 		}
+
+
+
 	}
+	/*for (auto& b : blocks)
+	{
+		b->position.x =
+			roundf(b->position.x * 1000.0f) / 1000.0f;
+
+		b->position.y =
+			roundf(b->position.y * 1000.0f) / 1000.0f;
+
+		b->position.z =
+			roundf(b->position.z * 1000.0f) / 1000.0f;
+	}*/
 
 }
 
@@ -648,37 +689,43 @@ DirectX::XMFLOAT3 Group::GetStartBlockCenter()
 	return GetCenter();
 }
 
-void Group::Explosion(float elapsedTime)
+void Group::Explosion()
 {
-	//グループのブロックがそれぞれランダムな方向へ飛んでいく
+	explosionf = true;
+
 	for (auto& b : blocks)
 	{
-		//ランダムな方向ベクトルを生成
-		DirectX::XMFLOAT3 dir = {
+		DirectX::XMFLOAT3 dir =
+		{
 			(float)(rand() % 200 - 100) / 100.0f,
 			(float)(rand() % 200 - 100) / 100.0f,
 			(float)(rand() % 200 - 100) / 100.0f
 		};
-		//正規化
-		float length = sqrtf(dir.x * dir.x + dir.y * dir.y + dir.z * dir.z);
-		if (length > 0.0f)
+
+		float len = sqrtf(dir.x * dir.x + dir.y * dir.y + dir.z * dir.z);
+
+		if (len > 0.0f)
 		{
-			dir.x /= length;
-			dir.y /= length;
-			dir.z /= length;
+			dir.x /= len;
+			dir.y /= len;
+			dir.z /= len;
 		}
-		//速さをかける
-		float speed = 5.0f; // 好きな速さに調整
-		dir.x *= speed;
-		dir.y *= speed;
-		dir.z *= speed;
-		//時間をかけて移動
 
+		float speed = 5.0f;
 
-
-		b->position.x +=dir.x; 
-		b->position.y +=dir.y; 
-		b->position.z +=dir.z; 
+		b->velocity.x = dir.x * speed;
+		b->velocity.y = dir.y * speed;
+		b->velocity.z = dir.z * speed;
 	}
+}
 
+void Group::ExplosionUpdate(float elapsedTime)
+{
+	for (auto& b : blocks)
+	{
+		if(b->GetGroup()!=Group::Start)
+		b->position.x += b->velocity.x * elapsedTime;
+		b->position.y += b->velocity.y * elapsedTime;
+		b->position.z += b->velocity.z * elapsedTime;
+	}
 }
