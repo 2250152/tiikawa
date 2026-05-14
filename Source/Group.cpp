@@ -2,6 +2,7 @@
 #include "Block.h"
 #include "Player.h"
 #include<imgui.h>
+#include <Block_Goal.h>
 //ここでグループ分けしたやつらを動かそうの会
 
 //試行錯誤で進めとるからまとまってきたらいらんの消すね
@@ -92,7 +93,10 @@ void Group::Move(float elapsedTime, const std::vector<Group*>& allGroups)
 					//数が足りていたら
 					if (this->GetMergeCount() > 10)
 					{
-						//ゴールの判定
+						if (g->GetType() == GroupType::Goal)
+						{
+							g->OnHitGoal(this);
+						}
 
 					}
 					//数が足りていなかったら
@@ -729,5 +733,20 @@ void Group::ExplosionUpdate(float elapsedTime)
 			b->position.z += b->velocity.z * elapsedTime;
 		}
 	
+	}
+}
+
+
+void Group::OnHitGoal(Group* other)
+{
+	if (other->GetMergeCount() > 10)
+	{
+		for (auto& b : blocks)
+		{
+			if (auto goal = dynamic_cast<BlockGoal*>(b.get()))
+			{
+				goal->BreakBarrier();
+			}
+		}
 	}
 }

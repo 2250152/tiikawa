@@ -10,7 +10,7 @@ BlockGoal::BlockGoal(GroupType type, DirectX::XMFLOAT3 pos)
 
 	BarrierEffect = new Effect("Data/Effect/goal.efk");
 	BarrierbreakEffect = new Effect("Data/Effect/goalEnd.efk");
-	BarrierEffect->Play(position);
+	barrierHandle=BarrierEffect->Play(position);
 }
 
 BlockGoal::~BlockGoal()

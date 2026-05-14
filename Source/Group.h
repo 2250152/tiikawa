@@ -101,6 +101,8 @@ public:
 
 	void ExplosionUpdate(float elapsedTime);
 
+	virtual void OnHitGoal(Group* other);
+
 private:
 	std::vector<std::unique_ptr<Block>> blocks;
 
