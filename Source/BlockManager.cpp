@@ -49,6 +49,21 @@ void BlockManager::Update(float elapsedTime)
 			group->ClearHitEvent();
 		}
 	}
+	
+	for (auto& group : groups)
+	{
+		for (auto& block : group->GetBlocks())
+		{
+			if (!block->GetWillHitPositions().empty())
+			{
+				for (auto& pos : block->GetWillHitPositions())
+				{
+					willHitEffect->Play(pos, 2.0f);
+				}
+				block->ClearWillHitEvent();
+			}
+		}
+	}
 
 
 

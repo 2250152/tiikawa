@@ -65,5 +65,21 @@ void Stage::Load(int stageNo)
 
              break;
          }
+         case 10:
+         {
+             // ExceptHitTest
+             auto start = std::make_unique<Group>(GroupType::Start);
+             auto normal1 = std::make_unique<Group>(GroupType::Normal);
+             auto normal2 = std::make_unique<Group>(GroupType::Normal);
+             start->CreateBlock<BlockStart>(GroupType::Start,DirectX::XMFLOAT3(0, 0, 0));
+             normal1->CreateBlock<BlockNormal>(GroupType::Normal,DirectX::XMFLOAT3(0, 4, 0));
+             normal2->CreateBlock<BlockNormal>(GroupType::Normal,DirectX::XMFLOAT3(2, 0, 0));
+
+             BlockManager::Instance().AddGroup(std::move(start));
+             BlockManager::Instance().AddGroup(std::move(normal1));
+             BlockManager::Instance().AddGroup(std::move(normal2));
+
+             break;
+         }
     }
 }

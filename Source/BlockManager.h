@@ -9,8 +9,16 @@
 class BlockManager
 {
 private:
-	BlockManager() { hitEffect = new Effect("Data/Effect/Blow11.efk"); }
-	~BlockManager() { delete hitEffect; }
+	BlockManager()
+	{
+		hitEffect = new Effect("Data/Effect/Blow11.efk"); 
+		willHitEffect = new Effect("Data/Effect/ChoiseBlockY.efk"); 
+	}
+	~BlockManager() 
+	{ 
+		delete hitEffect;
+		delete willHitEffect;
+	}
 public:
 	static BlockManager& Instance()
 	{
@@ -47,6 +55,7 @@ private:
 	std::set<Group*> removes;
 
 	Effect* hitEffect = nullptr;
+	Effect* willHitEffect = nullptr;
 	
 
 };
