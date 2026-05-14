@@ -58,6 +58,7 @@ void SceneGame::Initialize()
 	//‚±‚±‚ÅstageŒÄ‚Ô‚í‚æ ˆø”‚Ì”’l‚ÅŒÄ‚Ôstage•Ï‚¦‚Ä‚Ë‚¡
 	stage.Load(m_stageNo);
 	//stage.Load(1);
+	//stage.Load(10);
 
 }
 
