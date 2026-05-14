@@ -22,6 +22,15 @@ enum RotateAxis
 	AxisY,
 	AxisZ
 };
+enum debugMoveType //移動方向のテンプレート
+{
+	X = 0,
+	MinusX,
+	Y,
+	MinusY,
+	Z,
+	MinusZ,
+};
 class Group
 {
 private:
@@ -121,12 +130,14 @@ public:
 
 	bool ClearFlag = false;
 
-	
+	void ClearWillCollideBlockAddress() { willCollideBlockAddress.clear(); }
+	std::vector<Block*> GetWillCollideBlockAddress() { return willCollideBlockAddress; }
 
 private:
+	const int COLLIDE_MAX_DISTANCE = 30;
 	std::vector<std::unique_ptr<Block>> blocks;
-	float willCollideDist = 30; //衝突するであろうブロックとの距離を管理
-	Block* willCollideBlockAddress = nullptr; //衝突するであろうブロックのアドレスを管理  //後で配列に
+	int willCollideDist = COLLIDE_MAX_DISTANCE; //衝突するであろうブロックとの距離を管理
+	std::vector<Block*> willCollideBlockAddress{}; //衝突するであろうブロックのアドレスを管理  //後で配列に
 
 	GroupType type;
 
@@ -156,7 +167,7 @@ private:
 
 	float rotatedAmount = 0.0f;
 
-	
+	int debugMoveNum = debugMoveType::X;; //Start専用
 
 
 	struct HitEvent
@@ -185,4 +196,5 @@ private:
 	Block* hitBlock = nullptr;
 
 	bool explosionf = 0;
+
 };

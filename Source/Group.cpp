@@ -26,6 +26,7 @@ void Group::Update(float elapsedTime,const std::vector<Group*>& allGroups)
 
 		for (auto& block : blocks)
 		{
+			block->UpdateTransform();
 			block->Update(elapsedTime);
 		}
 
@@ -310,17 +311,47 @@ void Group::ExceptHitting(float elapsedTime, const std::vector<Group*>& allGroup
 
 	DirectX::XMFLOAT3 speed = { v.x,v.y,v.z };
 	DirectX::XMFLOAT3 move;
+	DirectX::XMFLOAT3 debugMove{};
+	
 
 	move.x = speed.x * elapsedTime;
 	move.y = speed.y * elapsedTime;
 	move.z = speed.z * elapsedTime;
 
-	//ヒット予測
-	ExpectUntilDistanceHit(allGroups, /*move*/{ 0, 1, 0 });
-
-	if (willCollideBlockAddress != nullptr)
+	switch(debugMoveNum)
 	{
-		willCollideBlockAddress->SetWillHitPositions(willCollideBlockAddress->GetPosition());
+	case debugMoveType::X:
+		debugMove = { 1, 0, 0 };
+		break;
+	case debugMoveType::MinusX:
+		debugMove = { -1, 0, 0 };
+		break;
+	case debugMoveType::Y:
+		debugMove = { 0, 1, 0 };
+		break;
+	case debugMoveType::MinusY:
+		debugMove = { 0, -1, 0 };
+		break;
+	case debugMoveType::Z:
+		debugMove = { 0, 0, 1 };
+		break;
+	case debugMoveType::MinusZ:
+		debugMove = { 0, 0, -1 };
+		break;
+	default:
+		break;
+	}
+
+	//ヒット予測
+	ExpectUntilDistanceHit(allGroups, debugMove/*move*/);
+
+	if (!willCollideBlockAddress.empty())
+	{
+		for (auto& w : willCollideBlockAddress)
+		{
+			w->SetWillHitPositions(w->GetPosition());
+		}
+		ClearWillCollideBlockAddress();
 	}
 }
 
@@ -328,6 +359,7 @@ void Group::ExceptHitting(float elapsedTime, const std::vector<Group*>& allGroup
 void Group::ExpectUntilDistanceHit(const std::vector<Group*>& allGroups, DirectX::XMFLOAT3 move) // moveは単位ベクトル
 {
 	const float threshold = 0.1f; //閾値
+	willCollideDist = 30; //フレームごとにリセット
 
 	//レイキャストを飛ばしてブロックのヒット予想
 	for (auto& a : blocks)
@@ -338,52 +370,102 @@ void Group::ExpectUntilDistanceHit(const std::vector<Group*>& allGroups, DirectX
 		{
 			for (auto& c : b->GetBlocks())
 			{
+				if (c->GetGroup()->GetType() == GroupType::Start)
+					continue;
+
+#if 0
 				//進行方向上に比較対象がなければスキップ
 				// X方向への移動時
-				if (move.y == 0 && move.z == 0)
+				if (move.x > threshold || move.x < -threshold)
 				{
-					if ((a->GetPosition().y + threshold < c->GetPosition().y && a->GetPosition().y - threshold > c->GetPosition().y) ||
-						(a->GetPosition().z + threshold < c->GetPosition().z && a->GetPosition().z - threshold > c->GetPosition().z)) //対象が進行方向になければ当たらない
+					if ((a->GetPosition().y + threshold < c->GetPosition().y || a->GetPosition().y - threshold > c->GetPosition().y) ||
+						(a->GetPosition().z + threshold < c->GetPosition().z || a->GetPosition().z - threshold > c->GetPosition().z)) //対象が進行方向になければ当たらない
+					{
+						//auto pos = std::find(willCollideBlockAddress.begin(), willCollideBlockAddress.end(), c);
+						//if (pos != willCollideBlockAddress.end())
+							//willCollideBlockAddress.erase(std::remove(willCollideBlockAddress.begin(), willCollideBlockAddress.end(), c), willCollideBlockAddress.end());
 						continue;
+					}
 					if (move.x > 0 && a->GetPosition().x > c->GetPosition().x) // move.xが＋且つ移動前位置のほうが大きい値ならば当たらない
+					{
+						//auto pos = std::find(willCollideBlockAddress.begin(), willCollideBlockAddress.end(), c);
+						//if (pos != willCollideBlockAddress.end())
+							//willCollideBlockAddress.erase(std::remove(willCollideBlockAddress.begin(), willCollideBlockAddress.end(), c), willCollideBlockAddress.end());
 						continue;
+					}
 					if (move.x < 0 && a->GetPosition().x < c->GetPosition().x) //対象が進行方向になければ当たらない
+					{
+						//auto pos = std::find(willCollideBlockAddress.begin(), willCollideBlockAddress.end(), c);
+						//if (pos != willCollideBlockAddress.end())
+							//willCollideBlockAddress.erase(std::remove(willCollideBlockAddress.begin(), willCollideBlockAddress.end(), c), willCollideBlockAddress.end());
 						continue;
+					}
 				}
 				// Y方向への移動時
-				if (move.x == 0 && move.z == 0)
+				if (move.y > threshold || move.y < -threshold)
 				{
-					if ((a->GetPosition().x + threshold < c->GetPosition().x && a->GetPosition().x - threshold > c->GetPosition().x) ||
-						(a->GetPosition().z + threshold < c->GetPosition().z && a->GetPosition().z - threshold > c->GetPosition().z)) //対象が進行方向になければ当たらない
+					if ((a->GetPosition().x + threshold < c->GetPosition().x || a->GetPosition().x - threshold > c->GetPosition().x) ||
+						(a->GetPosition().z + threshold < c->GetPosition().z || a->GetPosition().z - threshold > c->GetPosition().z)) //対象が進行方向になければ当たらない
+					{
+						//auto pos = std::find(willCollideBlockAddress.begin(), willCollideBlockAddress.end(), c);
+						//if (pos != willCollideBlockAddress.end())
+							//willCollideBlockAddress.erase(std::remove(willCollideBlockAddress.begin(), willCollideBlockAddress.end(), c), willCollideBlockAddress.end());
 						continue;
+					}
 					if (move.y > 0 && a->GetPosition().y > c->GetPosition().y) //対象が進行方向になければ当たらない
+					{
+						//auto pos = std::find(willCollideBlockAddress.begin(), willCollideBlockAddress.end(), c);
+						//if (pos != willCollideBlockAddress.end())
+							//willCollideBlockAddress.erase(std::remove(willCollideBlockAddress.begin(), willCollideBlockAddress.end(), c), willCollideBlockAddress.end());
 						continue;
+					}
 					if (move.y < 0 && a->GetPosition().y < c->GetPosition().y) //対象が進行方向になければ当たらない
+					{
+						//auto pos = std::find(willCollideBlockAddress.begin(), willCollideBlockAddress.end(), c);
+						//if (pos != willCollideBlockAddress.end())
+							//willCollideBlockAddress.erase(std::remove(willCollideBlockAddress.begin(), willCollideBlockAddress.end(), c), willCollideBlockAddress.end());
 						continue;
+					}
 				}
 				// Z方向への移動時
-				if (move.x == 0 && move.y == 0)
+				if (move.z > threshold || move.z < -threshold)
 				{
-					if ((a->GetPosition().x + threshold < c->GetPosition().x && a->GetPosition().x - threshold > c->GetPosition().x) ||
-						(a->GetPosition().y + threshold < c->GetPosition().y && a->GetPosition().y - threshold > c->GetPosition().y)) //対象が進行方向になければ当たらない
+					if ((a->GetPosition().x + threshold < c->GetPosition().x || a->GetPosition().x - threshold > c->GetPosition().x) ||
+						(a->GetPosition().y + threshold < c->GetPosition().y || a->GetPosition().y - threshold > c->GetPosition().y)) //対象が進行方向になければ当たらない
+					{
+						//auto pos = std::find(willCollideBlockAddress.begin(), willCollideBlockAddress.end(), c);
+						//if (pos != willCollideBlockAddress.end())
+							//willCollideBlockAddress.erase(std::remove(willCollideBlockAddress.begin(), willCollideBlockAddress.end(), c), willCollideBlockAddress.end());
 						continue;
+					}
 					if (move.z > 0 && a->GetPosition().z > c->GetPosition().z) //対象が進行方向になければ当たらない
+					{
+						//auto pos = std::find(willCollideBlockAddress.begin(), willCollideBlockAddress.end(), c);
+						//if (pos != willCollideBlockAddress.end())
+							//willCollideBlockAddress.erase(std::remove(willCollideBlockAddress.begin(), willCollideBlockAddress.end(), c), willCollideBlockAddress.end());
 						continue;
+					}
 					if (move.z < 0 && a->GetPosition().z < c->GetPosition().z) //対象が進行方向になければ当たらない
+					{
+						//auto pos = std::find(willCollideBlockAddress.begin(), willCollideBlockAddress.end(), c);
+						//if (pos != willCollideBlockAddress.end())
+							//willCollideBlockAddress.erase(std::remove(willCollideBlockAddress.begin(), willCollideBlockAddress.end(), c), willCollideBlockAddress.end());
 						continue;
+					}
 				}
-
+#endif
 				//レイキャスト
 				DirectX::XMFLOAT3 s = { a->GetPosition() };
-				DirectX::XMFLOAT3 e = { c->GetPosition() };
+				DirectX::XMFLOAT3 e = { s.x + move.x * COLLIDE_MAX_DISTANCE, s.y + move.y * COLLIDE_MAX_DISTANCE, s.z + move.z * COLLIDE_MAX_DISTANCE }; // (ToT)
 				DirectX::XMFLOAT3 hitPosition, hitNormal;
+				willCollideBlockAddress;
 				if (RayCast(s, e, c->Gettranceform(), c->GetModel(), hitPosition, hitNormal))
 				{
 					DirectX::XMVECTOR lengthVec = DirectX::XMVectorSubtract(DirectX::XMLoadFloat3(&s), DirectX::XMLoadFloat3(&hitPosition));
 					if (DirectX::XMVectorGetX(DirectX::XMVector3Length(lengthVec)) < willCollideDist)
 					{
 						willCollideDist = DirectX::XMVectorGetX(DirectX::XMVector3Length(lengthVec));
-						willCollideBlockAddress = c.get();
+						willCollideBlockAddress.push_back(c.get());
 					}									
 				}
 			}
@@ -845,11 +927,15 @@ void Group::DrawDebugGUI()
 		{
 			//何個つながっているか
 			ImGui::InputInt("mergeCount", &mergeCount);
+			//選択中の移動方向（仮）
+			ImGui::InputInt("debugMoveNum", &debugMoveNum);
+			ImGui::Text("FPS: %.1f", 1.0f / ImGui::GetIO().DeltaTime);
 		}
 		ImGui::End();
 	}
 	
 	
+
 	for (auto& b : blocks)
 	{
 		b->DrawDebugGUI();
@@ -946,5 +1032,6 @@ void Group::OnHitGoal(Group* other)
 		}
 	}
 }
+
 
 
