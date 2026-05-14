@@ -41,6 +41,19 @@ public:
 
 	bool Clear = false;
 
+	void SetClear(bool flag)
+	{
+		clearFlag = flag;
+	}
+
+	bool Getclear()const
+	{
+		return clearFlag;
+	}
+
+	bool BreakTime = false;
+	float breakTime = 3;
+
 private:
 	int m_stageNo = 1;
 	//ƒƒjƒ…[ON
@@ -48,6 +61,7 @@ private:
 	bool BACK = false;
 	float posX = 530, posY = 360;
 
+	bool clearFlag = false;
 	Stage stage;
 	Sprite* menyu = nullptr;
 	Sprite* choise = nullptr;

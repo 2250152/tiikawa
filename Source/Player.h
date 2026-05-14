@@ -10,6 +10,9 @@
 //プライヤー
 class Player :public Character
 {
+public:
+	void SetStandingGroup(Group* group) { standingGroup = group; }
+	Group* GetStandingGroup() const { return standingGroup; }
 private:
 	Player() {};
 	~Player() override {};
@@ -132,5 +135,8 @@ private:
 	Effect*  hitEffect = nullptr;
 
 	AudioSource* hitSE = nullptr;
+
+	Group* standingGroup = nullptr; // 現在乗っているグループ
+	bool isHitLocal = false; // この関数内での当たり判定結果
 
 };

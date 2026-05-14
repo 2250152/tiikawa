@@ -54,6 +54,7 @@ void Group::Update(float elapsedTime,const std::vector<Group*>& allGroups)
 	{
 		block->Update(elapsedTime);
 	}
+
 	
 }
 
@@ -107,8 +108,9 @@ void Group::Move(float elapsedTime, const std::vector<Group*>& allGroups)
 						{
 							g->OnHitGoal(this);
 							//ƒNƒŠƒA
-							ClearFlag = true;
+							clearFlag = true;
 						}
+						
 
 					}
 					//”‚ª‘«‚è‚Ä‚¢‚È‚©‚Á‚½‚ç
@@ -885,7 +887,7 @@ void Group::Rotation(float elapsedTime)
 		case AxisX:
 			b->angle.x += angleDelta;
 			break;
-
+			                                                               
 		case AxisY:
 			b->angle.y += angleDelta;
 			break;
@@ -911,6 +913,10 @@ void Group::Rotation(float elapsedTime)
 			break;
 		}
 	}
+
+	//‰´—l‚ª’Ç‰Á‚µ‚½‚â‚Â
+	
+	//
 
 	prevAngle = currentAngle;
 }
