@@ -9,6 +9,8 @@
 #include"SceneGame.h"
 
 class Block;
+class SceneGame;
+
 
 enum State
 {
@@ -25,7 +27,8 @@ enum RotateAxis
 class Group
 {
 private:
-	
+	SceneGame* sceneGame = nullptr;
+
 public:
 	Group(GroupType type) : type(type) { mergeCount = 1; }
 	~Group() {}
@@ -108,9 +111,8 @@ public:
 
 	virtual void OnHitGoal(Group* other);
 
-	bool ClearFlag = false;
 
-	
+	bool isClear()const { return clearFlag; }
 
 private:
 	std::vector<std::unique_ptr<Block>> blocks;
@@ -143,7 +145,7 @@ private:
 
 	float rotatedAmount = 0.0f;
 
-	
+	bool clearFlag = false;
 
 
 	struct HitEvent

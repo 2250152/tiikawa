@@ -106,7 +106,7 @@ void Group::Move(float elapsedTime, const std::vector<Group*>& allGroups)
 						{
 							g->OnHitGoal(this);
 							//ÉNÉäÉA
-							ClearFlag = true;
+							clearFlag = true;
 						}
 
 					}

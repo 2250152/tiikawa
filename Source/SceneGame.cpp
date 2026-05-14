@@ -56,6 +56,7 @@ void SceneGame::Initialize()
 	SkyBox::Instance().Initialize();
 
 	//ここでstage呼ぶわよ 引数の数値で呼ぶstage変えてねぃ
+	
 	stage.Load(m_stageNo);
 	//stage.Load(1);
 
@@ -125,14 +126,8 @@ void SceneGame::Update(float elapsedTime)
 	//ステージセレクトに戻る
 	GamePad& gamepad = Input::Instance().GetGamePad();
 	
-	//クリア時ステージ切り替え
-	if (Clear)
-	{
-		SceneManager::Instance().ChangeScene(
-			new SceneLoading(new SceneGame(m_stageNo + 1))
-		);
-		Clear = false;
-	}
+	
+	
 
 	//メニューを出す
 	if (gamepad.GetButtonDown() & (GamePad::BTN_LEFT))
@@ -166,14 +161,24 @@ void SceneGame::Update(float elapsedTime)
 
 		if (BACK == false && gamepad.GetButtonDown() & (GamePad::BTN_A))  //リトライ
 		{
-			Clear = true;
-			//this->Finalize();
-			//this->Initialize();
+			//Clear = true;
+			this->Finalize();
+			this->Initialize();
 		}
 
-		//クリア時ステージ切り替え
+		
 
 
+	}
+	//クリア時ステージ切り替え
+	for (auto& g : BlockManager::Instance().GetGroups())
+	{
+		if (g->isClear())
+			SceneManager::Instance().ChangeScene(
+				new SceneLoading(new SceneGame(m_stageNo + 1))
+			);
+		//this->Initialize();
+		return;
 	}
 
 }
