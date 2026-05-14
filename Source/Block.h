@@ -65,6 +65,16 @@ public:
 
 	static float DistSq(const DirectX::XMFLOAT3& a, const DirectX::XMFLOAT3& b);
 
+	bool GetWillHitEvent() { return willHitEvent.active; }
+	const std::vector<DirectX::XMFLOAT3>& GetWillHitPositions() { return willHitEvent.pos; };
+	void SetWillHitPositions(DirectX::XMFLOAT3 position) { willHitEvent.pos.push_back(position); };
+
+	void ClearWillHitEvent()
+	{
+		willHitEvent.active = false;
+		willHitEvent.pos.clear();
+	}
+
 //	bool WillHit(Block* other, float nextX);
 protected:
 	DirectX::XMFLOAT3 size;
@@ -83,4 +93,11 @@ protected:
 	
 	DirectX::XMFLOAT3 pivot = { 0,0,0 };
 	
+	struct WillHitEvent
+	{
+		bool active = false;
+		std::vector<DirectX::XMFLOAT3> pos;
+	};
+
+	WillHitEvent willHitEvent;
 };

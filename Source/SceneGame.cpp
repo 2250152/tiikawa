@@ -13,10 +13,8 @@
 #include"StageSelect.h"
 #include "System/Sprite.h"
 
-//メニューON
-bool menyuON=false;
-bool BACK = false;
-float posX = 530, posY = 360;
+
+
 
 SceneGame::SceneGame(int stageNo)
 {
@@ -52,14 +50,14 @@ void SceneGame::Initialize()
 	);
 
 	CameraController::Instance().Initialize();
-
+	
 
 	//背景
 	SkyBox::Instance().Initialize();
 
 	//ここでstage呼ぶわよ 引数の数値で呼ぶstage変えてねぃ
+	
 	stage.Load(m_stageNo);
-	//stage.Load(1);
 
 }
 
@@ -124,8 +122,9 @@ void SceneGame::Update(float elapsedTime)
 
 	Player::Instance().Update(elapsedTime);
 
-	//ステージセレクトに戻る
+	
 	GamePad& gamepad = Input::Instance().GetGamePad();
+	
 	
 	
 
@@ -164,6 +163,27 @@ void SceneGame::Update(float elapsedTime)
 			this->Finalize();
 			this->Initialize();
 		}
+
+		
+
+
+	}
+	//クリア時ステージ切り替え
+	if (BreakTime)
+	{
+		breakTime -= 0.009f;
+	}
+
+	for (auto& g : BlockManager::Instance().GetGroups())
+	{
+		if (g->isClear())
+			BreakTime = true;
+		if (breakTime <= 0) {
+			SceneManager::Instance().ChangeScene(
+				new SceneLoading(new SceneGame(m_stageNo + 1))
+			);
+		};
+		return;
 	}
 
 }
