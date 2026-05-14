@@ -4,8 +4,13 @@
 #include <set>
 #include "System/ModelRenderer.h"
 #include "GroupType.h"
+#include "StageSelect.h"
+#include <SceneGame.h>
+#include"SceneGame.h"
 
 class Block;
+class SceneGame;
+
 
 enum State
 {
@@ -22,21 +27,35 @@ enum RotateAxis
 class Group
 {
 private:
-	
+	SceneGame* sceneGame = nullptr;
+
 public:
 	Group(GroupType type) : type(type) { mergeCount = 1; }
 	~Group() {}
 
 	GroupType GetType() const { return type; }
 
+	//void Initialize(int stageNo);
+
 	void Update(float elpsedTime, const std::vector<Group*>& allGroups);
 
 	void Render(const RenderContext& rc, ModelRenderer* renderer);
+
+	void ExceptHitting(float elapsedTime, const std::vector<Group*>& allGroups);
 
 	void Move(float elapsedTime, const std::vector<Group*>& allGroups);
 
 	void Rotate();
 
+	//ヒットするまでの距離予測
+	void ExpectUntilDistanceHit(const std::vector<Group*>& allGroups, DirectX::XMFLOAT3 move);
+	//レイキャスト
+	bool RayCast(const DirectX::XMFLOAT3& start,
+		const DirectX::XMFLOAT3& end,
+		const DirectX::XMFLOAT4X4& worldTransform,
+		const Model* model,
+		DirectX::XMFLOAT3& hitPosition,
+		DirectX::XMFLOAT3& hitNormal);
 
 	void AddBlock(std::unique_ptr<Block> block);
 
@@ -103,8 +122,14 @@ public:
 
 	virtual void OnHitGoal(Group* other);
 
+
+	bool isClear()const { return clearFlag; }
+	
+
 private:
 	std::vector<std::unique_ptr<Block>> blocks;
+	float willCollideDist = 30; //衝突するであろうブロックとの距離を管理
+	Block* willCollideBlockAddress = nullptr; //衝突するであろうブロックのアドレスを管理  //後で配列に
 
 	GroupType type;
 
@@ -133,6 +158,8 @@ private:
 	DirectX::XMFLOAT3 pivot = { 0,0,0 };
 
 	float rotatedAmount = 0.0f;
+
+	bool clearFlag = false;
 
 
 	struct HitEvent

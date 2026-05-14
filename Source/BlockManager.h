@@ -74,6 +74,7 @@ private:
 	std::set<Group*> removes;
 
 	Effect* hitEffect = nullptr;
+	Effect* willHitEffect = nullptr;
 	
 	AudioSource* hitSE = nullptr;
 };
