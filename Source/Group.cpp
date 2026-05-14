@@ -3,9 +3,18 @@
 #include "Player.h"
 #include<imgui.h>
 #include <Block_Goal.h>
+#include"SceneGame.h"
+#include "StageSelect.h"
+
 //ここでグループ分けしたやつらを動かそうの会
 
 //試行錯誤で進めとるからまとまってきたらいらんの消すね
+
+//void Group::Initialize(int stageNo)
+//{
+//	m_stageNo = stageNo;
+//	stage.Load(m_stageNo);
+//}
 
 void Group::Update(float elapsedTime,const std::vector<Group*>& allGroups)
 {
@@ -96,6 +105,8 @@ void Group::Move(float elapsedTime, const std::vector<Group*>& allGroups)
 						if (g->GetType() == GroupType::Goal)
 						{
 							g->OnHitGoal(this);
+							//クリア
+							ClearFlag = true;
 						}
 
 					}
@@ -750,3 +761,5 @@ void Group::OnHitGoal(Group* other)
 		}
 	}
 }
+
+

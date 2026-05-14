@@ -106,8 +106,8 @@ void StageSelect::Render()
 			Map1->Render(rc, 0, 0, 0, w, h, 0, 1, 0, 1, 1);  break;
 		case 2://ステージ２
 			Map2->Render(rc, 0, 0, 0, w, h, 0, 1, 0, 0, 1);  break;
-		//case 3://ステージ３
-		//	Map3->Render(rc, 0, 0, 0, w, h, 0, 0, 1, 0, 1);  break;
+		case 3://ステージ３
+			Map3->Render(rc, 0, 0, 0, w, h, 0, 0, 1, 0, 1);  break;
 		//case 4://ステージ４
 		//	Map4->Render(rc, 0, 0, 0, w, h, 0, 1, 1, 0, 1);  break;
 		//case 5://ステージ５

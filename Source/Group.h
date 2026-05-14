@@ -4,6 +4,9 @@
 #include <set>
 #include "System/ModelRenderer.h"
 #include "GroupType.h"
+#include "StageSelect.h"
+#include <SceneGame.h>
+#include"SceneGame.h"
 
 class Block;
 
@@ -28,6 +31,8 @@ public:
 	~Group() {}
 
 	GroupType GetType() const { return type; }
+
+	//void Initialize(int stageNo);
 
 	void Update(float elpsedTime, const std::vector<Group*>& allGroups);
 
@@ -103,6 +108,10 @@ public:
 
 	virtual void OnHitGoal(Group* other);
 
+	bool ClearFlag = false;
+
+	
+
 private:
 	std::vector<std::unique_ptr<Block>> blocks;
 
@@ -133,6 +142,8 @@ private:
 	DirectX::XMFLOAT3 pivot = { 0,0,0 };
 
 	float rotatedAmount = 0.0f;
+
+	
 
 
 	struct HitEvent

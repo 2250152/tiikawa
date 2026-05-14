@@ -39,12 +39,20 @@ public:
 	/*void DrawGUI();*/
 	void DrawGUI()override;
 
+	bool Clear = false;
+
 private:
 	int m_stageNo = 1;
+	//ÉÅÉjÉÖÅ[ON
+	bool menyuON = false;
+	bool BACK = false;
+	float posX = 530, posY = 360;
+
 	Stage stage;
 	Sprite* menyu = nullptr;
 	Sprite* choise = nullptr;
 	Sprite* flame = nullptr;
+
 	/*Player* player = nullptr;*/
 	//CameraController* cameraController = nullptr;
 };
