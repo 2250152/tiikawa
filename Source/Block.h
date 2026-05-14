@@ -56,6 +56,7 @@ public:
 	virtual void DrawDebugGUI()=0;
 
 	Model* GetModel() { return model; }
+	const DirectX::XMFLOAT3 GetAngle() const { return angle; }
 	const DirectX::XMFLOAT4X4 Gettranceform() const{ return transform; }
 
 	DirectX::XMFLOAT3 GetPosition() const { return position; }
