@@ -11,6 +11,7 @@
 #include"SceneManager.h"
 #include"EffectManager.h"
 #include"System/Audio.h"
+#include "BlockManager.h"
 
 // 垂直同期間隔設定
 static const int syncInterval = 1;
@@ -50,6 +51,9 @@ Framework::~Framework()
 	// シーン終了化
 	/*sceneGame.Finalize();*/
 	SceneManager::Instance().Clear();
+
+	BlockManager::Instance().Clear();
+
 
 	//エフェクトマネージャー終了化
 	EffectManager::Instance().Finalize();

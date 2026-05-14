@@ -43,10 +43,16 @@ void BlockManager::Update(float elapsedTime)
 		{
 			for (auto& pos : group->GetHitPositions())
 			{
-				hitEffect->Play(pos);
+				Effect* eff = GetHitEffect();
+				if (eff) {
+					eff->Play(pos);
+				}
 			}
 
-			group->ClearHitEvent();
+			AudioSource* se = GetHitSE();
+			if (se) {
+				se->Play(false);
+			}
 		}
 	}
 
@@ -235,4 +241,12 @@ void BlockManager::Clear()
 	removes.clear();
 
 	groups.clear();
+	if (hitSE) {
+		delete hitSE;
+		hitSE = nullptr; // u•Ğ•t‚¯Ï‚İv‚Ìˆó‚ğ‚Â‚¯‚é
+	}
+	if (hitEffect) {
+		delete hitEffect;
+		hitEffect = nullptr;
+	}
 }
