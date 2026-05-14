@@ -51,6 +51,9 @@ public:
 		return clearFlag;
 	}
 
+	bool BreakTime = false;
+	float breakTime = 3;
+
 private:
 	int m_stageNo = 1;
 	//ƒƒjƒ…[ON

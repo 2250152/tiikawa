@@ -124,6 +124,7 @@ public:
 
 
 	bool isClear()const { return clearFlag; }
+	
 
 private:
 	std::vector<std::unique_ptr<Block>> blocks;

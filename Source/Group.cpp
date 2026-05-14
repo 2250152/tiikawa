@@ -53,6 +53,7 @@ void Group::Update(float elapsedTime,const std::vector<Group*>& allGroups)
 	{
 		block->Update(elapsedTime);
 	}
+
 	
 }
 
@@ -108,6 +109,7 @@ void Group::Move(float elapsedTime, const std::vector<Group*>& allGroups)
 							//ƒNƒŠƒA
 							clearFlag = true;
 						}
+						
 
 					}
 					//”‚ª‘«‚è‚Ä‚¢‚È‚©‚Á‚½‚ç
