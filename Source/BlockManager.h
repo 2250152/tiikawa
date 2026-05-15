@@ -13,10 +13,12 @@ private:
 	BlockManager()
 	{
 		hitEffect = new Effect("Data/Effect/Blow11.efk");
+		willHitEffect = new Effect("Data/Effect/ChoiseBlockY.efk");
 		hitSE = Audio::Instance().LoadAudioSource("Data/Sound/Hit.wav");
 	}
 	~BlockManager()
 	{
+		delete willHitEffect;
 		/*delete hitEffect;
 		delete hitSE;*/
 		Clear();

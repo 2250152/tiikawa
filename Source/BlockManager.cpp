@@ -39,7 +39,9 @@ void BlockManager::Update(float elapsedTime)
 
 	for (auto& group : groups)
 	{
-		if (!group->GetHitPositions().empty())
+		auto& hitPositions = group->GetHitPositions();
+
+		if (!hitPositions.empty())
 		{
 			for (auto& pos : group->GetHitPositions())
 			{
@@ -53,6 +55,7 @@ void BlockManager::Update(float elapsedTime)
 			if (se) {
 				se->Play(false);
 			}
+			group->ClearHitEvent();
 		}
 	}
 	

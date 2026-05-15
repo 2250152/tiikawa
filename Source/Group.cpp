@@ -151,7 +151,7 @@ void Group::Move(float elapsedTime, const std::vector<Group*>& allGroups)
 					float offset =
 						(hitBlock->position.y - 1.0f)
 						- selfHitBlock->position.y;
-
+					this->moveCount = 0.0f;
 					for (auto& b : blocks)
 					{
 						b->position.y += offset;
@@ -167,7 +167,7 @@ void Group::Move(float elapsedTime, const std::vector<Group*>& allGroups)
 					float offset =
 						(hitBlock->position.y + 1.0f)
 						- selfHitBlock->position.y;
-
+					this->moveCount = 0.0f;
 					for (auto& b : blocks)
 					{
 						b->position.y += offset;
@@ -183,7 +183,7 @@ void Group::Move(float elapsedTime, const std::vector<Group*>& allGroups)
 					float offset =
 						(hitBlock->position.x - 1.0f)
 						- selfHitBlock->position.x;
-
+					this->moveCount = 0.0f;
 					for (auto& b : blocks)
 					{
 						b->position.x += offset;
@@ -199,7 +199,7 @@ void Group::Move(float elapsedTime, const std::vector<Group*>& allGroups)
 					float offset =
 						(hitBlock->position.x + 1.0f)
 						- selfHitBlock->position.x;
-
+					this->moveCount = 0.0f;
 					for (auto& b : blocks)
 					{
 						b->position.x += offset;
@@ -214,7 +214,7 @@ void Group::Move(float elapsedTime, const std::vector<Group*>& allGroups)
 					float offset =
 						(hitBlock->position.z - 1.0f)
 						- selfHitBlock->position.z;
-
+					this->moveCount = 0.0f;
 					for (auto& b : blocks)
 					{
 						b->position.z += offset;
@@ -229,7 +229,7 @@ void Group::Move(float elapsedTime, const std::vector<Group*>& allGroups)
 					float offset =
 						(hitBlock->position.z + 1.0f)
 						- selfHitBlock->position.z;
-
+					this->moveCount = 0.0f;
 					for (auto& b : blocks)
 					{
 						b->position.z += offset;
@@ -255,9 +255,15 @@ void Group::Move(float elapsedTime, const std::vector<Group*>& allGroups)
 			b->position.y += subMove.y;
 			b->position.z += subMove.z;
 
-
+			this->moveCount+= std::abs(subMove.x);
+			this->moveCount+= std::abs(subMove.y);
+			this->moveCount+= std::abs(subMove.z);
 		}
-
+		if (this->moveCount > movelimit)
+		{
+			//”šŽU
+			Explosion();
+		}
 
 
 	}
@@ -1003,7 +1009,7 @@ void Group::Explosion()
 			dir.z /= len;
 		}
 
-		float speed = 5.0f;
+		float speed = 2.0f;
 
 		b->velocity.x = dir.x * speed;
 		b->velocity.y = dir.y * speed;

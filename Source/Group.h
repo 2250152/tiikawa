@@ -135,7 +135,7 @@ public:
 	void ClearWillCollideBlockAddress() { willCollideBlockAddress.clear(); }
 	std::vector<Block*> GetWillCollideBlockAddress() { return willCollideBlockAddress; }
 	bool isClear()const { return clearFlag; }
-	
+
 
 private:
 	const int COLLIDE_MAX_DISTANCE = 30;
@@ -202,4 +202,8 @@ private:
 
 	bool explosionf = 0;
 
+	float moveCount = 0;
+
+	//どの距離で爆散するか
+	float movelimit = 100.f;
 };
