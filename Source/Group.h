@@ -136,6 +136,7 @@ public:
 	std::vector<Block*> GetWillCollideBlockAddress() { return willCollideBlockAddress; }
 	bool isClear()const { return clearFlag; }
 
+	bool CanRotate(RotateAxis axis, float dir);
 
 private:
 	const int COLLIDE_MAX_DISTANCE = 30;

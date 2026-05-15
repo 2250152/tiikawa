@@ -6,6 +6,7 @@
 #include <Block_Goal.h>
 #include"SceneGame.h"
 #include "StageSelect.h"
+#include "BlockManager.h"
 
 //ここでグループ分けしたやつらを動かそうの会
 
@@ -885,7 +886,7 @@ void Group::Rotation(float elapsedTime)
 
 		// 戻す
 		DirectX::XMVECTOR result = DirectX::XMVectorAdd(local, c);
-
+		//positionを保存
 		DirectX::XMStoreFloat3(&b->position, result);
 
 		/*switch (rotateAxis)
@@ -1044,6 +1045,42 @@ void Group::OnHitGoal(Group* other)
 		}
 	}
 }
+//回転の先にブロックがあるかどうかの判定(回転できるかどうか)
+bool Group::CanRotate(RotateAxis axis, float dir)
+{
+	DirectX::XMMATRIX R;
+	float angle = DirectX::XM_PIDIV2 * dir;
 
+	switch(axis)
+	{
+	case AxisX:
+		R = DirectX::XMMatrixRotationX(angle);
+		break;
+	case AxisY:
+		R = DirectX::XMMatrixRotationY(angle);
+		break;
+	case AxisZ:
+		R = DirectX::XMMatrixRotationZ(angle);
+		break;
+	}
 
+	for (auto& b : blocks)
+	{
+		DirectX::XMVECTOR p = DirectX::XMLoadFloat3(&b->position);
+		DirectX::XMVECTOR c = DirectX::XMLoadFloat3(&pivot);
 
+		DirectX::XMVECTOR local = DirectX::XMVectorSubtract(p, c);
+		local = DirectX::XMVector3Transform(local, R);
+		DirectX::XMVECTOR futureResult = DirectX::XMVectorAdd(local, c);
+
+		DirectX::XMFLOAT3 futurePos;
+		DirectX::XMStoreFloat3(&futurePos, futureResult);
+
+		if (BlockManager::Instance().IsPositionDuplicate(futurePos, this))
+		{
+			return false;
+		}
+
+	}
+	return true;
+}

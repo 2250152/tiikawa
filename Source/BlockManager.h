@@ -70,6 +70,8 @@ public:
 		}
 		return hitEffect;
 	}
+
+	bool IsPositionDuplicate(const DirectX::XMFLOAT3& pos, const Group* myGroup);
 private:
 	//‰ò
 	std::vector<std::unique_ptr<Group>> groups;
