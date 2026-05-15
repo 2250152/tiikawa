@@ -9,6 +9,7 @@
 #include"BlockManager.h"
 #include"Group.h"
 
+
 void Player::Initialize()
 {
 	model = new Model("Data/Model/player/player.mdl");
@@ -120,9 +121,6 @@ void Player::RenderDebugPrimitive(const RenderContext& rc, ShapeRenderer* render
 	Character::RenderDebugPrimitive(rc, renderer);
 
 	
-
-
-
 }
 
 //デバッグ用GUI描画
@@ -465,11 +463,36 @@ void Player::StickToBlockFace()
 			{
 				if (hitDistance < minDistance)
 				{
+
+					// 1. ブロックの回転行列だけを取り出す（スケールや平行移動を含まないように）
+				    // block->Gettranceform() から回転成分だけを抽出するか、angleから作り直す
+					DirectX::XMFLOAT3 bAngle = block->GetAngle();
+					DirectX::XMMATRIX blockRotation = DirectX::XMMatrixRotationRollPitchYaw(bAngle.x, bAngle.y, bAngle.z);
+					// 2. 法線に回転を適用する
+					DirectX::XMVECTOR localNormal = DirectX::XMLoadFloat3(&hitNormal);
+					DirectX::XMVECTOR worldNormal = DirectX::XMVector3TransformNormal(localNormal, blockRotation);
+					/*
+					ポイント：なぜ XMVector3TransformNormal を使うのか？
+					ベクトルに行列を掛ける関数には XMVector3TransformCoord もありますが、法線（方向）を変換する場合は XMVector3TransformNormal を使います。
+					・TransformCoord : 位置（座標）を変換する。平行移動の影響を受ける。
+					・TransformNormal : 向きだけを変換する。平行移動の影響を無視する。*/
+
+					// 3. 変換した法線を保存
+					DirectX::XMStoreFloat3(&bestNormal, worldNormal);
+
+				
+
 					SearchClosestHitPositionToFaceCenter(hitPosition, block.get());
 					minDistance = hitDistance;
 					bestPosition = hitPosition;
-					bestNormal = hitNormal;
+					//bestNormal = hitNormal;　上に書き換え
 					isHit = true;
+
+					//ここにいったんついかした
+					if (isHit) {
+						// block.get() から所属グループを取得して保持
+						standingGroup = block->GetGroup();
+					}
 				}
 			}
 		}
@@ -500,46 +523,97 @@ void Player::StickToBlockFace()
 		DirectX::XMVECTOR normal = DirectX::XMLoadFloat3(&bestNormal);
 		normal = DirectX::XMVector3Normalize(normal);
 
-		//　新しい上方向ベクトル（法線）
+		// 1. 新しい「上」を法線にする
 		DirectX::XMVECTOR newUp = normal;
 
-		//　仮の右方向ベクトルを計算（法線が真上・真下に近い場合の回避処理付き）
+		// 2. 「前」方向をとりあえず決める（真上・真下対策付き）
 		DirectX::XMVECTOR worldForward = DirectX::XMVectorSet(0, 0, 1, 0);
 		if (fabsf(DirectX::XMVectorGetY(newUp)) > 0.99f) {
-			worldForward = DirectX::XMVectorSet(1, 0, 0, 0); // 真上/真下なら前方向を変える
+			worldForward = DirectX::XMVectorSet(1, 0, 0, 0);
 		}
 
+		// 3. 右と前を再計算して「正規直交基底」を作る
 		DirectX::XMVECTOR newRight = DirectX::XMVector3Normalize(DirectX::XMVector3Cross(newUp, worldForward));
 		DirectX::XMVECTOR newForward = DirectX::XMVector3Cross(newRight, newUp);
 
-		//　回転行列を作成
-		DirectX::XMMATRIX rotationMatrix;
-		rotationMatrix.r[0] = newRight;
-		rotationMatrix.r[1] = newUp;
-		rotationMatrix.r[2] = newForward;
-		rotationMatrix.r[3] = DirectX::XMVectorSet(0, 0, 0, 1);
+		// 4. 回転行列を作成
+		DirectX::XMMATRIX rot = DirectX::XMMatrixIdentity();
+		rot.r[0] = newRight;
+		rot.r[1] = newUp;
+		rot.r[2] = newForward;
 
-		// ヒット処理
-		position = closestHitPositionToFaceCenter;//bestPosition
+		// 5. 行列からクォータニオンに変換し、そこからオイラー角を「安全に」取り出す
+		DirectX::XMVECTOR q = DirectX::XMQuaternionRotationMatrix(rot);
 
-		// もし angle を直接更新したい場合（簡易版）
-		// 法線(nx, ny, nz)に基づいた角度計算の修正
+		// 角度を抽出する際の補助関数（もし自作していなければ、以下のように直接計算）
+		// ※この時、angle.y (ヨー) は現在の向きを維持するようにしないと、クリックのたびにキャラの正面が変わります
+
+		// シンプルに法線から直接角度を入れる方法に一度戻しましょう
 		float nx = DirectX::XMVectorGetX(normal);
 		float ny = DirectX::XMVectorGetY(normal);
 		float nz = DirectX::XMVectorGetZ(normal);
 
-		angle.x = asinf(nz);    //
+		// Z軸の回転（左右の傾き）
 		angle.z = atan2f(-nx, ny);
-		angle.y = 0; // 必要に応じて現在の向きを保持
+		// X軸の回転（前後の傾き）
+		// ※nzが効くように。ピタッと張り付かせるための最短ルートです
+		angle.x = atan2f(nz, sqrtf(nx * nx + ny * ny));
 
+		// 位置と状態の更新
+		position = closestHitPositionToFaceCenter;
 		isGround = true;
-		velocity = { 0.0f,0.0f,0.0f };
+		velocity = { 0, 0, 0 };
 	}
+	//if (isHit && (mouse.GetButtonDown() & mouse.BTN_LEFT))
+	//{
+	//	DirectX::XMVECTOR normal = DirectX::XMLoadFloat3(&bestNormal);
+	//	normal = DirectX::XMVector3Normalize(normal);
+
+	//	//　新しい上方向ベクトル（法線）
+	//	DirectX::XMVECTOR newUp = normal;
+
+	//	//　仮の右方向ベクトルを計算（法線が真上・真下に近い場合の回避処理付き）
+	//	DirectX::XMVECTOR worldForward = DirectX::XMVectorSet(0, 0, 1, 0);
+	//	if (fabsf(DirectX::XMVectorGetY(newUp)) > 0.99f) {
+	//		worldForward = DirectX::XMVectorSet(1, 0, 0, 0); // 真上/真下なら前方向を変える
+	//	}
+
+	//	DirectX::XMVECTOR newRight = DirectX::XMVector3Normalize(DirectX::XMVector3Cross(newUp, worldForward));
+	//	DirectX::XMVECTOR newForward = DirectX::XMVector3Cross(newRight, newUp);
+
+	//	//　回転行列を作成
+	//	DirectX::XMMATRIX rotationMatrix;
+	//	rotationMatrix.r[0] = newRight;
+	//	rotationMatrix.r[1] = newUp;
+	//	rotationMatrix.r[2] = newForward;
+	//	rotationMatrix.r[3] = DirectX::XMVectorSet(0, 0, 0, 1);
+
+	//	// ヒット処理
+	//	position = closestHitPositionToFaceCenter;//bestPosition
+
+	//	// もし angle を直接更新したい場合（簡易版）
+	//	// 法線(nx, ny, nz)に基づいた角度計算の修正
+	//	float nx = DirectX::XMVectorGetX(normal);
+	//	float ny = DirectX::XMVectorGetY(normal);
+	//	float nz = DirectX::XMVectorGetZ(normal);
+
+	//	angle.x = asinf(nz);    //
+	//	angle.z = atan2f(-nx, ny);
+	//	angle.y = 0; // 必要に応じて現在の向きを保持
+
+	//	isGround = true;
+	//	velocity = { 0.0f,0.0f,0.0f };
+	//}
 }
 
 //接地処理
 void Player::Grounding()
 {
+	bool isHitLocal = false; // この関数内での当たり判定結果
+	Block* hitBlockPtr = nullptr; // 当たったブロックを一時保存
+
+	
+
 	bool onGround = isGround; //目のフレームのisGroundを保存
 	isGround = false;
 
@@ -578,7 +652,7 @@ void Player::Grounding()
 		DirectX::XMFLOAT3 hitPosition, hitNormal;
 		float hitDistance;
 		float minDistance = FLT_MAX; // 一番近い距離を保存する変数
-		bool isHit = false;
+		//bool isHit = false;
 		DirectX::XMFLOAT3 bestPosition;
 
 		for (const auto& group : BlockManager::Instance().GetGroups())
@@ -590,19 +664,24 @@ void Player::Grounding()
 					SearchClosestHitPositionToFaceCenter(hitPosition, block.get());
 					minDistance = hitDistance;
 					bestPosition = hitPosition;
-					isHit = true;
+					isHitLocal = true;      // ローカル変数に保存
+					hitBlockPtr = block.get(); // 当たったブロックを保存
 				}
 			}
 		}
-		if (isHit)
+		if (isHitLocal)//isHit
 		{
 			OnLanding();
 			position = closestHitPositionToFaceCenter;//hitPosition
 			velocity = { 0,0,0 };
 			isGround = true;
+			standingGroup = hitBlockPtr->GetGroup(); // ここでグループを保存！
 		}
 		else
+		{
 			isGround = onGround;
+			if (!isGround) standingGroup = nullptr;
+		}
 	}
 	else
 	{

@@ -64,9 +64,10 @@ void BlockManager::Update(float elapsedTime)
 			{
 				for (auto& pos : block->GetWillHitPositions())
 				{
-					willHitEffect->Play(pos, 2.0f);
+					willHitEffect->Play(pos, 1.5f);
 				}
 				block->ClearWillHitEvent();
+				group->ClearWillCollideBlockAddress();
 			}
 		}
 	}

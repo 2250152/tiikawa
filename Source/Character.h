@@ -38,7 +38,7 @@ public:
 
 	//高さ取得
 	float GetHeight()const { return height; }
-
+	
 	//デバッグプリミティブ描画
 	virtual void RenderDebugPrimitive(const RenderContext& rc, ShapeRenderer* renderer);
 
