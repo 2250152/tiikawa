@@ -217,11 +217,11 @@ std::vector<Block::FaceData> Block::GetAllFaces() {
     for (int i = 0; i < 6; i++) {
         // 1. 【法線の回転】
         // ローカル法線にブロックの回転を適用。これで「今どっちを向いているか」が出る
-        DirectX::XMVECTOR worldNormal = DirectX::XMVector3TransformNormal(faceDefs[i].n, rot);
+        DirectX::XMVECTOR worldNormal = DirectX::XMVector3TransformNormal(faceDefs[i].n, rot);//VECTORとMATRIXの掛け算の結果をVECTORで返す関数
 
         // 2. 【位置の回転】
         // ローカルの中心座標を回転させてから、ブロックのワールド座標を足す
-        DirectX::XMVECTOR localOffset = DirectX::XMVectorMultiply(faceDefs[i].n, DirectX::XMVectorSet(halfSizeX, halfSizeY, halfSizeZ, 0));
+        DirectX::XMVECTOR localOffset = DirectX::XMVectorMultiply(faceDefs[i].n, DirectX::XMVectorSet(halfSizeX, halfSizeY, halfSizeZ, 0));//XMVectorMultiply...2つのベクトルの各成分ごとの掛け算をする関数
         DirectX::XMVECTOR worldPos = DirectX::XMVectorAdd(DirectX::XMVector3Transform(localOffset, rot), pos);
 
         DirectX::XMStoreFloat3(&faces[i].worldNormal, worldNormal);
@@ -279,9 +279,8 @@ bool Block::CheckIfBlocked(const DirectX::XMFLOAT3& rayStart, const DirectX::XMF
     // ※BlockManagerなどで管理している全ブロックのリストを走査します
     for (const auto& group : BlockManager::Instance().GetGroups())
     {
-        for (const auto& block : group->GetBlocks()) // ここで 'block' と定義している
+        for (const auto& block : group->GetBlocks())
         {
-            // 'otherBlock' ではなく 'block' を使う
             if (block.get() == this) continue;
 
             if (Collision::RayCast(
