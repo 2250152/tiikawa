@@ -65,9 +65,19 @@ public:
 
 	static float DistSq(const DirectX::XMFLOAT3& a, const DirectX::XMFLOAT3& b);
 
-	bool GetWillHitEvent() { return willHitEvent.active; }
-	const std::vector<DirectX::XMFLOAT3>& GetWillHitPositions() { return willHitEvent.pos; };
-	void SetWillHitPositions(DirectX::XMFLOAT3 position) { willHitEvent.pos.push_back(position); };
+
+	//=====================|willHitEffect関連|================
+	const std::vector<DirectX::XMFLOAT3>& GetWillHitPositions() { return willHitEvent.pos; }
+	void SetWillHitPositions(DirectX::XMFLOAT3 position) { willHitEvent.pos.push_back(position); }
+
+	bool GetWillHitEventIsActive() { return willHitEvent.active; }
+	void ActiveWillHitEvent() { willHitEvent.active = true; }
+	void InactiveWillHitEvent() { willHitEvent.active = false; }
+
+	void SetWillHitEffectHandle(int isAlive) { willHitEffectHandle = isAlive; }
+	int GetWillHitEffectHandle() { return willHitEffectHandle; }
+
+	//=====================================================
 
 	void ClearWillHitEvent()
 	{
@@ -93,11 +103,12 @@ protected:
 	
 	DirectX::XMFLOAT3 pivot = { 0,0,0 };
 	
-	struct WillHitEvent
+	struct WillHitEvent //衝突予測エフェクト用
 	{
 		bool active = false;
 		std::vector<DirectX::XMFLOAT3> pos;
 	};
 
 	WillHitEvent willHitEvent;
+	int willHitEffectHandle = -1; //最初は存在しない
 };

@@ -1,5 +1,6 @@
 #include "BlockManager.h"
-#include"System/Input.h"
+#include "System/Input.h"
+#include "EffectManager.h"
 #include <Camera.h>
 //ぶち消し
 void BlockManager::Remove(Group* group)
@@ -54,15 +55,25 @@ void BlockManager::Update(float elapsedTime)
 	{
 		for (auto& block : group->GetBlocks())
 		{
-			if (!block->GetWillHitPositions().empty())
+			if (block->GetWillHitEventIsActive())
 			{
 				for (auto& pos : block->GetWillHitPositions())
 				{
-					willHitEffect->Play(pos, 1.5f);
+					block->SetWillHitEffectHandle(willHitEffect->Play(pos, 1.5f));
 				}
 				block->ClearWillHitEvent();
 				group->ClearWillCollideBlockAddress();
+
+				// 再生終了チェック
+				if (!EffectManager::Instance().GetEffekseerManager()->Exists(block->GetWillHitEffectHandle()))
+				{
+					// 再生終了した場合の処理
+					block->SetWillHitPositions(block->GetPosition());
+					block->ActiveWillHitEvent();
+				}
 			}
+
+			
 		}
 	}
 

@@ -6,6 +6,7 @@
 #include <Block_Goal.h>
 #include"SceneGame.h"
 #include "StageSelect.h"
+#include "EffectManager.h"
 
 //ここでグループ分けしたやつらを動かそうの会
 
@@ -347,11 +348,12 @@ void Group::ExceptHitting(float elapsedTime, const std::vector<Group*>& allGroup
 	//ヒット予測
 	ExpectUntilDistanceHit(allGroups, debugMove/*move*/);
 
-	if (!willCollideBlockAddress.empty())
+	if (!willCollideBlockAddresses.empty())
 	{
-		for (auto& w : willCollideBlockAddress)
+		for (auto& w : willCollideBlockAddresses)
 		{
 			w->SetWillHitPositions(w->GetPosition());
+			w->ActiveWillHitEvent();
 		}
 		ClearWillCollideBlockAddress();
 	}
@@ -456,20 +458,25 @@ void Group::ExpectUntilDistanceHit(const std::vector<Group*>& allGroups, DirectX
 					}
 				}
 #endif
+				bool tmp = EffectManager::Instance().GetEffekseerManager()->Exists(c->GetWillHitEffectHandle());
+				//現在再生中のエフェクトならレイキャストをスキップ(willCollideBlockAddressに追加する必要がないため)
+				if (EffectManager::Instance().GetEffekseerManager()->Exists(c->GetWillHitEffectHandle()))
+					continue;
+				
+
 				//レイキャスト
 				DirectX::XMFLOAT3 s = { a->GetPosition() };
 				DirectX::XMFLOAT3 e = { s.x + move.x * COLLIDE_MAX_DISTANCE, s.y + move.y * COLLIDE_MAX_DISTANCE, s.z + move.z * COLLIDE_MAX_DISTANCE }; // (ToT)
-				DirectX::XMFLOAT3 hitPosition, hitNormal;
-				willCollideBlockAddress;
+				DirectX::XMFLOAT3 hitPosition, hitNormal;				
 				if (RayCast(s, e, c->Gettranceform(), c->GetModel(), hitPosition, hitNormal))
 				{
 					DirectX::XMVECTOR lengthVec = DirectX::XMVectorSubtract(DirectX::XMLoadFloat3(&s), DirectX::XMLoadFloat3(&hitPosition));
 					if (DirectX::XMVectorGetX(DirectX::XMVector3Length(lengthVec)) < willCollideDist)
 					{
 						willCollideDist = DirectX::XMVectorGetX(DirectX::XMVector3Length(lengthVec));
-						willCollideBlockAddress.push_back(c.get());
+						willCollideBlockAddresses.push_back(c.get());
 					}									
-				}
+				}				
 			}
 		}
 	}
