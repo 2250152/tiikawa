@@ -4,6 +4,7 @@
 #include "Block.h"
 #include "Group.h"
 #include "Effect.h"
+#include "System/Audio.h"
 
 
 class BlockManager
@@ -11,13 +12,16 @@ class BlockManager
 private:
 	BlockManager()
 	{
-		hitEffect = new Effect("Data/Effect/Blow11.efk"); 
-		willHitEffect = new Effect("Data/Effect/ChoiseBlockY.efk"); 
+		hitEffect = new Effect("Data/Effect/Blow11.efk");
+		willHitEffect = new Effect("Data/Effect/ChoiseBlockY.efk");
+		hitSE = Audio::Instance().LoadAudioSource("Data/Sound/Hit.wav");
 	}
-	~BlockManager() 
-	{ 
-		delete hitEffect;
+	~BlockManager()
+	{
 		delete willHitEffect;
+		/*delete hitEffect;
+		delete hitSE;*/
+		Clear();
 	}
 public:
 	static BlockManager& Instance()
@@ -49,6 +53,25 @@ public:
 
 	void Clear();
 
+	AudioSource* GetHitSE()
+	{
+		if (!hitSE)
+		{
+			hitSE = Audio::Instance().LoadAudioSource("Data/Sound/Hit.wav");
+		}
+		return hitSE;
+	}
+
+	Effect* GetHitEffect() 
+	{
+		if (!hitEffect) 
+		{
+			hitEffect = new Effect("Data/Effect/Blow11.efk");
+		}
+		return hitEffect;
+	}
+
+	bool IsPositionDuplicate(const DirectX::XMFLOAT3& pos, const Group* myGroup);
 private:
 	//‰ò
 	std::vector<std::unique_ptr<Group>> groups;
@@ -57,5 +80,5 @@ private:
 	Effect* hitEffect = nullptr;
 	Effect* willHitEffect = nullptr;
 	
-
+	AudioSource* hitSE = nullptr;
 };

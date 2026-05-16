@@ -40,13 +40,22 @@ void BlockManager::Update(float elapsedTime)
 
 	for (auto& group : groups)
 	{
-		if (!group->GetHitPositions().empty())
+		auto& hitPositions = group->GetHitPositions();
+
+		if (!hitPositions.empty())
 		{
 			for (auto& pos : group->GetHitPositions())
 			{
-				hitEffect->Play(pos);
+				Effect* eff = GetHitEffect();
+				if (eff) {
+					eff->Play(pos);
+				}
 			}
 
+			AudioSource* se = GetHitSE();
+			if (se) {
+				se->Play(false);
+			}
 			group->ClearHitEvent();
 		}
 	}
@@ -178,81 +187,114 @@ void BlockManager::InputRotation()
 
 	for (auto& group : groups)
 	{
-		// D
+		//// D
+		//if (lx > DEADZONE)
+		//{
+		//	if (fabs(f.z) > fabs(f.x))
+		//	{
+		//		if (f.z > 0)
+		//			group->RequestRotate(AxisY, 1.0f);
+		//		else
+		//			group->RequestRotate(AxisY, -1.0f);
+		//	}
+		//	else
+		//	{
+		//		if (f.x > 0)
+		//			group->RequestRotate(AxisY, -1.0f);
+		//		else
+		//			group->RequestRotate(AxisY, 1.0f);
+		//	}
+		//}
+
+		//// A
+		//if (lx < -DEADZONE)
+		//{
+		//	if (fabs(f.z) > fabs(f.x))
+		//	{
+		//		if (f.z > 0)
+		//			group->RequestRotate(AxisY, -1.0f);
+		//		else
+		//			group->RequestRotate(AxisY, 1.0f);
+		//	}
+		//	else
+		//	{
+		//		if (f.x > 0)
+		//			group->RequestRotate(AxisY, 1.0f);
+		//		else
+		//			group->RequestRotate(AxisY, -1.0f);
+		//	}
+		//}
+
+		//// W
+		//if (ly > DEADZONE)
+		//{
+		//	if (fabs(f.z) > fabs(f.x))
+		//	{
+		//		if (f.z > 0)
+		//			group->RequestRotate(AxisX, 1.0f);
+		//		else
+		//			group->RequestRotate(AxisX, -1.0f);
+		//	}
+		//	else
+		//	{
+		//		if (f.x > 0)
+		//			group->RequestRotate(AxisZ, 1.0f);
+		//		else
+		//			group->RequestRotate(AxisZ, -1.0f);
+		//	}
+		//}
+
+		//// S
+		//if (ly < -DEADZONE)
+		//{
+		//	if (fabs(f.z) > fabs(f.x))
+		//	{
+		//		if (f.z > 0)
+		//			group->RequestRotate(AxisX, -1.0f);
+		//		else
+		//			group->RequestRotate(AxisX, 1.0f);
+		//	}
+		//	else
+		//	{
+		//		if (f.x > 0)
+		//			group->RequestRotate(AxisZ, -1.0f);
+		//		else
+		//			group->RequestRotate(AxisZ, 1.0f);
+		//	}
+		//}
+
+		RotateAxis axis;
+		float dir = 0.0f;
+
 		if (lx > DEADZONE)
 		{
-			if (fabs(f.z) > fabs(f.x))
+			axis = AxisY;
+			dir = (fabs(f.z) > fabs(f.x)) ? (f.z > 0 ? 1.0f : -1.0f) : (f.x > 0 ? -1.0f : 1.0f);
+		}
+		else if (lx < -DEADZONE) 
+		{
+			axis = AxisY;
+			dir = (fabs(f.z) > fabs(f.x)) ? (f.z > 0 ? -1.0f : 1.0f) : (f.x > 0 ? 1.0f : -1.0f);
+		}
+		else if (ly > DEADZONE)
+		{
+			if (fabs(f.z) > fabs(f.x)) { axis = AxisX; dir = f.z > 0 ? 1.0f : -1.0f; }
+			else { axis = AxisZ; dir = f.x > 0 ? 1.0f : -1.0f; }
+		}
+		else if (ly < -DEADZONE)
+		{
+			if (fabs(f.z) > fabs(f.x)) { axis = AxisX; dir = f.z > 0 ? -1.0f : 1.0f; }
+			else { axis = AxisZ; dir = f.x > 0 ? -1.0f : 1.0f; }
+		}
+
+		if (dir != 0.0f)
+		{
+			if (group->CanRotate(axis, dir))
 			{
-				if (f.z > 0)
-					group->RequestRotate(AxisY, 1.0f);
-				else
-					group->RequestRotate(AxisY, -1.0f);
-			}
-			else
-			{
-				if (f.x > 0)
-					group->RequestRotate(AxisY, -1.0f);
-				else
-					group->RequestRotate(AxisY, 1.0f);
+				group->RequestRotate(axis, dir);
 			}
 		}
 
-		// A
-		if (lx < -DEADZONE)
-		{
-			if (fabs(f.z) > fabs(f.x))
-			{
-				if (f.z > 0)
-					group->RequestRotate(AxisY, -1.0f);
-				else
-					group->RequestRotate(AxisY, 1.0f);
-			}
-			else
-			{
-				if (f.x > 0)
-					group->RequestRotate(AxisY, 1.0f);
-				else
-					group->RequestRotate(AxisY, -1.0f);
-			}
-		}
-
-		// W
-		if (ly > DEADZONE)
-		{
-			if (fabs(f.z) > fabs(f.x))
-			{
-				if (f.z > 0)
-					group->RequestRotate(AxisX, 1.0f);
-				else
-					group->RequestRotate(AxisX, -1.0f);
-			}
-			else
-			{
-				if (f.x > 0)
-					group->RequestRotate(AxisZ, 1.0f);
-				else
-					group->RequestRotate(AxisZ, -1.0f);
-			}
-		}
-
-		// S
-		if (ly < -DEADZONE)
-		{
-			if (fabs(f.z) > fabs(f.x))
-			{
-				if (f.z > 0)
-					group->RequestRotate(AxisX, -1.0f);
-				else
-					group->RequestRotate(AxisX, 1.0f);
-			}
-			else
-			{
-				if (f.x > 0)
-					group->RequestRotate(AxisZ, -1.0f);
-				else
-					group->RequestRotate(AxisZ, 1.0f);
-			}
-		}
 	}
 }
 
@@ -262,4 +304,35 @@ void BlockManager::Clear()
 	removes.clear();
 
 	groups.clear();
+	if (hitSE) {
+		delete hitSE;
+		hitSE = nullptr; // 「片付け済み」の印をつける
+	}
+	if (hitEffect) {
+		delete hitEffect;
+		hitEffect = nullptr;
+	}
+}
+
+bool BlockManager::IsPositionDuplicate(const DirectX::XMFLOAT3& pos, const Group* myGroup)
+{
+	//整数にぶち直しbro
+	float targetX = roundf(pos.x);
+	float targetY = roundf(pos.y);
+	float targetZ = roundf(pos.z);
+
+	for (const auto& group : groups)
+	{
+		if (group.get() == myGroup) continue; 
+		for (const auto& block : group->GetBlocks())
+		{
+			if (block->GetPosition().x == targetX &&
+				block->GetPosition().y == targetY &&
+				block->GetPosition().z == targetZ)
+			{
+				return true; //	重複あり
+			}
+		}
+	}
+	return false; // 重複なし
 }

@@ -137,7 +137,12 @@ public:
 
 
 	bool isClear()const { return clearFlag; }
-	
+
+	bool CanRotate(RotateAxis axis, float dir);
+
+	int WillStopHit(Group* otherGroup, DirectX::XMFLOAT3 move);
+
+	void SetHitInfo(Block* selfBlock, Block* targetBlock, const DirectX::XMFLOAT3& originalPos);
 
 private:
 	const int COLLIDE_MAX_DISTANCE = 30;
@@ -204,4 +209,8 @@ private:
 
 	bool explosionf = 0;
 
+	float moveCount = 0;
+
+	//どの距離で爆散するか
+	float movelimit = 100.f;
 };

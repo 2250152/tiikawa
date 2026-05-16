@@ -22,10 +22,9 @@ public:
 	void SetPosition(const DirectX::XMFLOAT3& position) { this->position = position; }
 
 	//回転取得
-	const DirectX::XMFLOAT3& GetAngle() const { return angle; }
-
+	//const DirectX::XMFLOAT3& GetAngle() const { return angle; }
 	//回転設定
-	void SetAngle(const DirectX::XMFLOAT3& angle) { this->angle = angle; }
+	//void SetAngle(const DirectX::XMFLOAT3& angle) { this->angle = angle; }
 
 	//スケール取得
 	const DirectX::XMFLOAT3& GetScale() const { return scale; }
@@ -80,7 +79,8 @@ protected:
 
 protected:
 	DirectX::XMFLOAT3     position = { 0,0,0 };  //※敵とplayerの共通点を書く
-	DirectX::XMFLOAT3     angle = { 0,0,0 };
+	//DirectX::XMFLOAT3     angle = { 0,0,0 };                                  //オイラー角
+	DirectX::XMVECTOR     rotationQuat = DirectX::XMQuaternionIdentity();     //クォータニオン
 	DirectX::XMFLOAT3     scale = { 1,1,1 };
 	DirectX::XMFLOAT4X4   transform = {
 		1,0,0,0,
