@@ -448,12 +448,12 @@ void Group::ExpectUntilDistanceHit(const std::vector<Group*>& allGroups, DirectX
 				}
 #endif
 				bool tmp = EffectManager::Instance().GetEffekseerManager()->Exists(c->GetWillHitEffectHandle());
-				//���ݍĐ����̃G�t�F�N�g�Ȃ烌�C�L���X�g���X�L�b�v(willCollideBlockAddress�ɒǉ�����K�v���Ȃ�����)
+				//再生中のエフェクトはレイキャストをスキップ
 				if (EffectManager::Instance().GetEffekseerManager()->Exists(c->GetWillHitEffectHandle()))
 					continue;
 				
 
-				//���C�L���X�g
+				//レイキャストを行う
 				DirectX::XMFLOAT3 s = { a->GetPosition() };
 				DirectX::XMFLOAT3 e = { s.x + move.x * COLLIDE_MAX_DISTANCE, s.y + move.y * COLLIDE_MAX_DISTANCE, s.z + move.z * COLLIDE_MAX_DISTANCE }; // (ToT)
 				DirectX::XMFLOAT3 hitPosition, hitNormal;				
