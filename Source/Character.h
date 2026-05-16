@@ -23,7 +23,6 @@ public:
 
 	//‰ñ“]Žæ“¾
 	//const DirectX::XMFLOAT3& GetAngle() const { return angle; }
-
 	//‰ñ“]Ý’è
 	//void SetAngle(const DirectX::XMFLOAT3& angle) { this->angle = angle; }
 
