@@ -138,6 +138,8 @@ public:
 
 	bool CanRotate(RotateAxis axis, float dir);
 
+	int WillStopHit(Group* otherGroup, DirectX::XMFLOAT3 move);
+
 private:
 	const int COLLIDE_MAX_DISTANCE = 30;
 	std::vector<std::unique_ptr<Block>> blocks;

@@ -53,6 +53,8 @@ public:
 
 	DirectX::XMFLOAT3 velocity;
 
+	DirectX::XMFLOAT3 movevec = { 0,0,0 };
+
 	virtual void DrawDebugGUI()=0;
 
 	Model* GetModel() { return model; }
@@ -100,4 +102,7 @@ protected:
 	};
 
 	WillHitEvent willHitEvent;
+
+	
+
 };
