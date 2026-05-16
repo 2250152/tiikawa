@@ -1096,7 +1096,7 @@ int Group::WillStopHit(Group* otherGroup, DirectX::XMFLOAT3 move) {
 				{
 					float futureLeftA = a->GetLeftCenter().x + move.x;
 					float rightB = b->GetRightCenter().x;
-
+ 
 					
 					if (futureLeftA <= rightB + EPS && a->position.x - 0.1f > b->position.x)
 					{
