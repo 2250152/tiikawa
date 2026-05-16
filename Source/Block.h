@@ -78,6 +78,36 @@ public:
 	}
 
 //	bool WillHit(Block* other, float nextX);
+
+
+
+
+
+
+
+
+
+
+	//越智君が作ったやつ＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
+
+	//プレイヤーが使う情報
+	struct FaceData
+	{
+		DirectX::XMFLOAT3 worldPos;
+		DirectX::XMFLOAT3 worldNormal;
+	};
+	//全６面のデータを取得する関数
+	std::vector<FaceData> GetAllFaces();
+
+	// 最適な面情報を探す関数
+	FaceData Block::FindBestFace(DirectX::XMVECTOR hitPos);
+
+	bool Block::CheckIfBlocked(const DirectX::XMFLOAT3& rayStart, const DirectX::XMFLOAT3& rayDir);
+
+
+	//＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
+
+
 protected:
 	DirectX::XMFLOAT3 size;
 
