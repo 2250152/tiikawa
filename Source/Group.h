@@ -140,6 +140,8 @@ public:
 
 	int WillStopHit(Group* otherGroup, DirectX::XMFLOAT3 move);
 
+	void SetHitInfo(Block* selfBlock, Block* targetBlock, const DirectX::XMFLOAT3& originalPos);
+
 private:
 	const int COLLIDE_MAX_DISTANCE = 30;
 	std::vector<std::unique_ptr<Block>> blocks;

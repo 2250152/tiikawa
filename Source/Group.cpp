@@ -151,98 +151,74 @@ void Group::Move(float elapsedTime, const std::vector<Group*>& allGroups)
 				
 
 				state = Idle;
+				for (auto& b : blocks)
+				{
+					b->position.x = roundf(b->position.x);
+					b->position.y = roundf(b->position.y);
+					b->position.z = roundf(b->position.z);
+				}
 				switch (hitDir)
 				{
 				case 1:
 				{
-					float offset =
-						(hitBlock->position.y - 1.0f)
-						- selfHitBlock->position.y;
+					float offset = (hitBlock->position.y - 1.0f) - selfHitBlock->position.y;
 					this->moveCount = 0.0f;
 					for (auto& b : blocks)
 					{
 						b->position.y += offset;
-						b->position.x = roundf(b->position.x);
-						b->position.y = roundf(b->position.y);
-						b->position.z = roundf(b->position.z);
 					}
 					break;
 				}
-					
+
 				case 2:
 				{
-					float offset =
-						(hitBlock->position.y + 1.0f)
-						- selfHitBlock->position.y;
+					float offset = (hitBlock->position.y + 1.0f) - selfHitBlock->position.y;
 					this->moveCount = 0.0f;
 					for (auto& b : blocks)
 					{
 						b->position.y += offset;
-						b->position.x = roundf(b->position.x);
-						b->position.y = roundf(b->position.y);
-						b->position.z = roundf(b->position.z);
 					}
 					break;
 				}
-					
+
 				case 3:
 				{
-					float offset =
-						(hitBlock->position.x - 1.0f)
-						- selfHitBlock->position.x;
+					float offset = (hitBlock->position.x - 1.0f) - selfHitBlock->position.x;
 					this->moveCount = 0.0f;
 					for (auto& b : blocks)
 					{
 						b->position.x += offset;
-						b->position.x = roundf(b->position.x);
-						b->position.y = roundf(b->position.y);
-						b->position.z = roundf(b->position.z);
 					}
 					break;
 				}
-				
+
 				case 4:
 				{
-					float offset =
-						(hitBlock->position.x + 1.0f)
-						- selfHitBlock->position.x;
+					float offset = (hitBlock->position.x + 1.0f) - selfHitBlock->position.x;
 					this->moveCount = 0.0f;
 					for (auto& b : blocks)
 					{
 						b->position.x += offset;
-						b->position.x = roundf(b->position.x);
-						b->position.y = roundf(b->position.y);
-						b->position.z = roundf(b->position.z);
 					}
 					break;
 				}
 				case 5:
 				{
-					float offset =
-						(hitBlock->position.z - 1.0f)
-						- selfHitBlock->position.z;
+					float offset = (hitBlock->position.z - 1.0f) - selfHitBlock->position.z;
 					this->moveCount = 0.0f;
 					for (auto& b : blocks)
 					{
 						b->position.z += offset;
-						b->position.x = roundf(b->position.x);
-						b->position.y = roundf(b->position.y);
-						b->position.z = roundf(b->position.z);
 					}
 					break;
 				}
 				case 6:
 				{
-					float offset =
-						(hitBlock->position.z + 1.0f)
-						- selfHitBlock->position.z;
+					float offset = (hitBlock->position.z + 1.0f) - selfHitBlock->position.z;
 					this->moveCount = 0.0f;
 					for (auto& b : blocks)
 					{
 						b->position.z += offset;
-						b->position.x = roundf(b->position.x);
-						b->position.y = roundf(b->position.y);
-						b->position.z = roundf(b->position.z);
 					}
 					break;
 				}
@@ -1094,110 +1070,115 @@ bool Group::CanRotate(RotateAxis axis, float dir)
 int Group::WillStopHit(Group* otherGroup, DirectX::XMFLOAT3 move) {
 	if (otherGroup->GetType() != GroupType::Stop) return 0;
 
-	for (auto& a : blocks)
+	for (auto& a : blocks) 
 	{
-		// 1. 先を見る（仮移動）
-		DirectX::XMFLOAT3 original = a->position;
-		a->position.x += move.x;
-		a->position.y += move.y;
-		a->position.z += move.z;
-
 		for (auto& b : otherGroup->blocks)
 		{
-			// --- 1. Y軸方向の衝突チェック ---
-			if (move.y > 0.0f) // 上に移動中
+			
+			if (move.x > 0.0001f) // 【右に移動中】
 			{
-				auto posA = a->GetTopCenter();
-				auto posB = b->GetBottomCenter();
-				if (fabs(posA.x - posB.x) < EPS && fabs(posA.z - posB.z) < EPS && fabs(posA.y - posB.y) < EPS)
+				if (fabs(a->position.y - b->position.y) < 0.5f && fabs(a->position.z - b->position.z) < 0.5f)
 				{
-					a->position = original;
-					hitEvent.active = true;
-					hitEvent.pos.push_back(original);
-					hitBlock = b.get();
-					selfHitBlock = a.get();
-					return 1;
+					float futureRightA = a->GetRightCenter().x + move.x;
+					float leftB = b->GetLeftCenter().x;
+
+					
+					if (futureRightA >= leftB - EPS && a->position.x + 0.1f < b->position.x)
+					{
+						SetHitInfo(a.get(), b.get(), a->position);
+						return 3; // 右面衝突
+					}
 				}
 			}
-			else if (move.y < 0.0f) // 下に移動中
+			else if (move.x < -0.0001f) // 【左に移動中】
 			{
-				auto posA = a->GetBottomCenter();
-				auto posB = b->GetTopCenter();
-				if (fabs(posA.x - posB.x) < EPS && fabs(posA.z - posB.z) < EPS && fabs(posA.y - posB.y) < EPS)
+				if (fabs(a->position.y - b->position.y) < 0.5f && fabs(a->position.z - b->position.z) < 0.5f)
 				{
-					a->position = original;
-					hitEvent.active = true;
-					hitEvent.pos.push_back(original);
-					hitBlock = b.get();
-					selfHitBlock = a.get();
-					return 2;
+					float futureLeftA = a->GetLeftCenter().x + move.x;
+					float rightB = b->GetRightCenter().x;
+
+					
+					if (futureLeftA <= rightB + EPS && a->position.x - 0.1f > b->position.x)
+					{
+						SetHitInfo(a.get(), b.get(), a->position);
+						return 4; // 左面衝突
+					}
 				}
 			}
 
-			// --- 2. X軸方向の衝突チェック ---
-			if (move.x > 0.0f) // 右に移動中
+			
+			if (move.y > 0.0001f) // 【上に移動中】
 			{
-				auto posA = a->GetRightCenter();
-				auto posB = b->GetLeftCenter();
-				if (fabs(posA.y - posB.y) < EPS && fabs(posA.z - posB.z) < EPS && fabs(posA.x - posB.x) < EPS)
+				if (fabs(a->position.x - b->position.x) < 0.5f && fabs(a->position.z - b->position.z) < 0.5f)
 				{
-					a->position = original;
-					hitEvent.active = true;
-					hitEvent.pos.push_back(original);
-					hitBlock = b.get();
-					selfHitBlock = a.get();
-					return 3;
+					float futureTopA = a->GetTopCenter().y + move.y;
+					float bottomB = b->GetBottomCenter().y;
+
+					
+					if (futureTopA >= bottomB - EPS && a->position.y + 0.1f < b->position.y)
+					{
+						SetHitInfo(a.get(), b.get(), a->position);
+						return 1; // 上面衝突
+					}
 				}
 			}
-			else if (move.x < 0.0f) // 左に移動中
+			else if (move.y < -0.0001f) // 【下に移動中】
 			{
-				auto posA = a->GetLeftCenter();
-				auto posB = b->GetRightCenter();
-				if (fabs(posA.y - posB.y) < EPS && fabs(posA.z - posB.z) < EPS && fabs(posA.x - posB.x) < EPS)
+				if (fabs(a->position.x - b->position.x) < 0.5f && fabs(a->position.z - b->position.z) < 0.5f)
 				{
-					a->position = original;
-					hitEvent.active = true;
-					hitEvent.pos.push_back(original);
-					hitBlock = b.get();
-					selfHitBlock = a.get();
-					return 4;
+					float futureBottomA = a->GetBottomCenter().y + move.y;
+					float topB = b->GetTopCenter().y;
+
+					
+					if (futureBottomA <= topB + EPS && a->position.y - 0.1f > b->position.y)
+					{
+						SetHitInfo(a.get(), b.get(), a->position);
+						return 2; // 下面衝突
+					}
 				}
 			}
 
-			// --- 3. Z軸方向の衝突チェック ---
-			if (move.z > 0.0f) // 前に移動中
+			
+			if (move.z > 0.0001f) // 【前に移動中】
 			{
-				auto posA = a->GetFrontCenter();
-				auto posB = b->GetBackCenter();
-				if (fabs(posA.x - posB.x) < EPS && fabs(posA.y - posB.y) < EPS && fabs(posA.z - posB.z) < EPS)
+				if (fabs(a->position.x - b->position.x) < 0.5f && fabs(a->position.y - b->position.y) < 0.5f)
 				{
-					a->position = original;
-					hitEvent.active = true;
-					hitEvent.pos.push_back(original);
-					hitBlock = b.get();
-					selfHitBlock = a.get();
-					return 5;
+					float futureFrontA = a->GetFrontCenter().z + move.z;
+					float backB = b->GetBackCenter().z;
+
+					
+					if (futureFrontA >= backB - EPS && a->position.z + 0.1f < b->position.z)
+					{
+						SetHitInfo(a.get(), b.get(), a->position);
+						return 5; // 前面衝突
+					}
 				}
 			}
-			else if (move.z < 0.0f) // 後ろに移動中
+			else if (move.z < -0.0001f) // 【後ろに移動中】
 			{
-				auto posA = a->GetBackCenter();
-				auto posB = b->GetFrontCenter();
-				if (fabs(posA.x - posB.x) < EPS && fabs(posA.y - posB.y) < EPS && fabs(posA.z - posB.z) < EPS)
+				if (fabs(a->position.x - b->position.x) < 0.5f && fabs(a->position.y - b->position.y) < 0.5f)
 				{
-					a->position = original;
-					hitEvent.active = true;
-					hitEvent.pos.push_back(original);
-					hitBlock = b.get();
-					selfHitBlock = a.get();
-					return 6;
+					float futureBackA = a->GetBackCenter().z + move.z;
+					float frontB = b->GetFrontCenter().z;
+
+
+					if (futureBackA <= frontB + EPS && a->position.z - 0.1f > b->position.z)
+					{
+						SetHitInfo(a.get(), b.get(), a->position);
+						return 6; // 後面衝突
+					}
 				}
 			}
 		}
-
-		// 当たらなかったら元に戻す
-		a->position = original;
 	}
 
 	return 0;
+}
+
+void Group::SetHitInfo(Block* selfBlock, Block* targetBlock, const DirectX::XMFLOAT3& originalPos)
+{
+	hitEvent.active = true;
+	hitEvent.pos.push_back(originalPos);
+	hitBlock = targetBlock;
+	selfHitBlock = selfBlock;
 }
