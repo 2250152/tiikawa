@@ -43,7 +43,7 @@ public:
 	void Render(const RenderContext& rc, ModelRenderer* renderer);
 
 	//ジャンプ入力処理
-	void InputJump();
+	void InputJump(float elapsedTime);
 
 	
 
@@ -138,5 +138,7 @@ private:
 
 	Group* standingGroup = nullptr; // 現在乗っているグループ
 	bool isHitLocal = false; // この関数内での当たり判定結果
+
+	float JumpTime = 0.0f;
 
 };
