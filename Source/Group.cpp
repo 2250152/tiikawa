@@ -47,6 +47,11 @@ void Group::Update(float elapsedTime,const std::vector<Group*>& allGroups)
 		Merge(g);
 	}
 
+	if (type == GroupType::Start)
+	{
+		mergeCount = static_cast<int>(blocks.size());
+	}
+
 	pendingMerge.clear();
 
 	if (type == GroupType::Start)
@@ -108,7 +113,7 @@ void Group::Move(float elapsedTime, const std::vector<Group*>& allGroups)
 				if (g->GetType() == GroupType::Goal)
 				{
 					//数が足りていたら
-					if (this->GetMergeCount() > 10)
+					if (this->GetMergeCount() > g->GetGoalCount())
 					{
 						if (g->GetType() == GroupType::Goal)
 						{
@@ -144,8 +149,12 @@ void Group::Move(float elapsedTime, const std::vector<Group*>& allGroups)
 
 				if (this->GetType() == GroupType::Start)
 				{
+					mergeCount = 0;
 					//何個つながっているか
-					mergeCount++;
+					for (auto& b : blocks)
+					{
+						mergeCount = static_cast<int>(blocks.size());
+					}
 				}
 
 				
@@ -223,11 +232,19 @@ void Group::Move(float elapsedTime, const std::vector<Group*>& allGroups)
 					}
 					break;
 				}
+				for (auto& b : blocks)
+				{
+					b->position.x = roundf(b->position.x);
+					b->position.y = roundf(b->position.y);
+					b->position.z = roundf(b->position.z);
+				}
 				}
 
 				//break;
 			}
 		}
+
+
 
 		if (hit)
 			break;
@@ -706,17 +723,30 @@ void Group::revolve(RotateAxis axis,float dir)
 	if (state != Idle)
 		return;
 
+	for (auto& b : blocks)
+	{
+		b->position.x = std::round(b->position.x);
+		b->position.y = std::round(b->position.y);
+		b->position.z = std::round(b->position.z);
+	}
+
+
 	rotateAxis = axis;
 	rotateDir = dir;
 
 	pivot = GetStartBlockCenter();
+	pivot.x = std::round(pivot.x);
+	pivot.y = std::round(pivot.y);
+	pivot.z = std::round(pivot.z);
+
+	targetAngle = DirectX::XM_PIDIV2;
 
 	currentAngle = 0.0f;
 	prevAngle = 0.0f;
 
-	targetAngle = DirectX::XM_PIDIV2;
+	
 
-	//zvisualAngle = 0.0f;
+	visualAngle = 0.0f;
 	rotatedAmount = 0.0f;
 
 	state = Rotating;
@@ -916,130 +946,86 @@ void Group::RequestRotate(RotateAxis axis,float dir)
 	revolve(axis,dir);
 }
 
-void Group::Rotation(float elapsedTime)
-{
+void Group::Rotation(float elapsedTime) {
 	if (state != Rotating) return;
+
 	float moveDelta = rotateSpeed * elapsedTime;
 	float diff = targetAngle - currentAngle;
 
+	// 角度の補正（念のため）
+	if (diff > DirectX::XM_PI)  diff -= DirectX::XM_2PI;
+	if (diff < -DirectX::XM_PI) diff += DirectX::XM_2PI;
 
-	if (diff > DirectX::XM_PI)
-		diff -= DirectX::XM_2PI;
-	if (diff < -DirectX::XM_PI)
-		diff += DirectX::XM_2PI;
-
-
-	if (fabs(diff) <= moveDelta)
+	// ターゲット角度に到達したか、あるいは超える場合
+	if (fabs(diff) <= moveDelta || rotatedAmount >= DirectX::XM_PIDIV2)
 	{
-		currentAngle = targetAngle;
-
-		if (currentAngle >= DirectX::XM_2PI)
-			currentAngle -= DirectX::XM_2PI;
-		if (currentAngle < 0.0f)
-			currentAngle += DirectX::XM_2PI;
+		// 最終フレームの差分を計算して適用
+		float finalDelta = targetAngle - prevAngle;
+		visualAngle += finalDelta * rotateDir;
 
 		state = Idle;
-	}
-	else
-	{
-		currentAngle += (diff > 0 ? moveDelta : -moveDelta);
-	}
 
-	float angleDelta = currentAngle - prevAngle;
-
-	visualAngle += angleDelta * rotateDir;
-
-	rotatedAmount += fabs(angleDelta);
-
-
-	// 止める
-	if (rotatedAmount >= DirectX::XM_PIDIV2)
-	{
-		angleDelta -= (rotatedAmount - DirectX::XM_PIDIV2);
-		currentAngle = targetAngle;
-		visualAngle = DirectX::XM_PIDIV2;
-		state = Idle;
+		// 最終位置のズレを綺麗にする
 		for (auto& b : blocks)
 		{
+			// 回転行列を最終的な直角(XM_PIDIV2 * rotateDir)で再計算して位置をカチッとハメるのが理想ですが、
+			// 簡易的には四捨五入でグリッドにスナップさせます
 			b->position.x = roundf(b->position.x);
 			b->position.y = roundf(b->position.y);
 			b->position.z = roundf(b->position.z);
+
+			// 回転メッシュの見た目角度を 90度 (または -90度) に固定
+			b->angle = { 0, 0, 0 };
+			switch (rotateAxis)
+			{
+			case AxisX: b->angle.x = DirectX::XM_PIDIV2 * rotateDir; break;
+			case AxisY: b->angle.y = DirectX::XM_PIDIV2 * rotateDir; break;
+			case AxisZ: b->angle.z = DirectX::XM_PIDIV2 * rotateDir; break;
+			}
 		}
+
+		currentAngle = targetAngle;
 		prevAngle = currentAngle;
+		rotatedAmount = DirectX::XM_PIDIV2;
 		return;
 	}
+	else
+	{
+		currentAngle += moveDelta; // 単純に進める
+	}
 
+	float angleDelta = currentAngle - prevAngle;
+	visualAngle += angleDelta * rotateDir;
+	rotatedAmount += fabs(angleDelta);
 
-
+	// 各ブロックの回転処理
 	for (auto& b : blocks)
 	{
-		// 今の位置
 		DirectX::XMVECTOR p = DirectX::XMLoadFloat3(&b->position);
 		DirectX::XMVECTOR c = DirectX::XMLoadFloat3(&pivot);
-
-		// pivot基準に変換
 		DirectX::XMVECTOR local = DirectX::XMVectorSubtract(p, c);
 
-		// 回転
-	
 		DirectX::XMMATRIX R;
-
 		switch (rotateAxis)
 		{
-		case AxisX:
-			R = DirectX::XMMatrixRotationX(angleDelta * rotateDir);
-			break;
-		case AxisY:
-			R = DirectX::XMMatrixRotationY(angleDelta * rotateDir);
-			break;
-		case AxisZ:
-			R = DirectX::XMMatrixRotationZ(angleDelta * rotateDir);
-			break;
-
+		case AxisX: R = DirectX::XMMatrixRotationX(angleDelta * rotateDir); break;
+		case AxisY: R = DirectX::XMMatrixRotationY(angleDelta * rotateDir); break;
+		case AxisZ: R = DirectX::XMMatrixRotationZ(angleDelta * rotateDir); break;
 		}
 
 		local = DirectX::XMVector3Transform(local, R);
-
-		// 戻す
 		DirectX::XMVECTOR result = DirectX::XMVectorAdd(local, c);
-		//positionを保存
 		DirectX::XMStoreFloat3(&b->position, result);
 
-		/*switch (rotateAxis)
-		{
-		case AxisX:
-			b->angle.x += angleDelta;
-			break;
-			                                                               
-		case AxisY:
-			b->angle.y += angleDelta;
-			break;
-
-		case AxisZ:
-			b->angle.z += angleDelta;
-			break;
-		}*/
-		b->angle = { 0,0,0 };
-
+		// ビジュアル角度の更新
+		b->angle = { 0, 0, 0 };
 		switch (rotateAxis)
 		{
-		case AxisX:
-			b->angle.x = visualAngle;
-			break;
-
-		case AxisY:
-			b->angle.y = visualAngle;
-			break;
-
-		case AxisZ:
-			b->angle.z = visualAngle;
-			break;
+		case AxisX: b->angle.x = visualAngle; break;
+		case AxisY: b->angle.y = visualAngle; break;
+		case AxisZ: b->angle.z = visualAngle; break;
 		}
 	}
-
-	//俺様が追加したやつ＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
-	
-	//＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
 
 	prevAngle = currentAngle;
 }
@@ -1164,6 +1150,11 @@ void Group::OnHitGoal(Group* other)
 //回転の先にブロックがあるかどうかの判定(回転できるかどうか)
 bool Group::CanRotate(RotateAxis axis, float dir)
 {
+
+	pivot = GetStartBlockCenter();
+	pivot.x = std::round(pivot.x);
+	pivot.y = std::round(pivot.y);
+	pivot.z = std::round(pivot.z);
 	DirectX::XMMATRIX R;
 	float angle = DirectX::XM_PIDIV2 * dir;
 

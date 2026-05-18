@@ -33,7 +33,8 @@ void Stage::Load(int stageNo)
              groupNormal4->CreateBlock<BlockNormal>(GroupType::Normal, DirectX::XMFLOAT3(1, 6, 0));
              groupNormal5->CreateBlock<BlockNormal>(GroupType::Normal, DirectX::XMFLOAT3(0, 7, 2));
              groupGoal->CreateBlock<BlockGoal>(GroupType::Goal, DirectX::XMFLOAT3(0, 9, 9));
-             
+             //goalに必要なブロックの数
+             groupGoal->SetGoalCount(5);
             //groupNormal->CreateBlock<BlockNormal>(GroupType::Normal, DirectX::XMFLOAT3(0, 0, 5));
             //groupNormal2->CreateBlock<BlockNormal>(GroupType::Normal, DirectX::XMFLOAT3(0, 0, -5));
             //groupNormal3->CreateBlock<BlockNormal>(GroupType::Normal, DirectX::XMFLOAT3(0, -5, 0));
@@ -65,6 +66,22 @@ void Stage::Load(int stageNo)
 
              break;
          }
+         case 3:
+         {
+
+             break;
+         }
+         case 4:
+         {
+
+             break;
+         }
+         case 5:
+         {
+
+             break;
+         }
+
          case 10:
          {
              // ExceptHitTest

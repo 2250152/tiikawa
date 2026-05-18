@@ -154,6 +154,10 @@ public:
 
 	void SetHitInfo(Block* selfBlock, Block* targetBlock, const DirectX::XMFLOAT3& originalPos);
 
+	void SetGoalCount(int n) { GoalCount = n; }
+
+	int GetGoalCount() { return GoalCount; }
+
 private:
 	const int COLLIDE_MAX_DISTANCE = 30;
 	std::vector<std::unique_ptr<Block>> blocks;
@@ -224,4 +228,6 @@ private:
 
 	//どの距離で爆散するか
 	float movelimit = 100.f;
+
+	int GoalCount = 0;
 };

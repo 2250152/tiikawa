@@ -40,4 +40,5 @@ public:
 	Effect* BarrierbreakEffect = nullptr;
 	Effekseer::Handle barrierHandle;
 
+	
 };

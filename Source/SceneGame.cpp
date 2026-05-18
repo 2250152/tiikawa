@@ -33,7 +33,7 @@ void SceneGame::Initialize()
 	menyu = new Sprite("Data/Sprite/black.png");
 	choise = new Sprite("Data/Sprite/choise.png");
 	flame = new Sprite("Data/Sprite/flame.png");
-
+	tutolial = new Sprite("Data/Sprite/tutorial.png");
 	//カメラ初期設定
 	Graphics& graphics = Graphics::Instance();
 	Camera& camera = Camera::Instance();
@@ -55,6 +55,10 @@ void SceneGame::Initialize()
 	//背景
 	SkyBox::Instance().Initialize();
 
+
+	BreakTime = false;
+	breakTime = 3.0f;
+	clearSE = Audio::Instance().LoadAudioSource("Data/Sound/CLEAR.wav");
 	//ここでstage呼ぶわよ 引数の数値で呼ぶstage変えてねぃ
 	
 	stage.Load(m_stageNo);
@@ -77,10 +81,24 @@ void SceneGame::Finalize()
 		delete menyu;
 		delete choise;
 		delete flame;
+	
 		menyu = nullptr;
 		choise = nullptr;
 		flame = nullptr;
+		
+
 		menyuON = false;
+		
+	}
+
+	delete tutolial;
+	tutolial = nullptr;
+	tuto = false;
+
+	if (clearSE != nullptr)
+	{
+		delete clearSE;
+		clearSE = nullptr;
 	}
 
 	
@@ -102,31 +120,40 @@ void SceneGame::Update(float elapsedTime)
 	//カメラコントローラー更新処理
 	/*DirectX::XMFLOAT3 target = player->GetPosition();*/
 	//DirectX::XMFLOAT3 target = Player::Instance().GetPosition();
-	DirectX::XMFLOAT3 target = BlockManager::Instance().GetGroups()[0]->GetBlocks()[0]->GetPosition();
-	target.y += 0.5f;
-	CameraController::Instance().SetTarget(target);
-	CameraController::Instance().Update(elapsedTime);
-
+	
 	
 
 	//プレイヤー更新処理
 	/*player->Update(elapsedTime);*/
 
 	//背景
-	SkyBox::Instance().Update(elapsedTime);
+	if (!menyuON)
+	{
+		DirectX::XMFLOAT3 target = BlockManager::Instance().GetGroups()[0]->GetBlocks()[0]->GetPosition();
+		target.y += 0.5f;
+		CameraController::Instance().SetTarget(target);
+		CameraController::Instance().Update(elapsedTime);
 
+		SkyBox::Instance().Update(elapsedTime);
+
+
+		//エフェクト更新処理
+		EffectManager::Instance().Update(elapsedTime);
+
+		BlockManager::Instance().Update(elapsedTime);
+
+		Player::Instance().Update(elapsedTime);
+
+	}
 	
-	//エフェクト更新処理
-	EffectManager::Instance().Update(elapsedTime);
-
-	BlockManager::Instance().Update(elapsedTime);
-
-	Player::Instance().Update(elapsedTime);
-
 	
 	GamePad& gamepad = Input::Instance().GetGamePad();
 	
 	
+	if (m_stageNo == 1)
+	{
+		tuto = true;
+	}
 	
 
 	//メニューを出す
@@ -155,6 +182,7 @@ void SceneGame::Update(float elapsedTime)
 		}
 		if (BACK == true && gamepad.GetButtonDown() & (GamePad::BTN_A))  //ボタンは自由に、 ステージセレクトへ
 		{
+			tuto = false;
 			SceneManager::Instance().ChangeScene(
 				new SceneLoading(new StageSelect));
 		}
@@ -171,21 +199,30 @@ void SceneGame::Update(float elapsedTime)
 	}
 	//クリア時ステージ切り替え
 	if (BreakTime)
-	{
-		breakTime -= 0.009f;
+	{		
+		breakTime -= elapsedTime;
 	}
 
 	for (auto& g : BlockManager::Instance().GetGroups())
 	{
 		if (g->isClear())
+		{
 			BreakTime = true;
-		if (breakTime <= 0) {
-			SceneManager::Instance().ChangeScene(
-				new SceneLoading(new SceneGame(m_stageNo + 1))
-			);
-		};
-		return;
+			if (clearSE != nullptr)//わ～みたいなSEを入れる
+			{
+				clearSE->Play(false); //クリア時SE再生
+			}
+			break;
+		}
 	}
+	
+	if (breakTime <= 0.0f) {
+		
+		SceneManager::Instance().ChangeScene(
+			new SceneLoading(new SceneGame(m_stageNo + 1))
+		);
+	};
+
 
 }
 
@@ -266,7 +303,7 @@ void SceneGame::Render()
 	{
 		//プレイヤーデバッグプリミティブ描画
 		/*player->RenderDebugPrimitive(rc, shapeRenderer);*/ //←プレイヤーの下に黒い線の球体のやつ
-		Player::Instance().RenderDebugPrimitive(rc, shapeRenderer);
+		//Player::Instance().RenderDebugPrimitive(rc, shapeRenderer);
 		
 	
 	}
@@ -277,7 +314,13 @@ void SceneGame::Render()
 			menyu->Render(rc, 780, 360, 0, 400, 400, 0, 0, 1, 1, 0.5f);
 			choise->Render(rc, 800, 360, 0, 380, 430, 0, 1, 1, 1, 1);
 			flame->Render(rc, 790, posY, 0, 400, 400, 0, 1, 1, 1, 1);
+			
 		}
+		if (tuto)
+		{
+			tutolial->Render(rc, 0, 0, 0, 1280, 720, 0, 1, 1, 1, 1);
+		}
+		
 	}
 }
 

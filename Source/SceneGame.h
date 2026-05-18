@@ -4,9 +4,8 @@
 #include"CameraController.h"
 
 #include"Scene.h"
-
 #include "Stage.h"
-
+#include "System/Audiosource.h"
 class Sprite;
 // ゲームシーン
 class SceneGame:public Scene
@@ -41,6 +40,9 @@ public:
 
 	bool Clear = false;
 
+	bool clearSEPlayed = false;
+
+
 	void SetClear(bool flag)
 	{
 		clearFlag = flag;
@@ -59,6 +61,7 @@ private:
 	//メニューON
 	bool menyuON = false;
 	bool BACK = false;
+	bool tuto = false;
 	float posX = 530, posY = 360;
 
 	bool clearFlag = false;
@@ -66,7 +69,9 @@ private:
 	Sprite* menyu = nullptr;
 	Sprite* choise = nullptr;
 	Sprite* flame = nullptr;
+	Sprite* tutolial = nullptr;
 
+	AudioSource* clearSE = nullptr;
 	/*Player* player = nullptr;*/
 	//CameraController* cameraController = nullptr;
 };
