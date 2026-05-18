@@ -132,17 +132,23 @@ public:
 	virtual void OnHitGoal(Group* other);
 
 
-	void ClearWillCollideBlockAddress() { willCollideBlockAddress.clear(); }
-	std::vector<Block*> GetWillCollideBlockAddress() { return willCollideBlockAddress; }
+	void ClearWillCollideBlockAddress() { willCollideBlockAddresses.clear(); }
+	std::vector<Block*> GetWillCollideBlockAddress() { return willCollideBlockAddresses; }
+
+
 	bool isClear()const { return clearFlag; }
 
 	bool CanRotate(RotateAxis axis, float dir);
+
+	int WillStopHit(Group* otherGroup, DirectX::XMFLOAT3 move);
+
+	void SetHitInfo(Block* selfBlock, Block* targetBlock, const DirectX::XMFLOAT3& originalPos);
 
 private:
 	const int COLLIDE_MAX_DISTANCE = 30;
 	std::vector<std::unique_ptr<Block>> blocks;
 	int willCollideDist = COLLIDE_MAX_DISTANCE; //衝突するであろうブロックとの距離を管理
-	std::vector<Block*> willCollideBlockAddress{}; //衝突するであろうブロックのアドレスを管理  //後で配列に
+	std::vector<Block*> willCollideBlockAddresses{}; //衝突するであろうブロックのアドレスを管理  //後で配列に
 
 	GroupType type;
 

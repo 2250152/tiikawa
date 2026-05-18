@@ -62,6 +62,7 @@ void SceneGame::Initialize()
 	//ここでstage呼ぶわよ 引数の数値で呼ぶstage変えてねぃ
 	
 	stage.Load(m_stageNo);
+	//stage.Load(10);
 
 }
 
@@ -112,27 +113,32 @@ void SceneGame::Update(float elapsedTime)
 	//カメラコントローラー更新処理
 	/*DirectX::XMFLOAT3 target = player->GetPosition();*/
 	//DirectX::XMFLOAT3 target = Player::Instance().GetPosition();
-	DirectX::XMFLOAT3 target = BlockManager::Instance().GetGroups()[0]->GetBlocks()[0]->GetPosition();
-	target.y += 0.5f;
-	CameraController::Instance().SetTarget(target);
-	CameraController::Instance().Update(elapsedTime);
-
+	
 	
 
 	//プレイヤー更新処理
 	/*player->Update(elapsedTime);*/
 
 	//背景
-	SkyBox::Instance().Update(elapsedTime);
+	if (!menyuON)
+	{
+		DirectX::XMFLOAT3 target = BlockManager::Instance().GetGroups()[0]->GetBlocks()[0]->GetPosition();
+		target.y += 0.5f;
+		CameraController::Instance().SetTarget(target);
+		CameraController::Instance().Update(elapsedTime);
 
+		SkyBox::Instance().Update(elapsedTime);
+
+
+		//エフェクト更新処理
+		EffectManager::Instance().Update(elapsedTime);
+
+		BlockManager::Instance().Update(elapsedTime);
+
+		Player::Instance().Update(elapsedTime);
+
+	}
 	
-	//エフェクト更新処理
-	EffectManager::Instance().Update(elapsedTime);
-
-	BlockManager::Instance().Update(elapsedTime);
-
-	Player::Instance().Update(elapsedTime);
-
 	
 	GamePad& gamepad = Input::Instance().GetGamePad();
 	
