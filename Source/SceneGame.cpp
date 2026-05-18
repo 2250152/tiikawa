@@ -37,6 +37,7 @@ void SceneGame::Initialize()
 	meter = new Sprite("Data/Sprite/meter.png");
 	needle = new Sprite("Data/Sprite/needle.png");
 
+	tutolial = new Sprite("Data/Sprite/tutorial.png");
 	//カメラ初期設定
 	Graphics& graphics = Graphics::Instance();
 	Camera& camera = Camera::Instance();
@@ -95,6 +96,10 @@ void SceneGame::Finalize()
 		
 	}
 
+	delete tutolial;
+	tutolial = nullptr;
+	tuto = false;
+
 	if (clearSE != nullptr)
 	{
 		delete clearSE;
@@ -150,6 +155,10 @@ void SceneGame::Update(float elapsedTime)
 	GamePad& gamepad = Input::Instance().GetGamePad();
 	
 	
+	if (m_stageNo == 1)
+	{
+		tuto = true;
+	}
 	
 
 	//メニューを出す
@@ -178,6 +187,7 @@ void SceneGame::Update(float elapsedTime)
 		}
 		if (BACK == true && gamepad.GetButtonDown() & (GamePad::BTN_A))  //ボタンは自由に、 ステージセレクトへ
 		{
+			tuto = false;
 			SceneManager::Instance().ChangeScene(
 				new SceneLoading(new StageSelect));
 		}
@@ -194,9 +204,7 @@ void SceneGame::Update(float elapsedTime)
 	}
 	//クリア時ステージ切り替え
 	if (BreakTime)
-	{
-		//わ～みたいなSEを入れる
-		
+	{		
 		breakTime -= elapsedTime;
 	}
 
@@ -205,7 +213,7 @@ void SceneGame::Update(float elapsedTime)
 		if (g->isClear())
 		{
 			BreakTime = true;
-			if (clearSE != nullptr)
+			if (clearSE != nullptr)//わ～みたいなSEを入れる
 			{
 				clearSE->Play(false); //クリア時SE再生
 			}
@@ -214,6 +222,7 @@ void SceneGame::Update(float elapsedTime)
 	}
 	
 	if (breakTime <= 0.0f) {
+		
 		SceneManager::Instance().ChangeScene(
 			new SceneLoading(new SceneGame(m_stageNo + 1))
 		);
@@ -310,6 +319,11 @@ void SceneGame::Render()
 			menyu->Render(rc, 780, 360, 0, 400, 400, 0, 0, 1, 1, 0.5f);
 			choise->Render(rc, 800, 360, 0, 380, 430, 0, 1, 1, 1, 1);
 			flame->Render(rc, 790, posY, 0, 400, 400, 0, 1, 1, 1, 1);
+			
+		}
+		if (tuto)
+		{
+			tutolial->Render(rc, 0, 0, 0, 1280, 720, 0, 1, 1, 1, 1);
 		}
 		RenderSpriteWithPivot(meter, rc, 150, 150, 0, 400, 266, 0.0f, 0.5f, 0.5f, 1, 1, 1, 1);
 

@@ -14,7 +14,51 @@ void Stage::Load(int stageNo)
     //もうここで全部作ってね
     switch (stageNo)
     {
-         case 1:
+         case 1://チュートリアル予定
+         {
+             // 別配置
+             auto start = std::make_unique<Group>(GroupType::Start);
+             auto normal1 = std::make_unique<Group>(GroupType::Normal);
+             auto normal2 = std::make_unique<Group>(GroupType::Normal);
+             auto normal3 = std::make_unique<Group>(GroupType::Normal);
+             auto groupGoal = std::make_unique<Group>(GroupType::Goal);
+             start->CreateBlock<BlockStart>(GroupType::Start, DirectX::XMFLOAT3(0, 0, 0));
+             normal1->CreateBlock<BlockNormal>(GroupType::Normal, DirectX::XMFLOAT3(0, 0, 5));
+             normal2->CreateBlock<BlockNormal>(GroupType::Normal, DirectX::XMFLOAT3(0, 4, 6));
+             normal3->CreateBlock<BlockNormal>(GroupType::Normal, DirectX::XMFLOAT3(3, 5, 5));
+             groupGoal->CreateBlock<BlockGoal>(GroupType::Goal, DirectX::XMFLOAT3(4, 6, 9));
+             groupGoal->SetGoalCount(3);
+             BlockManager::Instance().AddGroup(std::move(start));
+             BlockManager::Instance().AddGroup(std::move(normal1));
+             BlockManager::Instance().AddGroup(std::move(normal2));
+             BlockManager::Instance().AddGroup(std::move(normal3));
+             BlockManager::Instance().AddGroup(std::move(groupGoal));
+             break;
+         }
+
+
+         case 2:
+         {
+             auto start = std::make_unique<Group>(GroupType::Start);
+             auto normal1 = std::make_unique<Group>(GroupType::Normal);
+             auto normal2 = std::make_unique<Group>(GroupType::Normal);
+             auto normal3 = std::make_unique<Group>(GroupType::Normal);
+             auto groupGoal = std::make_unique<Group>(GroupType::Goal);
+             start->CreateBlock<BlockStart>(GroupType::Start, DirectX::XMFLOAT3(0, 0, 0));
+             normal1->CreateBlock<BlockNormal>(GroupType::Normal, DirectX::XMFLOAT3(0, 0, 5));
+             normal2->CreateBlock<BlockNormal>(GroupType::Normal, DirectX::XMFLOAT3(0, 4, 6));
+             normal3->CreateBlock<BlockNormal>(GroupType::Normal, DirectX::XMFLOAT3(3, 5, 5));
+             groupGoal->CreateBlock<BlockGoal>(GroupType::Goal, DirectX::XMFLOAT3(4, 6, 9));
+             groupGoal->SetGoalCount(3);
+             BlockManager::Instance().AddGroup(std::move(start));
+             BlockManager::Instance().AddGroup(std::move(normal1));
+             BlockManager::Instance().AddGroup(std::move(normal2));
+             BlockManager::Instance().AddGroup(std::move(normal3));
+             BlockManager::Instance().AddGroup(std::move(groupGoal));            
+             break;
+         }
+
+         case 3:
          {
              auto start = std::make_unique<Group>(GroupType::Start);
              auto groupNormal = std::make_unique<Group>(GroupType::Normal);
@@ -53,19 +97,19 @@ void Stage::Load(int stageNo)
              break;
          }
          
-         case 2:
+        
+         
+         case 4:
          {
-             // 別配置
-             auto start = std::make_unique<Group>(GroupType::Start);
-             auto normal1 = std::make_unique<Group>(GroupType::Normal);
-             start->CreateBlock<BlockStart>(GroupType::Start,DirectX::XMFLOAT3(0, 0, 0));
-             normal1->CreateBlock<BlockNormal>(GroupType::Normal,DirectX::XMFLOAT3(5, 3, 0));
-
-             BlockManager::Instance().AddGroup(std::move(start));
-             BlockManager::Instance().AddGroup(std::move(normal1));
 
              break;
          }
+         case 5:
+         {
+
+             break;
+         }
+
          case 10:
          {
              // ExceptHitTest

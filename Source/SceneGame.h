@@ -61,6 +61,7 @@ private:
 	//ÉÅÉjÉÖÅ[ON
 	bool menyuON = false;
 	bool BACK = false;
+	bool tuto = false;
 	float posX = 530, posY = 360;
 
 	bool clearFlag = false;
@@ -71,6 +72,7 @@ private:
 	Sprite* meter = nullptr;
 	Sprite* needle = nullptr;
 	float needleAngle = 0.0f;
+	Sprite* tutolial = nullptr;
 
 	AudioSource* clearSE = nullptr;
 	/*Player* player = nullptr;*/

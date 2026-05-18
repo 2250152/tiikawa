@@ -126,7 +126,7 @@ private:
 	Model* model = nullptr;
 	float moveSpeed = 5.0f;
 	float turnSpeed = DirectX::XMConvertToRadians(720);
-	float jumpSpeed = 10.0f;
+	float jumpSpeed = 6.0f;
 	int jumpCount = 0;
 	int jumpLimit = 1;
 	DirectX::XMFLOAT3 closestHitPositionToFaceCenter;//レイキャストでhitPositionがブロックの面の中心から一番近い位置
@@ -139,6 +139,6 @@ private:
 	Group* standingGroup = nullptr; // 現在乗っているグループ
 	bool isHitLocal = false; // この関数内での当たり判定結果
 
-	float JumpTime = 0.0f;
+	bool JumpPermission = false;
 
 };

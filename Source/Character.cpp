@@ -89,7 +89,7 @@ void Character::Turn(float elapsedTime, float vx, float vz, float speed)
 //ジャンプ処理
 void Character::Jump(float speed)
 {
-	// 【変更点】rotationQuatから現在のローカルUp(上方向)を正確に求めて、その方向にジャンプさせる
+	// rotationQuatから現在のローカルUp(上方向)を正確に求めて、その方向にジャンプさせる
 	DirectX::XMVECTOR up = DirectX::XMVectorSet(0, 1, 0, 0);
 	DirectX::XMMATRIX R = DirectX::XMMatrixRotationQuaternion(rotationQuat);
 	DirectX::XMVECTOR localUp = DirectX::XMVector3TransformNormal(up, R);
