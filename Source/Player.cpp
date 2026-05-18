@@ -51,7 +51,7 @@ void Player::Update(float elapsedTime)
 	StickToBlockFace();
 	
 	//ジャンプ入力処理
-	InputJump();
+	InputJump(elapsedTime);
 	//重力処理
 	ApplyLocalGravity(elapsedTime);
 	//接地処理
@@ -69,6 +69,7 @@ void Player::Update(float elapsedTime)
 #endif
 
 	GamePad& gamePad = Input::Instance().GetGamePad();
+	//Mouse& mouse = Input::Instance().GetMouse();
 	switch (state)
 	{
 	case State::IDLE:
@@ -239,8 +240,17 @@ void Player::OnLanding()
 }
 
 //ジャンプ入力処理
-void Player::InputJump()
+void Player::InputJump(float elapsedTime)
 {
+	/*Mouse& mouse = Input::Instance().GetMouse();
+	if (mouse.GetButton() & mouse.BTN_LEFT)
+	{
+		JumpTime += elapsedTime;
+	}
+	else
+	{
+		JumpTime = 0.0f;
+	}*/
 	GamePad& gamePad = Input::Instance().GetGamePad();
 	if (gamePad.GetButtonDown() & GamePad::BTN_A) {
 
@@ -427,25 +437,28 @@ void Player::StickToBlockFace()
 	DirectX::XMVECTOR bestHitPoint;
 
 	for (const auto& group : BlockManager::Instance().GetGroups()) {
-		for (const auto& block : group->GetBlocks()) {
-			if (Collision::RayCast(rayStart, rayEnd, block->Gettranceform(), block->GetModel(), hitPos, hitNormal, hitDist)) {
-				if (hitDist < minDistance) {
-					minDistance = hitDist;
-					bestBlock = block.get();
-					bestHitPoint = DirectX::XMLoadFloat3(&hitPos);
+		if (GroupType::Start == group->GetType())
+		{
+			for (const auto& block : group->GetBlocks()) {
+				if (Collision::RayCast(rayStart, rayEnd, block->Gettranceform(), block->GetModel(), hitPos, hitNormal, hitDist)) {
+					if (hitDist < minDistance) {
+						minDistance = hitDist;
+						bestBlock = block.get();
+						bestHitPoint = DirectX::XMLoadFloat3(&hitPos);
+					}
 				}
 			}
 		}
 	}
 
-	// --- ヒットした時の配置処理 ---
+	// ヒットした時の配置処理 
 	if (bestBlock) {
 		Block::FaceData bestFace = bestBlock->FindBestFace(bestHitPoint);
 
-		// 1. 位置を面の中心に設定
+		// 位置を面の中心に設定
 		position = bestFace.worldPos;
 
-		// 2. 【クォータニオンで正確な回転行列を作る】
+		// クォータニオンで正確な回転行列を作る
 		DirectX::XMVECTOR newUp = DirectX::XMLoadFloat3(&bestFace.worldNormal);
 		newUp = DirectX::XMVector3Normalize(newUp);
 
@@ -472,7 +485,7 @@ void Player::StickToBlockFace()
 		// 行列からクォータニオンに変換して保存（オイラー角を一切挟まない）
 		rotationQuat = DirectX::XMQuaternionRotationMatrix(rotMat);
 
-		// 3. 状態の更新
+		// 状態の更新
 		isGround = true;
 		velocity = { 0, 0, 0 };
 		standingGroup = bestBlock->GetGroup();

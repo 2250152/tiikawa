@@ -4,9 +4,8 @@
 #include"CameraController.h"
 
 #include"Scene.h"
-
 #include "Stage.h"
-
+#include "System/Audiosource.h"
 class Sprite;
 // ÉQÅ[ÉÄÉVÅ[Éì
 class SceneGame:public Scene
@@ -41,6 +40,9 @@ public:
 
 	bool Clear = false;
 
+	bool clearSEPlayed = false;
+
+
 	void SetClear(bool flag)
 	{
 		clearFlag = flag;
@@ -67,6 +69,7 @@ private:
 	Sprite* choise = nullptr;
 	Sprite* flame = nullptr;
 
+	AudioSource* clearSE = nullptr;
 	/*Player* player = nullptr;*/
 	//CameraController* cameraController = nullptr;
 };
