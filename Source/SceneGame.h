@@ -68,6 +68,9 @@ private:
 	Sprite* menyu = nullptr;
 	Sprite* choise = nullptr;
 	Sprite* flame = nullptr;
+	Sprite* meter = nullptr;
+	Sprite* needle = nullptr;
+	float needleAngle = 0.0f;
 
 	AudioSource* clearSE = nullptr;
 	/*Player* player = nullptr;*/

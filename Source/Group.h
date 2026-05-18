@@ -148,6 +148,7 @@ public:
 
 	int GetGoalCount() { return GoalCount; }
 
+	State Getstate() { return state; }
 private:
 	const int COLLIDE_MAX_DISTANCE = 30;
 	std::vector<std::unique_ptr<Block>> blocks;
