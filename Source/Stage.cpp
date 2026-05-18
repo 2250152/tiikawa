@@ -43,17 +43,30 @@ void Stage::Load(int stageNo)
              auto normal1 = std::make_unique<Group>(GroupType::Normal);
              auto normal2 = std::make_unique<Group>(GroupType::Normal);
              auto normal3 = std::make_unique<Group>(GroupType::Normal);
+             auto normal4 = std::make_unique<Group>(GroupType::Normal);
+             auto normal5 = std::make_unique<Group>(GroupType::Normal);
+             auto normal6 = std::make_unique<Group>(GroupType::Normal);
+             auto normal7 = std::make_unique<Group>(GroupType::Normal);
+             auto normal8 = std::make_unique<Group>(GroupType::Normal);
+             auto normal9 = std::make_unique<Group>(GroupType::Normal);
              auto groupGoal = std::make_unique<Group>(GroupType::Goal);
              start->CreateBlock<BlockStart>(GroupType::Start, DirectX::XMFLOAT3(0, 0, 0));
              normal1->CreateBlock<BlockNormal>(GroupType::Normal, DirectX::XMFLOAT3(0, 0, 5));
-             normal2->CreateBlock<BlockNormal>(GroupType::Normal, DirectX::XMFLOAT3(0, 4, 6));
-             normal3->CreateBlock<BlockNormal>(GroupType::Normal, DirectX::XMFLOAT3(3, 5, 5));
-             groupGoal->CreateBlock<BlockGoal>(GroupType::Goal, DirectX::XMFLOAT3(4, 6, 9));
-             groupGoal->SetGoalCount(3);
+             normal2->CreateBlock<BlockNormal>(GroupType::Normal, DirectX::XMFLOAT3(5, 0, 5));
+             normal3->CreateBlock<BlockNormal>(GroupType::Normal, DirectX::XMFLOAT3(5, 0, 10));
+             normal4->CreateBlock<BlockNormal>(GroupType::Normal, DirectX::XMFLOAT3(5, 5, 12));
+             normal5->CreateBlock<BlockNormal>(GroupType::Normal, DirectX::XMFLOAT3(3, 5, 5));
+             normal6->CreateBlock<BlockNormal>(GroupType::Normal, DirectX::XMFLOAT3(0, -2, 11));
+         
+             groupGoal->CreateBlock<BlockGoal>(GroupType::Goal, DirectX::XMFLOAT3(0, 0, 20));
+             groupGoal->SetGoalCount(6);
              BlockManager::Instance().AddGroup(std::move(start));
              BlockManager::Instance().AddGroup(std::move(normal1));
              BlockManager::Instance().AddGroup(std::move(normal2));
              BlockManager::Instance().AddGroup(std::move(normal3));
+             BlockManager::Instance().AddGroup(std::move(normal4));
+             BlockManager::Instance().AddGroup(std::move(normal5));
+             BlockManager::Instance().AddGroup(std::move(normal6));
              BlockManager::Instance().AddGroup(std::move(groupGoal));            
              break;
          }
