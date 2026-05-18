@@ -47,6 +47,11 @@ void Group::Update(float elapsedTime,const std::vector<Group*>& allGroups)
 		Merge(g);
 	}
 
+	if (type == GroupType::Start)
+	{
+		mergeCount = static_cast<int>(blocks.size());
+	}
+
 	pendingMerge.clear();
 
 	if (type == GroupType::Start)
@@ -108,7 +113,7 @@ void Group::Move(float elapsedTime, const std::vector<Group*>& allGroups)
 				if (g->GetType() == GroupType::Goal)
 				{
 					//数が足りていたら
-					if (this->GetMergeCount() > 10)
+					if (this->GetMergeCount() > g->GetGoalCount())
 					{
 						if (g->GetType() == GroupType::Goal)
 						{
@@ -144,8 +149,12 @@ void Group::Move(float elapsedTime, const std::vector<Group*>& allGroups)
 
 				if (this->GetType() == GroupType::Start)
 				{
+					mergeCount = 0;
 					//何個つながっているか
-					mergeCount++;
+					for (auto& b : blocks)
+					{
+						mergeCount = static_cast<int>(blocks.size());
+					}
 				}
 
 				
