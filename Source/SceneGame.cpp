@@ -55,6 +55,10 @@ void SceneGame::Initialize()
 	//背景
 	SkyBox::Instance().Initialize();
 
+
+	BreakTime = false;
+	breakTime = 3.0f;
+	clearSE = Audio::Instance().LoadAudioSource("Data/Sound/CLEAR.wav");
 	//ここでstage呼ぶわよ 引数の数値で呼ぶstage変えてねぃ
 	
 	stage.Load(m_stageNo);
@@ -80,6 +84,13 @@ void SceneGame::Finalize()
 		choise = nullptr;
 		flame = nullptr;
 		menyuON = false;
+		
+	}
+
+	if (clearSE != nullptr)
+	{
+		delete clearSE;
+		clearSE = nullptr;
 	}
 
 	
@@ -171,20 +182,30 @@ void SceneGame::Update(float elapsedTime)
 	//クリア時ステージ切り替え
 	if (BreakTime)
 	{
-		breakTime -= 0.009f;
+		//わ～みたいなSEを入れる
+		
+		breakTime -= elapsedTime;
 	}
 
 	for (auto& g : BlockManager::Instance().GetGroups())
 	{
 		if (g->isClear())
+		{
 			BreakTime = true;
-		if (breakTime <= 0) {
-			SceneManager::Instance().ChangeScene(
-				new SceneLoading(new SceneGame(m_stageNo + 1))
-			);
-		};
-		return;
+			if (clearSE != nullptr)
+			{
+				clearSE->Play(false); //クリア時SE再生
+			}
+			break;
+		}
 	}
+	
+	if (breakTime <= 0.0f) {
+		SceneManager::Instance().ChangeScene(
+			new SceneLoading(new SceneGame(m_stageNo + 1))
+		);
+	};
+
 
 }
 
