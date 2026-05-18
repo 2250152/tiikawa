@@ -334,8 +334,9 @@ void Group::ExceptHitting(float elapsedTime, const std::vector<Group*>& allGroup
 		break;
 	}
 
+	DirectX::XMVECTOR nMove = DirectX::XMVector3Normalize(DirectX::XMLoadFloat3(&move));
 	//ヒット予測
-	ExpectUntilDistanceHit(allGroups, debugMove/*move*/);
+	ExpectUntilDistanceHit(allGroups, debugMove/*nMove*/);
 
 	if (!willCollideBlockAddresses.empty())
 	{
@@ -354,7 +355,7 @@ void Group::ExpectUntilDistanceHit(const std::vector<Group*>& allGroups, DirectX
 	const float threshold = 0.1f; //閾値
 	willCollideDist = 30; //フレームごとにリセット
 
-	//レイキャストを飛ばしてブロックのヒット予想
+	//レイキャストを飛ばしてブロックのヒット予想(正面衝突)
 	for (auto& a : blocks)
 	{
 		if (a->GetGroup()->GetType() != GroupType::Start)
@@ -447,7 +448,7 @@ void Group::ExpectUntilDistanceHit(const std::vector<Group*>& allGroups, DirectX
 					}
 				}
 #endif
-				bool tmp = EffectManager::Instance().GetEffekseerManager()->Exists(c->GetWillHitEffectHandle());
+				//bool tmp = EffectManager::Instance().GetEffekseerManager()->Exists(c->GetWillHitEffectHandle());
 				//再生中のエフェクトはレイキャストをスキップ
 				if (EffectManager::Instance().GetEffekseerManager()->Exists(c->GetWillHitEffectHandle()))
 					continue;
@@ -465,8 +466,78 @@ void Group::ExpectUntilDistanceHit(const std::vector<Group*>& allGroups, DirectX
 						willCollideDist = DirectX::XMVectorGetX(DirectX::XMVector3Length(lengthVec));
 						willCollideBlockAddresses.push_back(c.get());
 					}									
-				}				
+				}							
 			}
+		}
+	}
+	//レイキャストを飛ばしてブロックのヒット予想(正面衝突)
+	for (auto& a : blocks)
+	{
+		if (a->GetGroup()->GetType() != GroupType::Start)
+			continue;
+
+		//移動方向設定（絶対値）
+		MoveType moveDir;
+		if (fabs(move.x) > 0.5f)
+			moveDir = MoveType::moveX;
+		else if (fabs(move.y) > 0.5f)
+			moveDir = MoveType::moveY;
+		else if (fabs(move.z) > 0.5f)
+			moveDir = MoveType::moveZ;
+		else
+			moveDir = MoveType::None;
+
+		if (moveDir == MoveType::None)
+			break;
+
+		std::vector<Block*> conpareBlocks = SortAllBlocks(allGroups, a.get(), moveDir);
+		
+		for (auto& b : conpareBlocks)
+		{
+			//レイキャストを行う(側面衝突)
+			DirectX::XMFLOAT3 s = { a->GetPosition() };
+			switch (moveDir)
+			{
+			case moveX:
+				s.x = b->GetPosition().x;
+				break;
+			case moveY:
+				s.y = b->GetPosition().y;
+				break;
+			case moveZ:
+				s.z = b->GetPosition().z;
+				break;
+			case None:
+				return;
+				break;
+			default:
+				return;
+				break;
+			}
+			DirectX::XMFLOAT3 StoEDir = { b->GetPosition().x - s.x, b->GetPosition().y - s.y, b->GetPosition().z - s.z };
+			DirectX::XMVECTOR nDir = DirectX::XMVector3Normalize(DirectX::XMLoadFloat3(&StoEDir));
+			DirectX::XMFLOAT3 e = { s.x + StoEDir.x * 0.5f, s.y + StoEDir.y * 0.5f, s.z + StoEDir.z * 0.5f }; // (ToT)
+			DirectX::XMFLOAT3 hitPosition, hitNormal;
+			//再生中のエフェクトはレイキャストをスキップ(後で消す)
+			if (EffectManager::Instance().GetEffekseerManager()->Exists(b->GetWillHitEffectHandle()))
+				continue;
+			//レイキャストを行う
+			if (RayCast(s, e, b->Gettranceform(), b->GetModel(), hitPosition, hitNormal))
+			{
+				DirectX::XMVECTOR lengthVec = DirectX::XMVectorSubtract(DirectX::XMLoadFloat3(&s), DirectX::XMLoadFloat3(&hitPosition));
+				if (DirectX::XMVectorGetX(DirectX::XMVector3Length(lengthVec)) < willCollideDist)
+				{					
+					willCollideBlockAddresses.push_back(b);
+				}
+			}
+			/*for (auto& b : allGroups)
+			{
+				for (auto& c : b->GetBlocks())
+				{
+					if (c->GetGroup()->GetType() == GroupType::Start)
+						continue;
+				}
+			}*/
 		}
 	}
 	return;
@@ -560,6 +631,62 @@ bool Group::RayCast(const DirectX::XMFLOAT3& start, const DirectX::XMFLOAT3& end
 		}
 	}
 	return hit;
+}
+
+//ブロックをスタートグループからの距離で並べ替える
+std::vector<Block*> Group::SortAllBlocks(const std::vector<Group*>& allGroups, Block* baseBlock, MoveType moveDir)
+{
+	//戻り値用配列にスタート以外のブロックをすべて登録
+	std::vector<Block*> allBlocks;
+	for (auto& group : allGroups)
+	{
+		if (group->GetType() == GroupType::Start) continue;
+
+		for (auto& block : group->GetBlocks())
+		{
+
+			allBlocks.push_back(block.get());
+		}
+	}
+
+	//並べ替え(降順)
+	for (auto& block : allBlocks)
+	{	
+		for (size_t j = 0; j < allBlocks.size() - 1; j++) 
+		{
+			float Pos1, Pos2, basePos; //
+			switch (moveDir)
+			{
+			default:
+				/*fallthrough*/
+			case MoveType::moveX:
+				Pos1 = allBlocks[j]->GetPosition().x;
+				Pos2 = allBlocks[j + 1]->GetPosition().x;
+				basePos = baseBlock->GetPosition().x;
+				break;							
+			case MoveType::moveY:
+				Pos1 = allBlocks[j]->GetPosition().y;
+				Pos2 = allBlocks[j + 1]->GetPosition().y;
+				basePos = baseBlock->GetPosition().y;
+				break;
+			case MoveType::moveZ:
+				Pos1 = allBlocks[j]->GetPosition().z;
+				Pos2 = allBlocks[j + 1]->GetPosition().z;
+				basePos = baseBlock->GetPosition().z;
+				break;		
+			}
+			float distance1 = fabs(basePos - Pos1);
+			float distance2 = fabs(basePos - Pos2);
+			
+			
+			if (distance1 > distance2)
+			{
+				std::swap(allBlocks[j], allBlocks[j+ 1]);
+			}
+		}
+	}
+
+	return allBlocks;
 }
 
 void Group::AddBlock(std::unique_ptr<Block> block)

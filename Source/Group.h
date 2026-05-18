@@ -24,7 +24,7 @@ enum RotateAxis
 	AxisY,
 	AxisZ
 };
-enum debugMoveType //移動方向のテンプレート
+enum debugMoveType //移動方向のテンプレート(debug)
 {
 	X = 0,
 	MinusX,
@@ -32,6 +32,13 @@ enum debugMoveType //移動方向のテンプレート
 	MinusY,
 	Z,
 	MinusZ,
+};
+enum MoveType//移動方向のテンプレート
+{
+	moveX = 0,
+	moveY,
+	moveZ,
+	None
 };
 class Group
 {
@@ -65,6 +72,9 @@ public:
 		const Model* model,
 		DirectX::XMFLOAT3& hitPosition,
 		DirectX::XMFLOAT3& hitNormal);
+
+	//ブロックをスタートグループからの距離で並べ替える
+	std::vector<Block*> SortAllBlocks(const std::vector<Group*>& allGroups, Block* baseBlock, MoveType moveDir);
 
 	void AddBlock(std::unique_ptr<Block> block);
 
@@ -149,6 +159,7 @@ private:
 	std::vector<std::unique_ptr<Block>> blocks;
 	int willCollideDist = COLLIDE_MAX_DISTANCE; //衝突するであろうブロックとの距離を管理
 	std::vector<Block*> willCollideBlockAddresses{}; //衝突するであろうブロックのアドレスを管理  //後で配列に
+	//MoveType moveType = MoveType::X;
 
 	GroupType type;
 
