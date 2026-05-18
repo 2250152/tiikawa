@@ -113,7 +113,7 @@ void Group::Move(float elapsedTime, const std::vector<Group*>& allGroups)
 				if (g->GetType() == GroupType::Goal)
 				{
 					//数が足りていたら
-					if (this->GetMergeCount() > 10)
+					if (this->GetMergeCount() > g->GetGoalCount())
 					{
 						if (g->GetType() == GroupType::Goal)
 						{
