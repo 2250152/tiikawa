@@ -255,7 +255,7 @@ void Player::InputJump(float elapsedTime)
 
 	JumpPermission = true;
 	for (const auto& group : BlockManager::Instance().GetGroups()) {
-		if (GroupType::Start == group->GetType() && Group::State::Rotating == group->GetState())
+		if (GroupType::Start == group->GetType() && Group::State::Rotating == group->GetState()/* || Group::State::Moving == group->GetState()*/)
 		{
 			JumpPermission = false;//ƒWƒƒƒ“ƒv‹–‰Â
 		}
