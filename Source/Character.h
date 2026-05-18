@@ -90,7 +90,7 @@ protected:
 	};
 
 	float radius = 0.5f;
-	float gravity = -10.0f;
+	float gravity = -7.0f;
 	DirectX::XMFLOAT3 velocity = { 0,0,0 };
 
 	bool isGround = false;

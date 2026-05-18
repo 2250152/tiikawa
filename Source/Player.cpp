@@ -251,13 +251,26 @@ void Player::InputJump(float elapsedTime)
 	{
 		JumpTime = 0.0f;
 	}*/
+
+
+	JumpPermission = true;
+	for (const auto& group : BlockManager::Instance().GetGroups()) {
+		if (GroupType::Start == group->GetType() && Group::State::Rotating == group->GetState()/* || Group::State::Moving == group->GetState()*/)
+		{
+			JumpPermission = false;//ジャンプ許可
+		}
+	}
+
+
 	GamePad& gamePad = Input::Instance().GetGamePad();
-	if (gamePad.GetButtonDown() & GamePad::BTN_A) {
+	if (gamePad.GetButtonDown() & GamePad::BTN_A ) {
 
 		//ジャンプ回数制限
 		if (jumpCount < jumpLimit) {
 			//ジャンプ
 			++jumpCount;
+			
+			if(JumpPermission)
 			Jump(jumpSpeed);
 		}
 	}
@@ -437,7 +450,7 @@ void Player::StickToBlockFace()
 	DirectX::XMVECTOR bestHitPoint;
 
 	for (const auto& group : BlockManager::Instance().GetGroups()) {
-		if (GroupType::Start == group->GetType())
+		if (GroupType::Start == group->GetType() && Group::State::Idle == group->GetState())
 		{
 			for (const auto& block : group->GetBlocks()) {
 				if (Collision::RayCast(rayStart, rayEnd, block->Gettranceform(), block->GetModel(), hitPos, hitNormal, hitDist)) {
@@ -531,16 +544,19 @@ void Player::Grounding()
 
 		for (const auto& group : BlockManager::Instance().GetGroups())
 		{
-			for (const auto& block : group->GetBlocks())
+			if (GroupType::Start == group->GetType())
 			{
-				if (Collision::RayCast(start, end, block->Gettranceform(), block->GetModel(), hitPosition, hitNormal, hitDistance))
+				for (const auto& block : group->GetBlocks())
 				{
-					if (hitDistance < minDistance)
+					if (Collision::RayCast(start, end, block->Gettranceform(), block->GetModel(), hitPosition, hitNormal, hitDistance))
 					{
-						minDistance = hitDistance;
-						isHitLocal = true;
-						hitBlockPtr = block.get();
-						bestHitPointVec = DirectX::XMLoadFloat3(&hitPosition);
+						if (hitDistance < minDistance)
+						{
+							minDistance = hitDistance;
+							isHitLocal = true;
+							hitBlockPtr = block.get();
+							bestHitPointVec = DirectX::XMLoadFloat3(&hitPosition);
+						}
 					}
 				}
 			}

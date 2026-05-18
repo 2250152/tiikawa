@@ -11,13 +11,13 @@
 class Block;
 class SceneGame;
 
-
-enum State
-{
-	Idle,   // 止まってる
-	Moving, // 動いてる
-	Rotating, //回転している
-};
+//Groupクラスのpublicに移した。（越智君が！！！）
+//enum State
+//{
+//	Idle,   // 止まってる
+//	Moving, // 動いてる
+//	Rotating, //回転している
+//};
 enum RotateAxis
 {
 	AxisX,
@@ -46,10 +46,20 @@ private:
 	SceneGame* sceneGame = nullptr;
 
 public:
+
+	enum State
+	{
+		Idle,   // 止まってる
+		Moving, // 動いてる
+		Rotating, //回転している
+	};
+
 	Group(GroupType type) : type(type) { mergeCount = 1; }
 	~Group() {}
 
 	GroupType GetType() const { return type; }
+
+	State GetState() const { return state; }
 
 	//void Initialize(int stageNo);
 
@@ -160,6 +170,7 @@ public:
 
 	int GetGoalCount() { return GoalCount; }
 
+	State Getstate() { return state; }
 private:
 	const int COLLIDE_MAX_DISTANCE = 30;
 	std::vector<std::unique_ptr<Block>> blocks;
