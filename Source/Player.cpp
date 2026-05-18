@@ -427,12 +427,15 @@ void Player::StickToBlockFace()
 	DirectX::XMVECTOR bestHitPoint;
 
 	for (const auto& group : BlockManager::Instance().GetGroups()) {
-		for (const auto& block : group->GetBlocks()) {
-			if (Collision::RayCast(rayStart, rayEnd, block->Gettranceform(), block->GetModel(), hitPos, hitNormal, hitDist)) {
-				if (hitDist < minDistance) {
-					minDistance = hitDist;
-					bestBlock = block.get();
-					bestHitPoint = DirectX::XMLoadFloat3(&hitPos);
+		if (GroupType::Start == group->GetType())
+		{
+			for (const auto& block : group->GetBlocks()) {
+				if (Collision::RayCast(rayStart, rayEnd, block->Gettranceform(), block->GetModel(), hitPos, hitNormal, hitDist)) {
+					if (hitDist < minDistance) {
+						minDistance = hitDist;
+						bestBlock = block.get();
+						bestHitPoint = DirectX::XMLoadFloat3(&hitPos);
+					}
 				}
 			}
 		}
