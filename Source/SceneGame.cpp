@@ -13,6 +13,7 @@
 #include"StageSelect.h"
 #include "System/Sprite.h"
 
+void RenderSpriteWithPivot(const Sprite* sprite, const RenderContext& rc, float cx, float cy, float dz, float dw, float dh, float angle, float pivotX, float pivotY, float r, float g, float b, float a);
 
 
 
@@ -33,6 +34,9 @@ void SceneGame::Initialize()
 	menyu = new Sprite("Data/Sprite/black.png");
 	choise = new Sprite("Data/Sprite/choise.png");
 	flame = new Sprite("Data/Sprite/flame.png");
+	meter = new Sprite("Data/Sprite/meter.png");
+	needle = new Sprite("Data/Sprite/needle.png");
+
 	tutolial = new Sprite("Data/Sprite/tutorial.png");
 	//カメラ初期設定
 	Graphics& graphics = Graphics::Instance();
@@ -81,12 +85,13 @@ void SceneGame::Finalize()
 		delete menyu;
 		delete choise;
 		delete flame;
-	
+		delete meter;
+		delete needle;
 		menyu = nullptr;
 		choise = nullptr;
 		flame = nullptr;
-		
-
+		meter = nullptr;
+		needle = nullptr;
 		menyuON = false;
 		
 	}
@@ -121,7 +126,7 @@ void SceneGame::Update(float elapsedTime)
 	/*DirectX::XMFLOAT3 target = player->GetPosition();*/
 	//DirectX::XMFLOAT3 target = Player::Instance().GetPosition();
 	
-	
+	needleAngle += 0.01f;
 
 	//プレイヤー更新処理
 	/*player->Update(elapsedTime);*/
@@ -320,6 +325,10 @@ void SceneGame::Render()
 		{
 			tutolial->Render(rc, 0, 0, 0, 1280, 720, 0, 1, 1, 1, 1);
 		}
+		RenderSpriteWithPivot(meter, rc, 150, 150, 0, 400, 266, 0.0f, 0.5f, 0.5f, 1, 1, 1, 1);
+
+		
+		RenderSpriteWithPivot(needle, rc, 150, 150, 0, 400, 266, needleAngle, 0.26f, 0.66f, 1, 1, 1, 1);
 		
 	}
 }
@@ -331,4 +340,32 @@ void SceneGame::DrawGUI()
 	Player::Instance().DrawDebugGUI();
 	BlockManager::Instance().DrawDebugGUI();
 	CameraController::Instance().DrawDebugGUI();
+}
+
+
+//中心を設定しようの会
+void RenderSpriteWithPivot(
+	const Sprite* sprite, const RenderContext& rc,
+	float cx, float cy,
+	float dz,
+	float dw, float dh,
+	float angle,
+	float pivotX, float pivotY,
+	float r, float g, float b, float a)
+{
+	if (!sprite) return;
+
+	float offsetX = -dw * pivotX;
+	float offsetY = -dh * pivotY;
+
+	float cosA = cosf(angle);
+	float sinA = sinf(angle);
+
+	float rotatedOffsetX = offsetX * cosA - offsetY * sinA;
+	float rotatedOffsetY = offsetX * sinA + offsetY * cosA;
+
+	float dx = cx + rotatedOffsetX;
+	float dy = cy + rotatedOffsetY;
+
+	sprite->Render(rc, dx, dy, dz, dw, dh, angle, r, g, b, a);
 }
