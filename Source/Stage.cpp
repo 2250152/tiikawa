@@ -54,8 +54,7 @@ void Stage::Load(int stageNo)
              BlockManager::Instance().AddGroup(std::move(normal1));
              BlockManager::Instance().AddGroup(std::move(normal2));
              BlockManager::Instance().AddGroup(std::move(normal3));
-             BlockManager::Instance().AddGroup(std::move(groupGoal));
-             break;
+             BlockManager::Instance().AddGroup(std::move(groupGoal));            
              break;
          }
 
