@@ -161,6 +161,7 @@ void Group::Move(float elapsedTime, const std::vector<Group*>& allGroups)
 				
 
 				state = Idle;
+				hasDoneExceptHit = false;
 				for (auto& b : blocks)
 				{
 					b->position.x = roundf(b->position.x);
@@ -352,17 +353,28 @@ void Group::ExceptHitting(float elapsedTime, const std::vector<Group*>& allGroup
 	}
 
 	DirectX::XMVECTOR nMove = DirectX::XMVector3Normalize(DirectX::XMLoadFloat3(&move));
-	//ヒット予測
-	ExpectUntilDistanceHit(allGroups, debugMove/*nMove*/);
-
-	if (!willCollideBlockAddresses.empty())
+	if (oldMove.x != debugMove.x || oldMove.y != debugMove.y || oldMove.z != debugMove.z)
 	{
-		for (auto& w : willCollideBlockAddresses)
+		hasDoneExceptHit = false;
+	}
+	oldMove = { debugMove.x, debugMove.y, debugMove.z };
+	if (!hasDoneExceptHit)
+	{
+		//ClearWillCollideBlockAddress();
+		ClearMayCollideBlockAddress();
+		//ヒット予測
+		ExpectUntilDistanceHit(allGroups, debugMove/*nMove*/);
+		hasDoneExceptHit = true;
+		
+	}
+	if (!mayCollideBlockAddresses.empty())
+	{
+		for (auto& w : mayCollideBlockAddresses)
 		{
-			w->SetWillHitPositions(w->GetPosition());
+			w->SetWillHitPositions(w->GetMayCollidePos());
 			w->ActiveWillHitEvent();
 		}
-		ClearWillCollideBlockAddress();
+		//ClearWillCollideBlockAddress();
 	}
 }
 
@@ -370,13 +382,21 @@ void Group::ExceptHitting(float elapsedTime, const std::vector<Group*>& allGroup
 void Group::ExpectUntilDistanceHit(const std::vector<Group*>& allGroups, DirectX::XMFLOAT3 move) // moveは単位ベクトル
 {
 	const float threshold = 0.1f; //閾値
-	willCollideDist = 30; //フレームごとにリセット
+	
 
+
+	////強引にトランスフォーム更新
+	//for (auto& a : blocks)
+	//{
+	//	a->UpdateTransform();
+	//}
+	
 	//レイキャストを飛ばしてブロックのヒット予想(正面衝突)
 	for (auto& a : blocks)
 	{
 		if (a->GetGroup()->GetType() != GroupType::Start)
 			continue;
+		a->SetDistUntilCollision(COLLIDE_MAX_DISTANCE); //1回ごとにリセット
 		for (auto& b : allGroups)
 		{
 			for (auto& c : b->GetBlocks())
@@ -466,7 +486,11 @@ void Group::ExpectUntilDistanceHit(const std::vector<Group*>& allGroups, DirectX
 				}
 #endif
 				//bool tmp = EffectManager::Instance().GetEffekseerManager()->Exists(c->GetWillHitEffectHandle());
-				//再生中のエフェクトはレイキャストをスキップ
+				
+				
+
+				
+				//再生中のエフェクトはレイキャストをスキップ(後で消す)
 				if (EffectManager::Instance().GetEffekseerManager()->Exists(c->GetWillHitEffectHandle()))
 					continue;
 				
@@ -478,16 +502,18 @@ void Group::ExpectUntilDistanceHit(const std::vector<Group*>& allGroups, DirectX
 				if (RayCast(s, e, c->Gettranceform(), c->GetModel(), hitPosition, hitNormal))
 				{
 					DirectX::XMVECTOR lengthVec = DirectX::XMVectorSubtract(DirectX::XMLoadFloat3(&s), DirectX::XMLoadFloat3(&hitPosition));
-					if (DirectX::XMVectorGetX(DirectX::XMVector3Length(lengthVec)) < willCollideDist)
-					{
-						willCollideDist = DirectX::XMVectorGetX(DirectX::XMVector3Length(lengthVec));
+					if (DirectX::XMVectorGetX(DirectX::XMVector3Length(lengthVec)) < a->GetDistUntilCollision())
+					{					
+						a->SetDistUntilCollision(DirectX::XMVectorGetX(DirectX::XMVector3Length(lengthVec)));
 						willCollideBlockAddresses.push_back(c.get());
+						willCollideBlockAddresses[willCollideBlockAddresses.size() - 1]->SetMayCollidePos(hitPosition);
+						//mayCollidePosAddresses.push_back(&hitPosition);
 					}									
 				}							
 			}
 		}
 	}
-	//レイキャストを飛ばしてブロックのヒット予想(正面衝突)
+	//レイキャストを飛ばしてブロックのヒット予想(側面衝突)
 	for (auto& a : blocks)
 	{
 		if (a->GetGroup()->GetType() != GroupType::Start)
@@ -542,22 +568,55 @@ void Group::ExpectUntilDistanceHit(const std::vector<Group*>& allGroups, DirectX
 			if (RayCast(s, e, b->Gettranceform(), b->GetModel(), hitPosition, hitNormal))
 			{
 				DirectX::XMVECTOR lengthVec = DirectX::XMVectorSubtract(DirectX::XMLoadFloat3(&s), DirectX::XMLoadFloat3(&hitPosition));
-				if (DirectX::XMVectorGetX(DirectX::XMVector3Length(lengthVec)) < willCollideDist)
-				{					
+				if (DirectX::XMVectorGetX(DirectX::XMVector3Length(lengthVec)) < a->GetDistUntilCollision())
+				{
+					DirectX::XMVECTOR distanceVec = DirectX::XMVectorSubtract(DirectX::XMLoadFloat3(&a->GetPosition()), DirectX::XMLoadFloat3(&hitPosition));
+					float distance; //衝突までの移動量
+					switch (moveDir)
+					{
+					case moveX:
+						distance = DirectX::XMVectorGetX(distanceVec);
+						break;
+					case moveY:
+						distance = DirectX::XMVectorGetY(distanceVec);
+						break;
+					case moveZ:
+						distance = DirectX::XMVectorGetZ(distanceVec);
+						break;
+					case None:
+						return;
+						break;
+					default:
+						return;
+						break;
+					}
+					a->SetDistUntilCollision(distance);
 					willCollideBlockAddresses.push_back(b);
+					willCollideBlockAddresses[willCollideBlockAddresses.size() - 1]->SetMayCollidePos(hitPosition);
+					//mayCollidePosAddresses.push_back(&hitPosition);
 				}
 			}
-			/*for (auto& b : allGroups)
-			{
-				for (auto& c : b->GetBlocks())
-				{
-					if (c->GetGroup()->GetType() == GroupType::Start)
-						continue;
-				}
-			}*/
 		}
 	}
-	return;
+	//バブルソートを作成
+	for (auto& w : willCollideBlockAddresses)
+	{
+		for (size_t i = 0; i < (willCollideBlockAddresses.size() - 1); i++)
+		{
+			int Dist1 = willCollideBlockAddresses[i]->GetDistUntilCollision();
+			int Dist2 = willCollideBlockAddresses[i + 1]->GetDistUntilCollision();
+			if (Dist1 > Dist2)
+			{
+				std::swap(willCollideBlockAddresses[i], willCollideBlockAddresses[i + 1]);
+			}
+		}
+	}
+	//降順に並んだwillCollideBlockAddressesをmayCollideBlockAddressesに格納
+	for (auto& w : willCollideBlockAddresses)
+	{
+		mayCollideBlockAddresses.push_back(w);
+	}
+	ClearWillCollideBlockAddress();
 }
 
 bool Group::RayCast(const DirectX::XMFLOAT3& start, const DirectX::XMFLOAT3& end, const DirectX::XMFLOAT4X4& worldTransform, const Model* model, DirectX::XMFLOAT3& hitPosition, DirectX::XMFLOAT3& hitNormal)
@@ -964,6 +1023,7 @@ void Group::Rotation(float elapsedTime) {
 		visualAngle += finalDelta * rotateDir;
 
 		state = Idle;
+		hasDoneExceptHit = false;
 
 		// 最終位置のズレを綺麗にする
 		for (auto& b : blocks)

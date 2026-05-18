@@ -61,8 +61,8 @@ void SceneGame::Initialize()
 	clearSE = Audio::Instance().LoadAudioSource("Data/Sound/CLEAR.wav");
 	//‚±‚±‚ÅstageŒÄ‚Ô‚í‚æ ˆø”‚Ì”’l‚ÅŒÄ‚Ôstage•Ï‚¦‚Ä‚Ë‚¡
 	
-	stage.Load(m_stageNo);
-	//stage.Load(10);
+	//stage.Load(m_stageNo);
+	stage.Load(10);
 
 }
 

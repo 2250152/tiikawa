@@ -143,7 +143,9 @@ public:
 
 
 	void ClearWillCollideBlockAddress() { willCollideBlockAddresses.clear(); }
-	std::vector<Block*> GetWillCollideBlockAddress() { return willCollideBlockAddresses; }
+	//std::vector<Block*> GetWillCollideBlockAddress() { return willCollideBlockAddresses; }
+	void ClearMayCollideBlockAddress() { mayCollideBlockAddresses.clear(); }
+	std::vector<Block*> GetMayCollideBlockAddress() { return mayCollideBlockAddresses; }
 
 
 	bool isClear()const { return clearFlag; }
@@ -161,9 +163,12 @@ public:
 private:
 	const int COLLIDE_MAX_DISTANCE = 30;
 	std::vector<std::unique_ptr<Block>> blocks;
-	int willCollideDist = COLLIDE_MAX_DISTANCE; //衝突するであろうブロックとの距離を管理
-	std::vector<Block*> willCollideBlockAddresses{}; //衝突するであろうブロックのアドレスを管理  //後で配列に
-	//MoveType moveType = MoveType::X;
+	//int willCollideDist = COLLIDE_MAX_DISTANCE; //衝突するかもしれないブロックとの距離を管理
+	std::vector<Block*> willCollideBlockAddresses{}; //衝突するかもしれないブロックのアドレスを管理(距離の小ささによる排斥前)
+	std::vector<Block*> mayCollideBlockAddresses{}; //衝突するであろうブロックのアドレスを管理(距離の小ささによる排斥後)
+//	std::vector<DirectX::XMFLOAT3*> mayCollideBlockAddresses{}; //衝突するであろうブロックの面の位置
+	bool hasDoneExceptHit = false;
+	DirectX::XMFLOAT3 oldMove; //１F前のmove
 
 	GroupType type;
 

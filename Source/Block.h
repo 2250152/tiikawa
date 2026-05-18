@@ -79,13 +79,22 @@ public:
 	void SetWillHitEffectHandle(int isAlive) { willHitEffectHandle = isAlive; }
 	int GetWillHitEffectHandle() { return willHitEffectHandle; }
 
-	//=====================================================
-
 	void ClearWillHitEvent()
 	{
 		willHitEvent.active = false;
 		willHitEvent.pos.clear();
 	}
+	//=====================================================
+
+	//-------|衝突予測|----------------------------------------
+	const int GetDistUntilCollision() const{ return distUntilCollision; }
+	void SetDistUntilCollision(const int minDist) { distUntilCollision = minDist; }
+
+	const DirectX::XMFLOAT3 GetMayCollidePos() const {return mayCollidePos;} //衝突するであろうブロックの面の位置
+	void SetMayCollidePos(const DirectX::XMFLOAT3 position) { 
+		mayCollidePos.x = position.x; mayCollidePos.y = position.y; mayCollidePos.z = position.z; } //衝突するであろうブロックの面の位置
+	//--------------------------------------------------------
+
 
 //	bool WillHit(Block* other, float nextX);
 
@@ -143,4 +152,7 @@ protected:
 
 	WillHitEvent willHitEvent;
 	int willHitEffectHandle = -1; //最初は存在しない
+
+	int distUntilCollision; //ブロックに衝突するまでの距離(Start側)
+	DirectX::XMFLOAT3 mayCollidePos{}; //衝突するであろうブロックの面の位置(衝突される側)
 };

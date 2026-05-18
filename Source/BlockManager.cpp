@@ -68,10 +68,12 @@ void BlockManager::Update(float elapsedTime)
 			{
 				for (auto& pos : block->GetWillHitPositions())
 				{
+					// 再生終了チェック
+					if (!EffectManager::Instance().GetEffekseerManager()->Exists(block->GetWillHitEffectHandle()))
 					block->SetWillHitEffectHandle(willHitEffect->Play(pos, 1.5f));
 				}
 				block->ClearWillHitEvent();
-				group->ClearWillCollideBlockAddress();
+				group->ClearMayCollideBlockAddress();
 
 				// 再生終了チェック
 				if (!EffectManager::Instance().GetEffekseerManager()->Exists(block->GetWillHitEffectHandle()))
